@@ -34,19 +34,19 @@ lemma break_lemma
   := by
   -- idea:
   -- 1. 3 is not even, so n ≠ 3
-  have A : ¬Even 3 := Nat.not_even_two_mul_add_one 1
-  have W : n ≠ 3 := by
+  have three_is_not_even : ¬Even 3 := Nat.not_even_two_mul_add_one 1
+  have n_ne_3 : n ≠ 3 := by
     intros n_eq_three
     rw [n_eq_three] at is_even
-    exact A is_even
+    exact three_is_not_even is_even
   have B : n > 3 := by
-    exact Nat.lt_of_le_of_ne greater_than_two (id (Ne.symm W))
+    exact Nat.lt_of_le_of_ne greater_than_two (id (Ne.symm n_ne_3))
   -- 2. 4 is even
   -- this one seems indeed hard, how do we know the next even is 4? LOL
-  have S : n ≥ 4 := by
+  have n_ge_4 : n ≥ 4 := by
     exact B
-  rw [equation] at S
-  have T : 2 * c ≥ 2 * 2 := S
+  rw [equation] at n_ge_4
+  have T : 2 * c ≥ 2 * 2 := n_ge_4
   rw [ge_iff_le] at T
   have M := Nat.le_of_mul_le_mul_left T (Nat.zero_lt_two)
   exact M
@@ -56,10 +56,10 @@ theorem any_even_number_except_two_is_not_prime
   (greater_than_two : n > 2)
   : ¬Prime n
   := by
-  intros Pn
+  intros is_prime
   have some_m_div_n : ∃ c, n = 2 * c :=
     Even.exists_two_nsmul n is_even
-  have n_is_irreducible := Pn.irreducible
+  have n_is_irreducible := is_prime.irreducible
   match some_m_div_n with
     | .intro c div =>
       have isUnit := n_is_irreducible.isUnit_or_isUnit' 2 c div
@@ -67,8 +67,8 @@ theorem any_even_number_except_two_is_not_prime
       case inl F => exact two_is_not_unit F
       case inr F =>
         -- idea: Q and H implies n ≥ 4, n = 2 * c, so c must ≥ 2
-        have C : c ≥ 2 := break_lemma n c is_even greater_than_two div
-        exact random_N_is_not_unit c C F
+        have c_ge_2 : c ≥ 2 := break_lemma n c is_even greater_than_two div
+        exact random_N_is_not_unit c c_ge_2 F
 theorem any_prime_greater_than_two_is_odd
   (p : ℕ)
   (is_prime : Prime p)
@@ -81,9 +81,9 @@ theorem any_prime_greater_than_two_is_odd
   induction I
   -- 2. but Even side cannot be a prime, by least theorem
   case inl E =>
-    have Wow :=
+    have thm :=
       any_even_number_except_two_is_not_prime p E greater_than_two
-    absurd Wow is_prime
-    exact fun _ ↦ Wow is_prime
+    absurd thm is_prime
+    exact fun _ ↦ thm is_prime
   -- 3. so p must be Odd
   case inr O => exact O
