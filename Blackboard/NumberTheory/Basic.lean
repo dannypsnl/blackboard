@@ -33,12 +33,18 @@ lemma break_lemma
   : c ≥ 2
   := by
   -- idea:
-  -- 1. 4 is even
-  -- 2. 3 is not even
-  -- 3. try lt => le
+  -- 1. 3 is not even, so n ≠ 3
+  have A : ¬Even 3 := Nat.not_even_two_mul_add_one 1
+  have W : n ≠ 3 := by
+    intros n_eq_three
+    rw [n_eq_three] at is_even
+    exact A is_even
+  have B : n > 3 := by
+    exact Nat.lt_of_le_of_ne greater_than_two (id (Ne.symm W))
+  -- 2. 4 is even
+  -- this one seems indeed hard, how do we know the next even is 4? LOL
   have S : n ≥ 4 := by
-    -- this one seems indeed hard, how do we know the next even is 4? LOL
-    sorry
+    exact B
   rw [equation] at S
   have T : 2 * c ≥ 2 * 2 := S
   rw [ge_iff_le] at T
