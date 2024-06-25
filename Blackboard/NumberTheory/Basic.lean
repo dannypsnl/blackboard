@@ -27,28 +27,32 @@ lemma random_N_is_not_unit (n : ℕ) (H : n ≥ 2) : ¬IsUnit n := by
 
 lemma break_lemma
   (n c : ℕ)
-  (H : Even n)
-  (Q : n > 2)
-  (R : n = 2 * c)
+  (is_even : Even n)
+  (greater_than_two : n > 2)
+  (equation : n = 2 * c)
   : c ≥ 2
   := by
+  -- idea:
+  -- 1. 4 is even
+  -- 2. 3 is not even
+  -- 3. try lt => le
   have S : n ≥ 4 := by
     -- this one seems indeed hard, how do we know the next even is 4? LOL
     sorry
-  rw [R] at S
+  rw [equation] at S
   have T : 2 * c ≥ 2 * 2 := S
   rw [ge_iff_le] at T
   have M := Nat.le_of_mul_le_mul_left T (Nat.zero_lt_two)
   exact M
 theorem any_even_number_except_two_is_not_prime
   (n : ℕ)
-  (H : Even n)
-  (Q : n > 2)
+  (is_even : Even n)
+  (greater_than_two : n > 2)
   : ¬Prime n
   := by
   intros Pn
   have some_m_div_n : ∃ c, n = 2 * c :=
-    Even.exists_two_nsmul n H
+    Even.exists_two_nsmul n is_even
   have n_is_irreducible := Pn.irreducible
   match some_m_div_n with
     | .intro c div =>
@@ -57,12 +61,12 @@ theorem any_even_number_except_two_is_not_prime
       case inl F => exact two_is_not_unit F
       case inr F =>
         -- idea: Q and H implies n ≥ 4, n = 2 * c, so c must ≥ 2
-        have C : c ≥ 2 := break_lemma n c H Q div
+        have C : c ≥ 2 := break_lemma n c is_even greater_than_two div
         exact random_N_is_not_unit c C F
 theorem any_prime_greater_than_two_is_odd
   (p : ℕ)
-  (H : Prime p)
-  (Q : p > 2)
+  (is_prime : Prime p)
+  (greater_than_two : p > 2)
   : Odd p
   := by
   -- idea:
@@ -72,8 +76,8 @@ theorem any_prime_greater_than_two_is_odd
   -- 2. but Even side cannot be a prime, by least theorem
   case inl E =>
     have Wow :=
-      any_even_number_except_two_is_not_prime p E Q
-    absurd Wow H
-    exact fun _ ↦ Wow H
+      any_even_number_except_two_is_not_prime p E greater_than_two
+    absurd Wow is_prime
+    exact fun _ ↦ Wow is_prime
   -- 3. so p must be Odd
   case inr O => exact O
