@@ -84,3 +84,55 @@ theorem all_primes_greater_than_two_is_odd
     exact fun _ ↦ thm is_prime
   -- 3. so p must be Odd
   case inr O => exact O
+
+theorem even_odd_case
+  (n k a b : ℕ)
+  (the_form : n = 4 * k + 3)
+  (a_is_even : Even a)
+  (b_is_odd : Odd b)
+  : ¬ (n = a * a + b * b)
+  := by sorry
+
+lemma the_form_is_odd (n : ℕ) (the_form : n = 4 * k + 3)
+  : Odd n
+  := by
+  have is_even_4 : Even 4 := Nat.even_iff.mpr rfl
+  have is_even_4_times_k : Even (4 * k) := is_even_4.mul_right k
+  have is_odd_3 : Odd 3 := Nat.odd_iff.mpr rfl
+  have n_is_odd : Odd (4 * k + 3) := is_even_4_times_k.add_odd is_odd_3
+  rw [←the_form] at n_is_odd
+  exact n_is_odd
+
+theorem n_with_form_cannot_be_perfect_square
+  (n k : ℕ)
+  (the_form : n = 4 * k + 3)
+  : ¬ (∃ a b : ℕ, n = a * a + b * b)
+  := by
+  intros hypothesis
+  have n_is_odd := the_form_is_odd n the_form
+  induction hypothesis
+  case intro a P =>
+  induction P
+  case intro b new_form =>
+  induction a.even_or_odd
+  case inl aE =>
+    induction b.even_or_odd
+    case inl bE =>
+      have n_is_even := Even.add (aE.mul_left a) (bE.mul_left b)
+      rw [←new_form] at n_is_even
+      have n_is_not_odd := Nat.even_iff_not_odd.mp n_is_even
+      exact n_is_not_odd n_is_odd
+    case inr bO =>
+      have l := even_odd_case n k a b the_form aE bO
+      exact l new_form
+  case inr aO =>
+    induction b.even_or_odd
+    case inl bE =>
+      have l := even_odd_case n k b a the_form bE aO
+      rw [add_comm] at new_form
+      exact l new_form
+    case inr bO =>
+      have n_is_even := (aO.mul aO).add_odd (bO.mul bO)
+      have n_is_not_odd := Nat.even_iff_not_odd.mp n_is_even
+      rw [←new_form] at n_is_not_odd
+      exact n_is_not_odd n_is_odd
