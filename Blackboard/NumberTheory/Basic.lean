@@ -7,8 +7,7 @@ theorem multiply_two_neighbors_is_even
   (n : ℕ)
   : Even (n * (n + 1))
   := by
-  have P := Nat.even_or_odd n
-  induction P
+  induction n.even_or_odd
   . exact Nat.even_mul_succ_self n
   . exact Nat.even_mul_succ_self n
 
@@ -50,7 +49,7 @@ lemma break_lemma
   rw [ge_iff_le] at T
   have M := Nat.le_of_mul_le_mul_left T (Nat.zero_lt_two)
   exact M
-theorem any_even_number_except_two_is_not_prime
+theorem even_numbers_except_two_is_not_prime
   (n : ℕ)
   (is_even : Even n)
   (greater_than_two : n > 2)
@@ -58,18 +57,17 @@ theorem any_even_number_except_two_is_not_prime
   := by
   intros is_prime
   have some_m_div_n : ∃ c, n = 2 * c :=
-    Even.exists_two_nsmul n is_even
-  have n_is_irreducible := is_prime.irreducible
+    is_even.exists_two_nsmul n
   match some_m_div_n with
     | .intro c div =>
-      have isUnit := n_is_irreducible.isUnit_or_isUnit' 2 c div
+      have isUnit := is_prime.irreducible.isUnit_or_isUnit' 2 c div
       induction isUnit
       case inl F => exact two_is_not_unit F
       case inr F =>
         -- idea: Q and H implies n ≥ 4, n = 2 * c, so c must ≥ 2
         have c_ge_2 : c ≥ 2 := break_lemma n c is_even greater_than_two div
         exact random_N_is_not_unit c c_ge_2 F
-theorem any_prime_greater_than_two_is_odd
+theorem all_primes_greater_than_two_is_odd
   (p : ℕ)
   (is_prime : Prime p)
   (greater_than_two : p > 2)
@@ -77,12 +75,11 @@ theorem any_prime_greater_than_two_is_odd
   := by
   -- idea:
   -- 1. p : ℕ is even or odd in general, so we do induction
-  have I :=  Nat.even_or_odd p
-  induction I
+  induction p.even_or_odd
   -- 2. but Even side cannot be a prime, by least theorem
   case inl E =>
     have thm :=
-      any_even_number_except_two_is_not_prime p E greater_than_two
+      even_numbers_except_two_is_not_prime p E greater_than_two
     absurd thm is_prime
     exact fun _ ↦ thm is_prime
   -- 3. so p must be Odd
