@@ -85,14 +85,6 @@ theorem all_primes_greater_than_two_is_odd
   -- 3. so p must be Odd
   case inr O => exact O
 
-theorem even_odd_case
-  (n k a b : ℕ)
-  (the_form : n = 4 * k + 3)
-  (a_is_even : Even a)
-  (b_is_odd : Odd b)
-  : ¬ (n = a * a + b * b)
-  := by sorry
-
 lemma the_form_is_odd (n : ℕ) (the_form : n = 4 * k + 3)
   : Odd n
   := by
@@ -103,10 +95,63 @@ lemma the_form_is_odd (n : ℕ) (the_form : n = 4 * k + 3)
   rw [←the_form] at n_is_odd
   exact n_is_odd
 
+lemma two_cannot_be_prod_of_four (n : ℕ) : ¬ 4 * n = 2 := by
+  sorry
+lemma the_dvd_cannot_hold (k : ℕ) : ¬ (4 ∣ 4 * k + 2) := by
+  intros F
+  induction exists_eq_mul_right_of_dvd F
+  case intro c P =>
+  -- rw [←sub_add_add_cancel (4*k) 2] at P
+  have guess : 2 = 4 * (c - k) := by
+    sorry
+  sorry
+lemma even_odd_case
+  (n k a b : ℕ)
+  (the_form : n = 4 * k + 3)
+  (a_is_even : ∃ k, a = 2 * k)
+  (b_is_odd : ∃ k, b = 2 * k + 1)
+  : ¬ (n = a^2 + b^2)
+  := by
+  intros negation
+  -- idea:
+  --
+  -- a = 2 * c
+  -- b = 2 * d + 1
+  --
+  -- n = 4c^2 + 4d^2 + 4d + 1
+  --   = 4(c^2 + d^2 + d) + 1
+  --
+  -- 4(c^2 + d^2 + d) = 4k + 2 which is impossible: because lhs can be divide by 4, but rhs can't.
+  induction a_is_even
+  case intro c a_as_c =>
+  induction b_is_odd
+  case intro d b_as_d =>
+  rw [a_as_c, b_as_d, pow_two, pow_two] at negation
+  -- rewrite to 4 * c * c
+  simp [mul_assoc, ←mul_assoc c 2 c, mul_comm c 2, ←mul_assoc 2 2 (c * c)] at negation
+  -- rewrite to 4 * d * d + 4 * d + 1
+  simp [RightDistribClass.right_distrib, LeftDistribClass.left_distrib] at negation
+  simp [mul_assoc, ←mul_assoc d 2 d, mul_comm d 2, ←mul_assoc 2 2 (d * d)] at negation
+  rw [add_assoc] at negation
+  rw [←add_assoc (2*d) (2*d) 1] at negation
+  simp [←RightDistribClass.right_distrib] at negation
+  rw [←add_assoc, ←add_assoc] at negation
+  -- rewrite to (...) * 4 + 1
+  simp [mul_comm 4, ←distrib_three_right] at negation
+  rw [mul_comm] at negation
+  rw [negation] at the_form
+  have target : 4 * (c * c + d * d + d) = 4 * k + 2 := by
+    exact Eq.symm ((fun {a b} ↦ Nat.succ_inj'.mp) (id (Eq.symm the_form)))
+  have should_dvd := target.dvd
+  have should_dvd_four : 4 ∣ 4 * k + 2 := by
+    exact dvd_of_mul_right_dvd should_dvd
+  have contra := the_dvd_cannot_hold k
+  exact contra should_dvd_four
+
 theorem n_with_form_cannot_be_perfect_square
   (n k : ℕ)
   (the_form : n = 4 * k + 3)
-  : ¬ (∃ a b : ℕ, n = a * a + b * b)
+  : ¬ (∃ a b : ℕ, n = a^2 + b^2)
   := by
   intros hypothesis
   have n_is_odd := the_form_is_odd n the_form
@@ -123,12 +168,12 @@ theorem n_with_form_cannot_be_perfect_square
       have n_is_not_odd := Nat.even_iff_not_odd.mp n_is_even
       exact n_is_not_odd n_is_odd
     case inr bO =>
-      have l := even_odd_case n k a b the_form aE bO
+      have l : ¬ (n = a * a + b * b) := even_odd_case n k a b the_form (aE.exists_two_nsmul a) bO
       exact l new_form
   case inr aO =>
     induction b.even_or_odd
     case inl bE =>
-      have l := even_odd_case n k b a the_form bE aO
+      have l : ¬ (n = b * b + a * a) := even_odd_case n k b a the_form (bE.exists_two_nsmul b) aO
       rw [add_comm] at new_form
       exact l new_form
     case inr bO =>
