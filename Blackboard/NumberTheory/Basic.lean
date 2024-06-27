@@ -114,23 +114,14 @@ lemma even_odd_case
   (the_form : n = 4 * k + 3)
   (a_is_even : ∃ k, a = 2 * k)
   (b_is_odd : ∃ k, b = 2 * k + 1)
-  : ¬ (n = a^2 + b^2)
+  : ¬ (n = a * a + b * b)
   := by
   intros negation
-  -- idea:
-  --
-  -- a = 2 * c
-  -- b = 2 * d + 1
-  --
-  -- n = 4c^2 + 4d^2 + 4d + 1
-  --   = 4(c^2 + d^2 + d) + 1
-  --
-  -- 4(c^2 + d^2 + d) = 4k + 2 which is impossible: because lhs can be divide by 4, but rhs can't.
   induction a_is_even
   case intro c a_as_c =>
   induction b_is_odd
   case intro d b_as_d =>
-  rw [a_as_c, b_as_d, pow_two, pow_two] at negation
+  rw [a_as_c, b_as_d] at negation
   -- rewrite to 4 * c * c
   simp [mul_assoc, ←mul_assoc c 2 c, mul_comm c 2, ←mul_assoc 2 2 (c * c)] at negation
   -- rewrite to 4 * d * d + 4 * d + 1
@@ -155,7 +146,7 @@ lemma even_odd_case
 theorem n_with_form_cannot_be_perfect_square
   (n k : ℕ)
   (the_form : n = 4 * k + 3)
-  : ¬ (∃ a b : ℕ, n = a^2 + b^2)
+  : ¬ (∃ a b : ℕ, n = a * a + b * b)
   := by
   intros hypothesis
   have n_is_odd := the_form_is_odd n the_form
