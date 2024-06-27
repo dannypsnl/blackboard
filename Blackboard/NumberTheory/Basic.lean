@@ -95,16 +95,20 @@ lemma the_form_is_odd (n : ℕ) (the_form : n = 4 * k + 3)
   rw [←the_form] at n_is_odd
   exact n_is_odd
 
-lemma two_cannot_be_prod_of_four (n : ℕ) : ¬ 4 * n = 2 := by
-  sorry
+lemma two_cannot_be_prod_of_four (n : ℕ) : ¬ 2 = 4 * n := by
+  refine lt_or_lt_iff_ne.mp ?_
+  induction n
+  case zero => exact Or.inr (Nat.lt_of_sub_eq_succ rfl)
+  case succ => exact Or.inl (Nat.lt_of_sub_eq_succ rfl)
 lemma the_dvd_cannot_hold (k : ℕ) : ¬ (4 ∣ 4 * k + 2) := by
   intros F
   induction exists_eq_mul_right_of_dvd F
   case intro c P =>
-  -- rw [←sub_add_add_cancel (4*k) 2] at P
-  have guess : 2 = 4 * (c - k) := by
-    sorry
-  sorry
+  have guess2 : 2 = 4 * c - 4 * k := by
+    exact Nat.eq_sub_of_add_eq' P
+  simp [mul_comm, ←Nat.sub_mul] at guess2
+  rw [←mul_comm 4] at guess2
+  exact (two_cannot_be_prod_of_four (c-k)) guess2
 lemma even_odd_case
   (n k a b : ℕ)
   (the_form : n = 4 * k + 3)
