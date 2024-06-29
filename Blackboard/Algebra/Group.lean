@@ -29,3 +29,13 @@ theorem aabb
     rw [←mul_assoc, ←mul_assoc, mul_assoc a b a]
     rw [←comm]
     simp [mul_assoc]
+
+theorem inv_of_prod {G : Type u} [Group G]
+  : ∀ a b : G, (a * b)⁻¹ = b⁻¹ * a⁻¹
+  := by simp
+
+theorem comm_inv_of_prod {G : Type u} [CommGroup G]
+  : ∀ a b : G, a⁻¹ * b⁻¹ = b⁻¹ * a⁻¹
+  := by
+  intros a b
+  rw [←inv_of_prod a b, ←inv_of_prod b a, mul_comm]
