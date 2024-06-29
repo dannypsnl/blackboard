@@ -1,18 +1,15 @@
 import Mathlib.Algebra.Group.Basic
 import Mathlib.GroupTheory.Order.Min
 
-variable
-  (G : Type u)
-  [Group G]
-
 -- The understanding way is
 -- ∃ n : ℕ, gⁿ = 1
 -- and gⁿg⁻ⁿ = 1 since we cancel each by inverse law
 -- then we can see 1g⁻ⁿ = g⁻ⁿ = 1
-theorem inv_order_eq_order (g : G) : orderOf g⁻¹ = orderOf g
+theorem inv_order_eq_order {G : Type u} [Group G]
+  (g : G) : orderOf g⁻¹ = orderOf g
   := by simp
 
-theorem aabb
+theorem aabb {G : Type u} [Group G]
   (a b : G)
   : (a * b) ^ 2 = a ^ 2 * b ^ 2 ↔ a * b = b * a
   := by
@@ -39,3 +36,15 @@ theorem comm_inv_of_prod {G : Type u} [CommGroup G]
   := by
   intros a b
   rw [←inv_of_prod a b, ←inv_of_prod b a, mul_comm]
+
+theorem pow2_is_1_implies_commute {G : Type u} [Group G]
+  (P : ∀ a : G, a * a = 1)
+  : ∀ a b : G, Commute a b
+  := by
+  intros a b
+  refine (commute_iff_eq a b).mpr ?_
+  have fact2 : (a * b) ^ 2 = a ^ 2 * b ^ 2 := by
+    simp [sq]
+    rw [P (a * b), P a, P b]
+    exact Eq.symm (LeftCancelMonoid.one_mul 1)
+  exact (aabb a b).mp fact2
