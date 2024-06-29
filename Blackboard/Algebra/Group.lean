@@ -48,3 +48,24 @@ theorem pow2_is_1_implies_commute {G : Type u} [Group G]
     rw [P (a * b), P a, P b]
     exact Eq.symm (LeftCancelMonoid.one_mul 1)
   exact (aabb a b).mp fact2
+
+theorem inf_order_inequality {G : Type u} [Group G]
+  (a : G)
+  (P : ¬IsOfFinOrder a)
+  -- although I use n < m here, but that's just to ignore inequality cases, it holds for all n ≠ m in ℕ.
+  (Q : n < m)
+  : a ^ m ≠ a ^ n
+  := by
+  rw [←orderOf_eq_zero_iff] at P
+  rw [orderOf_eq_zero_iff'] at P
+  have P' := P (m - n) (Nat.zero_lt_sub_of_lt Q)
+  rw [pow_sub] at P'
+  case h => exact Nat.le_of_succ_le Q
+  intro Ne
+  have F : a ^ m * (a ^ n)⁻¹ = 1 := by
+    refine Eq.symm (eq_mul_inv_of_mul_eq ?h)
+    simp
+    exact id (Eq.symm Ne)
+  have K := inv_eq_of_mul_eq_one_left F
+  rw [inv_inv] at K
+  exact P' F
