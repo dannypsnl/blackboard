@@ -59,8 +59,7 @@ theorem inf_order_inequality {G : Type u} [Group G]
   rw [←orderOf_eq_zero_iff] at P
   rw [orderOf_eq_zero_iff'] at P
   have P' := P (m - n) (Nat.zero_lt_sub_of_lt Q)
-  rw [pow_sub] at P'
-  case h => exact Nat.le_of_succ_le Q
+  rw [pow_sub a (Nat.le_of_succ_le Q)] at P'
   intro Ne
   have F : a ^ m * (a ^ n)⁻¹ = 1 := by
     refine Eq.symm (eq_mul_inv_of_mul_eq ?h)
