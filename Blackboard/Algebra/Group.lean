@@ -66,6 +66,4 @@ theorem inf_order_inequality {G : Type u} [Group G]
     refine Eq.symm (eq_mul_inv_of_mul_eq ?h)
     simp
     exact id (Eq.symm Ne)
-  have K := inv_eq_of_mul_eq_one_left F
-  rw [inv_inv] at K
   exact P' F
