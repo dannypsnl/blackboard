@@ -16,8 +16,8 @@ theorem aabb
   (a b : G)
   : (a * b) ^ 2 = a ^ 2 * b ^ 2 ↔ a * b = b * a
   := by
-  refine Iff.intro ?a ?b
   simp [sq]
+  refine Iff.intro ?a ?b
   case a =>
     intros ab
     rw [mul_assoc, mul_assoc, ←mul_assoc b a b, ←mul_assoc a b b] at ab
@@ -25,7 +25,6 @@ theorem aabb
     rw [mul_right_cancel_iff] at ab
     exact id (Eq.symm ab)
   case b =>
-    simp [sq]
     intros comm
     rw [←mul_assoc, ←mul_assoc, mul_assoc a b a]
     rw [←comm]
