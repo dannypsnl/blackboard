@@ -14,14 +14,14 @@ theorem aabb {G : Type u} [Group G]
   : (a * b) ^ 2 = a ^ 2 * b ^ 2 ↔ a * b = b * a
   := by
   simp [sq]
-  refine Iff.intro ?a ?b
-  case a =>
+  apply Iff.intro
+  case mp =>
     intros ab
     rw [mul_assoc, mul_assoc, ←mul_assoc b a b, ←mul_assoc a b b] at ab
     rw [mul_left_cancel_iff] at ab
     rw [mul_right_cancel_iff] at ab
     exact id (Eq.symm ab)
-  case b =>
+  case mpr =>
     intros comm
     rw [←mul_assoc, ←mul_assoc, mul_assoc a b a]
     rw [←comm]
@@ -42,7 +42,7 @@ theorem pow2_is_1_implies_commute {G : Type u} [Group G]
   : ∀ a b : G, Commute a b
   := by
   intros a b
-  refine (commute_iff_eq a b).mpr ?_
+  apply (commute_iff_eq a b).mpr
   have fact2 : (a * b) ^ 2 = a ^ 2 * b ^ 2 := by
     simp [sq]
     rw [P (a * b), P a, P b]
