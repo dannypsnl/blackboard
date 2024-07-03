@@ -58,8 +58,8 @@ theorem even_numbers_except_two_is_not_prime
   intros is_prime
   have some_m_div_n : ∃ c, n = 2 * c :=
     is_even.exists_two_nsmul n
-  match some_m_div_n with
-    | .intro c div =>
+  induction some_m_div_n with
+    | intro c div =>
       have isUnit := is_prime.irreducible.isUnit_or_isUnit' 2 c div
       induction isUnit
       case inl F => exact two_is_not_unit F
@@ -75,15 +75,15 @@ theorem all_primes_greater_than_two_is_odd
   := by
   -- idea:
   -- 1. p : ℕ is even or odd in general, so we do induction
-  induction p.even_or_odd
+  induction p.even_or_odd with
   -- 2. but Even side cannot be a prime, by least theorem
-  case inl E =>
+  | inl E =>
     have thm :=
       even_numbers_except_two_is_not_prime p E greater_than_two
     absurd thm is_prime
     exact fun _ ↦ thm is_prime
   -- 3. so p must be Odd
-  case inr O => exact O
+  | inr O => exact O
 
 lemma the_form_is_odd (n : ℕ) (the_form : n = 4 * k + 3)
   : Odd n
@@ -102,8 +102,8 @@ lemma two_cannot_be_prod_of_four (n : ℕ) : ¬ 2 = 4 * n := by
   case succ => exact Or.inl (Nat.lt_of_sub_eq_succ rfl)
 lemma the_dvd_cannot_hold (k : ℕ) : ¬ (4 ∣ 4 * k + 2) := by
   intros F
-  induction exists_eq_mul_right_of_dvd F
-  case intro c P =>
+  induction exists_eq_mul_right_of_dvd F with
+  | intro c P =>
   have guess2 : 2 = 4 * c - 4 * k := by
     exact Nat.eq_sub_of_add_eq' P
   simp [mul_comm, ←Nat.sub_mul] at guess2
@@ -117,10 +117,10 @@ lemma even_odd_case
   : ¬ (n = a * a + b * b)
   := by
   intros negation
-  induction a_is_even
-  case intro c a_as_c =>
-  induction b_is_odd
-  case intro d b_as_d =>
+  induction a_is_even with
+  | intro c a_as_c =>
+  induction b_is_odd with
+  | intro d b_as_d =>
   rw [a_as_c, b_as_d] at negation
   -- rewrite to 4 * c * c
   simp [mul_assoc, ←mul_assoc c 2 c, mul_comm c 2, ←mul_assoc 2 2 (c * c)] at negation
@@ -150,28 +150,28 @@ theorem n_with_form_cannot_be_perfect_square
   := by
   intros hypothesis
   have n_is_odd := the_form_is_odd n the_form
-  induction hypothesis
-  case intro a P =>
-  induction P
-  case intro b new_form =>
-  induction a.even_or_odd
-  case inl aE =>
-    induction b.even_or_odd
-    case inl bE =>
+  induction hypothesis with
+  | intro a P =>
+  induction P with
+  | intro b new_form =>
+  induction a.even_or_odd with
+  | inl aE =>
+    induction b.even_or_odd with
+    | inl bE =>
       have n_is_even := Even.add (aE.mul_left a) (bE.mul_left b)
       rw [←new_form] at n_is_even
       have n_is_not_odd := Nat.even_iff_not_odd.mp n_is_even
       exact n_is_not_odd n_is_odd
-    case inr bO =>
+    | inr bO =>
       have l : ¬ (n = a * a + b * b) := even_odd_case n k a b the_form (aE.exists_two_nsmul a) bO
       exact l new_form
-  case inr aO =>
-    induction b.even_or_odd
-    case inl bE =>
+  | inr aO =>
+    induction b.even_or_odd with
+    | inl bE =>
       have l : ¬ (n = b * b + a * a) := even_odd_case n k b a the_form (bE.exists_two_nsmul b) aO
       rw [add_comm] at new_form
       exact l new_form
-    case inr bO =>
+    | inr bO =>
       have n_is_even := (aO.mul aO).add_odd (bO.mul bO)
       have n_is_not_odd := Nat.even_iff_not_odd.mp n_is_even
       rw [←new_form] at n_is_not_odd
