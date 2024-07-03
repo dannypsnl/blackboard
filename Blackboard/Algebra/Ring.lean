@@ -24,6 +24,13 @@ theorem nat_distribute {R : Type u} [Ring R]
     rw [←Distrib.right_distrib]
     rw [Eq.symm (AddMonoid.nsmul_succ n a)]
 
+theorem int_distribute {R : Type u} [Ring R]
+  (m : ℤ)
+  (a b : R)
+  : m * (a * b) = (m * a) * b
+  := by
+  exact Eq.symm (mul_assoc (↑m) a b)
+
 theorem int_distribute' {R : Type u} [Ring R]
   (m : ℤ)
   (a b : R)
@@ -31,26 +38,18 @@ theorem int_distribute' {R : Type u} [Ring R]
   := by
   induction m with
   | ofNat n =>
-    induction n with
-    | zero => simp
-    | succ n P =>
-      rw [SubNegMonoid.zsmul_succ' n (a * b)]
-      rw [P]
-      rw [←Distrib.right_distrib]
-      rw [Eq.symm (SubNegMonoid.zsmul_succ' n a)]
+    simp
+    exact Eq.symm (mul_assoc (↑n) a b)
   | negSucc n =>
-    induction n with
-    | zero => simp
-    | succ o _ =>
-      rw [SubNegMonoid.zsmul_neg', SubNegMonoid.zsmul_neg']
-      simp
-      repeat rw [Distrib.right_distrib]
-      simp
-      exact Eq.symm (mul_assoc (↑o) a b)
+    simp
+    repeat rw [Distrib.right_distrib]
+    simp
+    exact Eq.symm (mul_assoc (↑n) a b)
 
-theorem int_distribute {R : Type u} [Ring R]
+theorem int_distribute'' {R : Type u} [Ring R]
   (m : ℤ)
   (a b : R)
-  : m * (a * b) = (m * a) * b
+  : SubNegMonoid.zsmul m (a * b) = (SubNegMonoid.zsmul m a) * b
   := by
+  simp
   exact Eq.symm (mul_assoc (↑m) a b)
