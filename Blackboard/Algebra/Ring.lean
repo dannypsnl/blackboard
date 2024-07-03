@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Ring.Basic
-import Mathlib.Algebra.Group.Defs
+import Mathlib.GroupTheory.GroupAction.Hom
 
 theorem distribute_on_2 {R : Type u} [Ring R]
   (a b : R)
@@ -24,8 +24,32 @@ theorem nat_distribute {R : Type u} [Ring R]
     rw [←Distrib.right_distrib]
     rw [Eq.symm (AddMonoid.nsmul_succ n a)]
 
+theorem int_distribute' {R : Type u} [Ring R]
+  (m : ℤ)
+  (a b : R)
+  : SubNegMonoid.zsmul m (a * b) = (SubNegMonoid.zsmul m a) * b
+  := by
+  induction m with
+  | ofNat n =>
+    induction n with
+    | zero => simp
+    | succ n P =>
+      rw [SubNegMonoid.zsmul_succ' n (a * b)]
+      rw [P]
+      rw [←Distrib.right_distrib]
+      rw [Eq.symm (SubNegMonoid.zsmul_succ' n a)]
+  | negSucc n =>
+    induction n with
+    | zero => simp
+    | succ o _ =>
+      rw [SubNegMonoid.zsmul_neg', SubNegMonoid.zsmul_neg']
+      simp
+      repeat rw [Distrib.right_distrib]
+      simp
+      exact Eq.symm (mul_assoc (↑o) a b)
+
 theorem int_distribute {R : Type u} [Ring R]
-  (m : ℕ)
+  (m : ℤ)
   (a b : R)
   : m * (a * b) = (m * a) * b
   := by
