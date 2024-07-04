@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Ring.Basic
 import Mathlib.GroupTheory.GroupAction.Hom
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
 theorem distribute_on_2 {R : Type u} [Ring R]
   (a b : R)
@@ -53,3 +54,19 @@ theorem int_distribute'' {R : Type u} [Ring R]
   := by
   simp
   exact Eq.symm (mul_assoc (↑m) a b)
+
+theorem cyclic_on_addition_implies_commutative_ring {R : Type u} [Ring R]
+  -- The ring is cyclic under addition means there is a generator `g`
+  -- any element `x` can be expressed as `ng`
+  (g : R)
+  (H : ∀ x : R, ∃ n : ℕ, x = n • g)
+  : ∀ a b : R, a * b = b * a
+  := by
+  intros a b
+  have ⟨m , fact₁⟩ := H a
+  have ⟨n, fact₂⟩ := H b
+  rw [fact₁, fact₂]
+  repeat rw [Distrib.right_distrib]
+  rw [smul_mul_smul m n]
+  rw [smul_mul_smul n m]
+  rw [Nat.mul_comm]
