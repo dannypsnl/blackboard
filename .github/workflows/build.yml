@@ -1,0 +1,9 @@
+name: Lake build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-lean@v1
+      - run: lake build
