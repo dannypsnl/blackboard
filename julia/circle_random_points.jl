@@ -1,6 +1,5 @@
 using Random
 using Distributions
-using Match
 
 function pick_point_on_circle()
   x = rand(Uniform(-1, 1))
