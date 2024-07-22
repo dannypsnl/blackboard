@@ -2,16 +2,9 @@ using Random
 using Distributions
 
 function pick_point_on_circle()
-  x = rand(Uniform(-1, 1))
-  function find_y(x::Float64)
-    ny = sqrt(1 - x * x)
-    if Bool(bitrand()[1])
-      ny
-    else
-      -ny
-    end
-  end
-  y = find_y(x)
+  θ = rand(Uniform(0, 2 * pi))
+  x = sin(θ)
+  y = cos(θ)
   (x, y)
 end
 
