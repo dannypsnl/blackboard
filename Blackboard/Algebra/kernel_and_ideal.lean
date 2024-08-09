@@ -22,3 +22,14 @@ theorem kernel_is_ideal
   rw [ϕa_is_unit, ϕb_is_unit]
   rw [zero_sub_zero, zero_mul (ϕ r), mul_zero (ϕ r)]
   exact ⟨rfl, rfl, rfl⟩
+
+open Ideal.Quotient
+
+theorem ideal_is_kernel
+  {R : Type u}
+  [CommRing R]
+  (I : Ideal R)
+  : ∀ x : R, (mk I) x = 0 ↔ ↑x ∈ I
+  := by
+  intros x
+  exact eq_zero_iff_mem (R := R)
