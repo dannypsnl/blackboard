@@ -66,7 +66,6 @@ theorem cyclic_on_addition_implies_commutative_ring {R : Type u} [Ring R]
   have ⟨m , fact₁⟩ := H a
   have ⟨n, fact₂⟩ := H b
   rw [fact₁, fact₂]
-  repeat rw [Distrib.right_distrib]
   rw [smul_mul_smul m n]
   rw [smul_mul_smul n m]
   rw [Nat.mul_comm]
