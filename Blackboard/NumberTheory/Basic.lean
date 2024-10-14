@@ -1,4 +1,6 @@
+import Mathlib.Algebra.Group.Even
 import Mathlib.Algebra.Ring.Parity
+import Mathlib.Algebra.Associated.Basic
 import Mathlib.Algebra.Group.Units
 
 theorem multiply_two_neighbors_is_even
