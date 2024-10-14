@@ -1,6 +1,4 @@
-import Mathlib.Algebra.Group.Even
 import Mathlib.Algebra.Ring.Parity
-import Mathlib.Algebra.Associated
 import Mathlib.Algebra.Group.Units
 
 theorem multiply_two_neighbors_is_even
@@ -8,8 +6,8 @@ theorem multiply_two_neighbors_is_even
   : Even (n * (n + 1))
   := by
   induction n.even_or_odd
-  . exact Nat.even_mul_succ_self n
-  . exact Nat.even_mul_succ_self n
+  · exact Nat.even_mul_succ_self n
+  · exact Nat.even_mul_succ_self n
 
 lemma two_is_not_unit : ¬IsUnit 2 := by
   -- idea: proves that 2 is not 1
