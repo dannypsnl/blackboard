@@ -1,5 +1,5 @@
 import Mathlib.Topology.Basic
-import Mathlib.Topology.Maps
+import Mathlib.Topology.Maps.Basic
 import Mathlib.Topology.Defs.Induced
 import Mathlib.Topology.Order
 
