@@ -20,6 +20,7 @@ theorem zero_object_unique_from_any
   := self.unique_from X
 
 -- But how to prove it's unique in this way?
+-- The point is, A ⟶ B can have more morphisms, but the A ⟶ 0 ⟶ B only this one
 theorem construct_zero_morphism
   {Z : C}
   (self : IsZero Z)
