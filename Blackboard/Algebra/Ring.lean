@@ -2,16 +2,16 @@ import Mathlib.Algebra.Ring.Basic
 import Mathlib.GroupTheory.GroupAction.Hom
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
-theorem distribute_on_2 {R : Type u} [Ring R]
-  (a b : R)
+variable
+  {R : Type u} [Ring R]
+
+theorem distribute_on_2 (a b : R)
   : 2 * (a * b) = (2 * a) * b
   := by
   simp [two_mul]
   rw [Distrib.right_distrib]
 
-theorem nat_distribute {R : Type u} [Ring R]
-  (m : ℕ)
-  (a b : R)
+theorem nat_distribute (m : ℕ) (a b : R)
   : AddMonoid.nsmul m (a * b) = (AddMonoid.nsmul m a) * b
   := by
   induction m with
@@ -25,14 +25,12 @@ theorem nat_distribute {R : Type u} [Ring R]
     rw [←Distrib.right_distrib]
     rw [Eq.symm (AddMonoid.nsmul_succ n a)]
 
-theorem int_distribute {R : Type u} [Ring R]
-  (m : ℤ)
-  (a b : R)
+theorem int_distribute (m : ℤ) (a b : R)
   : m * (a * b) = (m * a) * b
   := by
   exact Eq.symm (mul_assoc (↑m) a b)
 
-theorem int_distribute' {R : Type u} [Ring R]
+theorem int_distribute'
   (m : ℤ)
   (a b : R)
   : SubNegMonoid.zsmul m (a * b) = (SubNegMonoid.zsmul m a) * b
@@ -47,7 +45,7 @@ theorem int_distribute' {R : Type u} [Ring R]
     simp
     exact Eq.symm (mul_assoc (↑n) a b)
 
-theorem int_distribute'' {R : Type u} [Ring R]
+theorem int_distribute''
   (m : ℤ)
   (a b : R)
   : SubNegMonoid.zsmul m (a * b) = (SubNegMonoid.zsmul m a) * b
@@ -55,9 +53,9 @@ theorem int_distribute'' {R : Type u} [Ring R]
   simp
   exact Eq.symm (mul_assoc (↑m) a b)
 
-theorem cyclic_on_addition_implies_commutative_ring {R : Type u} [Ring R]
-  -- The ring is cyclic under addition means there is a generator `g`
-  -- any element `x` can be expressed as `ng`
+-- The ring is cyclic under addition means there is a generator `g`
+-- any element `x` can be expressed as `ng`
+theorem cyclic_on_addition_implies_commutative_ring
   (g : R)
   (H : ∀ x : R, ∃ n : ℕ, x = n • g)
   : ∀ a b : R, a * b = b * a
