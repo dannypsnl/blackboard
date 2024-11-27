@@ -1,0 +1,3 @@
+include:
+  - "src/**/*.rzk"
+  - "src/**/*.rzk.md"
