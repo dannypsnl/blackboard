@@ -34,7 +34,18 @@ module _ (G : Group ℓ) where
       b ∎
 
     invInv : (a : ⟨ G ⟩) → inv (inv a) ≡ a
-    invInv a = ·CancelL (inv a) (·InvR (inv a) ∙  sym (·InvL a))
+    invInv a = ·CancelL (inv a) (·InvR (inv a) ∙ sym (·InvL a))
+
+    inv1g : inv 1g ≡ 1g
+    inv1g =
+      inv 1g ≡⟨ sym (·IdR (inv 1g)) ⟩
+      (inv 1g) · 1g ≡⟨ ·InvL 1g ⟩
+      1g ∎
+
+    1gUniqueL : {e : ⟨ G ⟩} (x : ⟨ G ⟩) → e · x ≡ x → e ≡ 1g
+    1gUniqueL {e} x p = ·CancelR x (p ∙ lem)
+      where lem : x ≡ 1g · x
+            lem = sym (·IdL x)
 
     idFromIdempotency : (x : ⟨ G ⟩) → x ≡ x · x → x ≡ 1g
     idFromIdempotency x p =
@@ -44,3 +55,21 @@ module _ (G : Group ℓ) where
       (x · x) · (inv x) ≡⟨ congL _·_ (sym p) ⟩
       x · (inv x)       ≡⟨ ·InvR x ⟩
       1g              ∎
+
+    invDistr : (a b : ⟨ G ⟩) → inv (a · b) ≡ inv b · inv a
+    invDistr a b = ·CancelR (a · b) (lem ∙ lem₂ ∙ ass)
+      where ass : inv b · inv a · a · b ≡ (inv b · inv a) · a · b
+            ass = ·Assoc (inv b) (inv a) (a · b)
+            lem : inv (a · b) · (a · b) ≡ 1g
+            lem = ·InvL (a · b)
+            lem₃ : inv a · a · b ≡ 1g · b
+            lem₃ =
+              inv a · a · b ≡⟨ ·Assoc (inv a) a b ⟩
+              (inv a · a) · b ≡⟨ congL _·_ (·InvL a) ⟩
+              1g · b ∎
+            lem₂ : 1g ≡ inv b · inv a · (a · b)
+            lem₂ =
+              1g ≡⟨ sym (·InvL b) ⟩
+              inv b · b ≡⟨ congR _·_ (sym (·IdL b)) ⟩
+              inv b · 1g · b ≡⟨ congR _·_ (sym lem₃) ⟩
+              inv b · inv a · a · b ∎
