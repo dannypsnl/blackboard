@@ -1,0 +1,4 @@
+name: cube
+depend: cubical
+include: src
+flags: --safe --cubical
