@@ -35,8 +35,8 @@ test₁ : not · false —→ true
 test₁ = r3a (t · t) (t · t · t) t
 
 test₂ : not · true —→ false
-test₂ = lem ⨾ lem₂
-  where lem : not · true —→ t · t · t · t
-        lem = r3b (t · t) (t · t · t) t t
-        lem₂ : t · t · t · t —→ false
-        lem₂ = r1 t t
+test₂ = s1 ⨾ s2
+  where s1 : not · true —→ t · t · t · t
+        s1 = r3b (t · t) (t · t · t) t t
+        s2 : t · t · t · t —→ false
+        s2 = r1 t t
