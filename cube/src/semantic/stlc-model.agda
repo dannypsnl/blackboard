@@ -1,6 +1,6 @@
-open import Cubical.Foundations.Prelude
-
 module semantic.stlc-model where
+
+open import Cubical.Foundations.Prelude
 
 variable
   ℓ ℓ' : Level
