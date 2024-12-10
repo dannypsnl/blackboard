@@ -30,6 +30,7 @@ infixl 15 _⨾_
 false = t
 true = t · t
 not = t · (t · (t · t) · (t · t · t)) · t
+id = t · (t · t · t) · t
 
 test₁ : not · false —→ true
 test₁ = r3a (t · t) (t · t · t) t
@@ -40,3 +41,6 @@ test₂ = s1 ⨾ s2
         s1 = r3b (t · t) (t · t · t) t t
         s2 : t · t · t · t —→ false
         s2 = r1 t t
+
+test₃ : id · false —→ false
+test₃ = r3a t t t
