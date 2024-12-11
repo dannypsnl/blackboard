@@ -31,8 +31,7 @@ noncomputable instance : HDiv ℝ>0 ℝ>0 ℝ>0 where
   hDiv x y := ⟨ x.val / y.val , by refine div_pos x.property y.property ⟩
 
 theorem outside_cancel {x : ℝ>0} : (1 / x.val) * x.val = 1 := by
-  have h : x.val ≠ 0 := by
-    refine Ne.symm (ne_of_lt x.property)
+  have h : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
   exact one_div_mul_cancel h
 
 noncomputable instance : VectorSpace ℝ ℝ>0 where
