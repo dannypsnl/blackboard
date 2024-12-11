@@ -12,8 +12,7 @@ class VectorSpace (S : Type u) (V : Type u) : Type u where
   unity : {x : V} → vector_plus zero_vector x = x
 
   inv : V → V
-  -- This will need a tons of coe to enable it.
-  -- cancel : {x : V} → vector_plus (inv x) x = zero_vector
+  cancel : {x : V} → vector_plus (inv x) x = zero_vector
 
   -- Use ℝ as scalar is very hard, HPow didn't get defined.
 
@@ -31,13 +30,8 @@ noncomputable instance : Div ℝ>0 where
   div x y := ⟨ x.val / y.val , by refine div_pos x.property y.property ⟩
 
 theorem outside_cancel {x : ℝ>0} : (1 / x.val) * x.val = 1 := by
-  have h : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
-  exact one_div_mul_cancel h
-theorem inside_cancel {x : ℝ>0} : (1 / x) * x = 1 := by
-  have h : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
-  have K := one_div_mul_cancel h
-  -- x to ↑x or ↑x to x to solve this
-  sorry
+  have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
+  exact one_div_mul_cancel x_ne_zero
 
 noncomputable instance : VectorSpace ℝ ℝ>0 where
   zero_vector := 1
@@ -46,3 +40,7 @@ noncomputable instance : VectorSpace ℝ ℝ>0 where
   sym {x y} := CommMonoid.mul_comm x y
   assoc {x y z} := mul_assoc x y z
   unity {x} := one_mul x
+  cancel {x} := by
+    have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
+    have H := one_div_mul_cancel x_ne_zero
+    reduce; congr
