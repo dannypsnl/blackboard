@@ -16,7 +16,7 @@ class VectorSpace
   mul : S → V → V
   ax1 : {s1 s2 : S} → {v : V} → mul (s1 + s2) v = mul s1 v + mul s2 v
   ax2 : {c : S} → {x y : V} → mul c (x + y) = mul c x + mul c y
-  -- ax3 : {c d : S} → {v : V} → mul c (mul d v) = mul (c * d) v
+  ax3 : {c d : S} → {v : V} → mul (d * c) v = mul c (mul d v)
   ax4 : {v : V} → mul 1 v = v
 
 def VReal := { r : Real // 0 < r } deriving
@@ -45,18 +45,24 @@ noncomputable instance : VectorSpace ℝ ℝ>0 where
   cancel {x} := by
     have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
     have H := one_div_mul_cancel x_ne_zero
-    reduce; congr
+    rw [← Subtype.val_inj]
+    norm_cast
   mul c x := x ^ c
   ax1 {s1 s2} {v} := by
     have K := Real.rpow_add v.property s1 s2
-    reduce; congr
+    rw [← Subtype.val_inj]
+    norm_cast
   ax2 {c} {x y} := by
     have K :=
       Real.mul_rpow (le_of_lt x.property) (le_of_lt y.property) (z := c)
-    reduce; congr
-  -- ax3 {c d} {v} := by
-  --   have K := Real.rpow_mul (le_of_lt v.property) c d
-  --   reduce; rw [←K]
+    rw [← Subtype.val_inj]
+    norm_cast
+  ax3 {c d} {v} := by
+    have K := Real.rpow_mul (le_of_lt v.property) d c
+    simp
+    rw [← Subtype.val_inj]
+    norm_cast
   ax4 {v} := by
     have K := Real.rpow_one v.val
-    reduce; congr
+    rw [← Subtype.val_inj]
+    norm_cast
