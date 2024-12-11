@@ -27,12 +27,17 @@ instance : Add ℝ>0 where
   add x y := ⟨ x.val + y.val , by refine add_pos x.property y.property ⟩
 instance : Mul ℝ>0 where
   mul x y := ⟨ x.val * y.val , by refine mul_pos x.property y.property ⟩
-noncomputable instance : HDiv ℝ>0 ℝ>0 ℝ>0 where
-  hDiv x y := ⟨ x.val / y.val , by refine div_pos x.property y.property ⟩
+noncomputable instance : Div ℝ>0 where
+  div x y := ⟨ x.val / y.val , by refine div_pos x.property y.property ⟩
 
 theorem outside_cancel {x : ℝ>0} : (1 / x.val) * x.val = 1 := by
   have h : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
   exact one_div_mul_cancel h
+theorem inside_cancel {x : ℝ>0} : (1 / x) * x = 1 := by
+  have h : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
+  have K := one_div_mul_cancel h
+  -- x to ↑x or ↑x to x to solve this
+  sorry
 
 noncomputable instance : VectorSpace ℝ ℝ>0 where
   zero_vector := 1
