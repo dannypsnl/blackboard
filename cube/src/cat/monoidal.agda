@@ -26,3 +26,11 @@ module _ {ℓ ℓ' : Level} {V : MonoidalCategory ℓ ℓ'} where
 
   prop : (b c : ob) → α⟨ unit , b , c ⟩ ⋆ η⟨ b ⟩ ⊗ₕ id ≡ η⟨ b ⊗ c ⟩
   prop b c = {!   !}
+    where
+      p : id ⊗ₕ α⟨ unit , b , c ⟩ ⋆ α⟨ unit , unit ⊗ b , c ⟩ ⋆ α⟨ unit , unit , b ⟩ ⊗ₕ id
+            ≡ α⟨ unit , unit , b ⊗ c ⟩ ⋆ α⟨ unit ⊗ unit , b , c ⟩
+      p = pentagon unit unit b c
+      t1 : α⟨ unit , unit , b ⊗ c ⟩  ⋆  ρ⟨ unit ⟩ ⊗ₕ id  ≡  id ⊗ₕ η⟨ b ⊗ c ⟩
+      t1 = triangle unit (b ⊗ c)
+      t2 : α⟨ unit , unit , b ⟩  ⋆  ρ⟨ unit ⟩ ⊗ₕ id  ≡  id ⊗ₕ η⟨ b ⟩
+      t2 = triangle unit b
