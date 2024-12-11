@@ -1,41 +1,41 @@
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.NNReal.Defs
+import Mathlib.Data.Complex.Exponential
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-class VectorSpace (S : Type u) (V : Type u) : Type u where
-  zero_vector : V
-  vector_plus : V → V → V
-
-  sym : {x y : V} → vector_plus x y = vector_plus y x
+class VectorSpace
+  (S : Type u) [Add S]
+  (V : Type u) [One V] [Add V]
+  : Type u where
+  sym : {x y : V} → x + y = y + x
   assoc : {x y z : V}
-    → vector_plus (vector_plus x y) z
-      = vector_plus x (vector_plus y z)
-  unity : {x : V} → vector_plus zero_vector x = x
+    → (x + y) + z
+      = x + (y + z)
+  unity : {x : V} → 1 + x = x
 
   inv : V → V
-  cancel : {x : V} → vector_plus (inv x) x = zero_vector
+  cancel : {x : V} → (inv x) + x = 1
 
-  -- Use ℝ as scalar is very hard, HPow didn't get defined.
-
-notation x " ⊕ " y => VectorSpace.vector_plus x y
-notation x " ⊙ " y => VectorSpace.mul_scalar x y
+  scalar_mul : S → V → V
+  ax1 : {s1 s2 : S} → {v : V} → scalar_mul (s1 + s2) v = scalar_mul s1 v + scalar_mul s2 v
 
 def VReal := { r : Real // 0 < r } deriving
   One, CommMonoid
 notation "ℝ>0" => VReal
+instance : Coe ℝ>0 ℝ where
+  coe r := r.val
 instance : Add ℝ>0 where
-  add x y := ⟨ x.val + y.val , by refine add_pos x.property y.property ⟩
-instance : Mul ℝ>0 where
-  mul x y := ⟨ x.val * y.val , by refine mul_pos x.property y.property ⟩
+  add x y := ⟨ x.val * y.val , by refine mul_pos x.property y.property ⟩
 noncomputable instance : Div ℝ>0 where
   div x y := ⟨ x.val / y.val , by refine div_pos x.property y.property ⟩
+noncomputable instance : HPow ℝ>0 ℝ ℝ>0 where
+  hPow x y :=
+    ⟨ Real.rpow x.val y , Real.rpow_pos_of_pos x.property y ⟩
 
 theorem outside_cancel {x : ℝ>0} : (1 / x.val) * x.val = 1 := by
   have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
   exact one_div_mul_cancel x_ne_zero
 
 noncomputable instance : VectorSpace ℝ ℝ>0 where
-  zero_vector := 1
-  vector_plus x y := x * y
   inv x := 1 / x
   sym {x y} := CommMonoid.mul_comm x y
   assoc {x y z} := mul_assoc x y z
@@ -43,4 +43,8 @@ noncomputable instance : VectorSpace ℝ ℝ>0 where
   cancel {x} := by
     have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
     have H := one_div_mul_cancel x_ne_zero
+    reduce; congr
+  scalar_mul c x := x ^ c
+  ax1 {s1 s2} {v} := by
+    have K := Real.rpow_add v.property s1 s2
     reduce; congr
