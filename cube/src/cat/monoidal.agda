@@ -24,8 +24,18 @@ module _ {ℓ ℓ' : Level} {V : StrictMonCategory ℓ ℓ'} where
 module _ {ℓ ℓ' : Level} {V : MonoidalCategory ℓ ℓ'} where
   open MonoidalCategory V
 
-  prop : (b c : ob) → α⟨ unit , b , c ⟩ ⋆ η⟨ b ⟩ ⊗ₕ id ≡ η⟨ b ⊗ c ⟩
-  prop b c = {!   !}
+  -- Here is saying `p` is epic, but I'm not sure this is true here
+  pre : {x y z : ob}
+      → (p : Hom[ x , y ])
+      → {f g : Hom[ y , z ]}
+      → (p ⋆ f ≡ p ⋆ g)
+      → f ≡ g
+  pre {x} {y} {z} p {f} {g} H
+    = f ≡⟨ {!   !} ⟩
+      g ∎
+
+  lem : (b c : ob) → η⟨ unit ⊗ (b ⊗ c) ⟩ ⋆ α⟨ unit , b , c ⟩ ⋆ η⟨ b ⟩ ⊗ₕ id ≡ η⟨ unit ⊗ (b ⊗ c) ⟩ ⋆ η⟨ b ⊗ c ⟩
+  lem b c = {!   !}
     where
       p : id ⊗ₕ α⟨ unit , b , c ⟩ ⋆ α⟨ unit , unit ⊗ b , c ⟩ ⋆ α⟨ unit , unit , b ⟩ ⊗ₕ id
             ≡ α⟨ unit , unit , b ⊗ c ⟩ ⋆ α⟨ unit ⊗ unit , b , c ⟩
@@ -34,3 +44,6 @@ module _ {ℓ ℓ' : Level} {V : MonoidalCategory ℓ ℓ'} where
       t1 = triangle unit (b ⊗ c)
       t2 : α⟨ unit , unit , b ⟩ ⋆ ρ⟨ unit ⟩ ⊗ₕ id ≡ id ⊗ₕ η⟨ b ⟩
       t2 = triangle unit b
+
+  prop : (b c : ob) → α⟨ unit , b , c ⟩ ⋆ η⟨ b ⟩ ⊗ₕ id ≡ η⟨ b ⊗ c ⟩
+  prop b c = pre (η⟨ unit ⊗ (b ⊗ c) ⟩) (lem b c)
