@@ -1,5 +1,4 @@
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.Complex.Exponential
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 class VectorSpace
@@ -15,8 +14,9 @@ class VectorSpace
   inv : V → V
   cancel : {x : V} → (inv x) + x = 1
 
-  scalar_mul : S → V → V
-  ax1 : {s1 s2 : S} → {v : V} → scalar_mul (s1 + s2) v = scalar_mul s1 v + scalar_mul s2 v
+  mul : S → V → V
+  ax1 : {s1 s2 : S} → {v : V} → mul (s1 + s2) v = mul s1 v + mul s2 v
+  ax2 : {c : S} → {x y : V} → mul c (x + y) = mul c x + mul c y
 
 def VReal := { r : Real // 0 < r } deriving
   One, CommMonoid
@@ -44,7 +44,11 @@ noncomputable instance : VectorSpace ℝ ℝ>0 where
     have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
     have H := one_div_mul_cancel x_ne_zero
     reduce; congr
-  scalar_mul c x := x ^ c
+  mul c x := x ^ c
   ax1 {s1 s2} {v} := by
     have K := Real.rpow_add v.property s1 s2
+    reduce; congr
+  ax2 {c} {x y} := by
+    have K :=
+      Real.mul_rpow (le_of_lt x.property) (le_of_lt y.property) (z := c)
     reduce; congr
