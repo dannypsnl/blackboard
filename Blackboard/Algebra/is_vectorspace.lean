@@ -3,15 +3,15 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 class VectorSpace
   (S : Type u) [One S] [Add S] [Mul S]
-  (V : Type u) [One V] [Add V] [Neg V]
+  (V : Type u) [Zero V] [Add V] [Neg V]
   : Type u where
   sym : {x y : V} → x + y = y + x
   assoc : {x y z : V}
     → (x + y) + z
       = x + (y + z)
-  unity : {x : V} → 1 + x = x
+  unity : {x : V} → 0 + x = x
 
-  cancel : {x : V} → (- x) + x = 1
+  cancel : {x : V} → (- x) + x = 0
 
   mul : S → V → V
   distribute_scalar : {s1 s2 : S} → {v : V} → mul (s1 + s2) v = mul s1 v + mul s2 v
@@ -22,8 +22,8 @@ class VectorSpace
 def VReal := { r : Real // 0 < r } deriving
   One, CommMonoid
 notation "ℝ>0" => VReal
-instance : Coe ℝ>0 ℝ where
-  coe r := r.val
+instance : Zero ℝ>0 where
+  zero := 1
 instance : Add ℝ>0 where
   add x y := ⟨ x.val * y.val , by refine mul_pos x.property y.property ⟩
 noncomputable instance : Div ℝ>0 where
