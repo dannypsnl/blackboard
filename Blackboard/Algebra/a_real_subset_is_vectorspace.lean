@@ -19,6 +19,8 @@ class VectorSpace
   scalar_prod : {c d : S} → {v : V} → mul (d * c) v = mul c (mul d v)
   scalar_unity : {v : V} → mul 1 v = v
 
+notation c " ⊙ " x => VectorSpace.mul c x
+
 def VReal := { r : Real // 0 < r } deriving
   One, CommMonoid
 notation "ℝ>0" => VReal
