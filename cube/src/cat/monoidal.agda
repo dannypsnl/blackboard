@@ -24,7 +24,9 @@ module _ {ℓ ℓ' : Level} {V : StrictMonCategory ℓ ℓ'} where
 module _ {ℓ ℓ' : Level} {V : MonoidalCategory ℓ ℓ'} where
   open MonoidalCategory V
 
-  -- Here is saying `p` is epic, but I'm not sure this is true here
+  -- This is true by `(η⟨ unit ⊗ (b ⊗ c) ⟩)` is isomorphism
+  -- , which implies it's epimorphism. Thus, the proof need
+  -- to show that fact.
   pre : {x y z : ob}
       → (p : Hom[ x , y ])
       → {f g : Hom[ y , z ]}
