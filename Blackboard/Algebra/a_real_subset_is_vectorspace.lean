@@ -4,6 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 class VectorSpace
   (S : Type u) [One S] [Add S] [Mul S]
   (V : Type u) [Zero V] [Add V] [Neg V]
+  [HSMul S V V]
   : Type u where
   sym : {x y : V} → x + y = y + x
   assoc : {x y z : V}
@@ -13,11 +14,10 @@ class VectorSpace
 
   cancel : {x : V} → (- x) + x = 0
 
-  mul : S → V → V
-  distribute_scalar : {s1 s2 : S} → {v : V} → mul (s1 + s2) v = mul s1 v + mul s2 v
-  distribute_vector : {c : S} → {x y : V} → mul c (x + y) = mul c x + mul c y
-  scalar_prod : {c d : S} → {v : V} → mul (d * c) v = mul c (mul d v)
-  scalar_unity : {v : V} → mul 1 v = v
+  distribute_scalar : {s1 s2 : S} → {v : V} → (s1 + s2) • v = s1 • v + s2 • v
+  distribute_vector : {c : S} → {x y : V} → c • (x + y) = c • x + c • y
+  scalar_prod : {c d : S} → {v : V} → (d * c) • v = c • (d • v)
+  scalar_unity : {v : V} → (1 : S) • v = v
 
 notation c " ⊙ " x => VectorSpace.mul c x
 
@@ -35,6 +35,8 @@ noncomputable instance : Neg ℝ>0 where
 noncomputable instance : HPow ℝ>0 ℝ ℝ>0 where
   hPow x y :=
     ⟨ Real.rpow x.val y , Real.rpow_pos_of_pos x.property y ⟩
+noncomputable instance : HSMul ℝ ℝ>0 ℝ>0 where
+  hSMul c x := x ^ c
 
 theorem outside_cancel {x : ℝ>0} : (1 / x.val) * x.val = 1 := by
   have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
@@ -49,7 +51,6 @@ noncomputable instance : VectorSpace ℝ ℝ>0 where
     have H := one_div_mul_cancel x_ne_zero
     rw [← Subtype.val_inj]
     norm_cast
-  mul c x := x ^ c
   distribute_scalar {s1 s2} {v} := by
     have K := Real.rpow_add v.property s1 s2
     rw [← Subtype.val_inj]
@@ -61,7 +62,6 @@ noncomputable instance : VectorSpace ℝ ℝ>0 where
     norm_cast
   scalar_prod {c d} {v} := by
     have K := Real.rpow_mul (le_of_lt v.property) d c
-    simp
     rw [← Subtype.val_inj]
     norm_cast
   scalar_unity {v} := by
