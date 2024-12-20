@@ -9,7 +9,6 @@ open import Cubical.Algebra.Group
 
 variable
   ℓ : Level
-  G : Type ℓ
 
 module _ (G : Group ℓ) where
   open GroupStr (snd G)
