@@ -16,6 +16,8 @@ noncomputable instance : AddCommMonoid ℝ>0 where
   add_comm x y := mul_comm x y
   add_zero x := mul_one x
   zero_add x := one_mul x
+  nsmul_zero v := rfl
+  nsmul_succ n v := rfl
 
 noncomputable instance : Module ℝ ℝ>0 where
   smul c x := x ^ c
