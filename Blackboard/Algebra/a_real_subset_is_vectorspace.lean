@@ -38,10 +38,6 @@ noncomputable instance : HPow ℝ>0 ℝ ℝ>0 where
 noncomputable instance : HSMul ℝ ℝ>0 ℝ>0 where
   hSMul c x := x ^ c
 
-theorem outside_cancel {x : ℝ>0} : (1 / x.val) * x.val = 1 := by
-  have x_ne_zero : x.val ≠ 0 := Ne.symm (ne_of_lt x.property)
-  exact one_div_mul_cancel x_ne_zero
-
 noncomputable instance : VectorSpace ℝ ℝ>0 where
   sym {x y} := CommMonoid.mul_comm x y
   assoc {x y z} := mul_assoc x y z
@@ -66,5 +62,41 @@ noncomputable instance : VectorSpace ℝ ℝ>0 where
     norm_cast
   scalar_unity {v} := by
     have K := Real.rpow_one v.val
+    rw [← Subtype.val_inj]
+    norm_cast
+
+noncomputable instance : AddCommMonoid ℝ>0 where
+  nsmul c x := x ^ c
+  add_assoc x y z := mul_assoc x y z
+  add_comm x y := mul_comm x y
+  add_zero x := mul_one x
+  zero_add x := one_mul x
+
+noncomputable instance : Module ℝ ℝ>0 where
+  smul c x := x ^ c
+  one_smul v := by
+    have K := Real.rpow_one v.val
+    rw [← Subtype.val_inj]
+    norm_cast
+  mul_smul r s v:= by
+    have K := Real.rpow_mul (le_of_lt v.property) s r
+    rw [mul_comm] at K
+    rw [← Subtype.val_inj]
+    norm_cast
+  smul_add r v w := by
+    have K :=
+      Real.mul_rpow (le_of_lt v.property) (le_of_lt w.property) (z := r)
+    rw [← Subtype.val_inj]
+    norm_cast
+  add_smul r s v := by
+    have K := Real.rpow_add v.property r s
+    rw [← Subtype.val_inj]
+    norm_cast
+  smul_zero a := by
+    have K := Real.one_rpow a
+    rw [← Subtype.val_inj]
+    norm_cast
+  zero_smul v := by
+    have K := Real.rpow_zero v.val
     rw [← Subtype.val_inj]
     norm_cast
