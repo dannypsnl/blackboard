@@ -46,7 +46,7 @@ theorem pow2_is_1_implies_commute {G : Type u} [Group G]
   have fact2 : (a * b) ^ 2 = a ^ 2 * b ^ 2 := by
     simp [sq]
     rw [P (a * b), P a, P b]
-    exact Eq.symm (LeftCancelMonoid.one_mul 1)
+    exact Eq.symm (one_mul 1)
   exact (aabb a b).mp fact2
 
 theorem inf_order_inequality {G : Type u} [Group G]
