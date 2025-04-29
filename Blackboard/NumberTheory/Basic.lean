@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Group.Even
 import Mathlib.Algebra.Ring.Parity
-import Mathlib.Algebra.Associated.Basic
-import Mathlib.Algebra.Group.Units
+import Mathlib.Algebra.Prime.Defs
 
 theorem multiply_two_neighbors_is_even
   (n : ℕ)
@@ -10,19 +9,6 @@ theorem multiply_two_neighbors_is_even
   induction n.even_or_odd
   · exact Nat.even_mul_succ_self n
   · exact Nat.even_mul_succ_self n
-
-lemma two_is_not_unit : ¬IsUnit 2 := by
-  -- idea: proves that 2 is not 1
-  intros two_is_unit
-  rw [isUnit_iff_eq_one] at two_is_unit
-  absurd two_is_unit
-  exact Nat.succ_succ_ne_one 0
-lemma random_N_is_not_unit (n : ℕ) (H : n ≥ 2) : ¬IsUnit n := by
-  -- idea: show that n is not 1
-  intros n_is_unit
-  rw [isUnit_iff_eq_one] at n_is_unit
-  absurd n_is_unit
-  exact Nat.ne_of_lt' H
 
 lemma break_lemma
   (n c : ℕ)
@@ -96,10 +82,11 @@ lemma the_form_is_odd (n : ℕ) (the_form : n = 4 * k + 3)
   exact n_is_odd
 
 lemma two_cannot_be_prod_of_four (n : ℕ) : ¬ 2 = 4 * n := by
-  refine lt_or_lt_iff_ne.mp ?_
-  induction n
-  case zero => exact Or.inr (Nat.lt_of_sub_eq_succ rfl)
-  case succ => exact Or.inl (Nat.lt_of_sub_eq_succ rfl)
+  induction n with
+  | zero =>
+    exact Nat.ne_of_beq_eq_false rfl
+  | succ n P =>
+    exact Nat.ne_of_beq_eq_false rfl
 lemma the_dvd_cannot_hold (k : ℕ) : ¬ (4 ∣ 4 * k + 2) := by
   intros F
   induction exists_eq_mul_right_of_dvd F with

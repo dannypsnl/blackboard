@@ -1,5 +1,5 @@
-import Mathlib.Order.Defs
-import Mathlib.Order.CompleteLattice
+import Mathlib.Order.Basic
+import Mathlib.Order.CompleteLattice.Basic
 
 variable
   {P : Type u₁} [CompleteLattice P]
@@ -9,7 +9,7 @@ def equiv (a b : P) : Prop :=
 notation a " ≈ " b => equiv a b
 
 
-def Tarski (h : P → P)
+theorem Tarski (h : P → P)
   (H : Monotone h)
   : ∃ y : P, h y ≈ y
   := by

@@ -25,7 +25,7 @@ theorem union_of_opens_is_open
 
 theorem universal_property_quotient_space
   {π : X → Y}
-  (π_is_quotient : QuotientMap π)
+  (π_is_quotient : IsQuotientMap π)
   (f : Y → Z)
   : Continuous f ↔ Continuous (f ∘ π)
   := by
@@ -34,7 +34,6 @@ theorem universal_property_quotient_space
     exact Continuous.comp H π_is_continuous
   have lemma_only_if (H : Continuous (f ∘ π)) : Continuous f := by
     rw [continuous_iff_coinduced_le]
-    rw [π_is_quotient.right]
-    rw [coinduced_compose]
-    exact continuous_iff_coinduced_le.mp H
+    refine continuous_iff_coinduced_le.mp ?_
+    exact (IsQuotientMap.continuous_iff π_is_quotient).mpr H
   exact Iff.intro lemma_if lemma_only_if
