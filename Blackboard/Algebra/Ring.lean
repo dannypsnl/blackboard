@@ -36,14 +36,16 @@ theorem int_distribute'
   : SubNegMonoid.zsmul m (a * b) = (SubNegMonoid.zsmul m a) * b
   := by
   induction m with
-  | ofNat n =>
+  | hz =>
     simp
-    exact Eq.symm (mul_assoc (↑n) a b)
-  | negSucc n =>
+  | hn =>
+    simp
+    exact Eq.symm (mul_assoc (-_ - 1) a b)
+  | hp =>
     simp
     repeat rw [Distrib.right_distrib]
     simp
-    exact Eq.symm (mul_assoc (↑n) a b)
+    exact Eq.symm (mul_assoc _ a b)
 
 theorem int_distribute''
   (m : ℤ)
@@ -64,6 +66,6 @@ theorem cyclic_on_addition_implies_commutative_ring
   have ⟨m , fact₁⟩ := H a
   have ⟨n, fact₂⟩ := H b
   rw [fact₁, fact₂]
-  rw [smul_mul_smul m n]
-  rw [smul_mul_smul n m]
-  rw [Nat.mul_comm]
+  refine (commute_iff_eq (m • g) (n • g)).mp ?_
+  refine Commute.symm (Commute.smul_left ?_ n)
+  exact Commute.smul_right rfl m
