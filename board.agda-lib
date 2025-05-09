@@ -1,6 +1,6 @@
 name: board
+depend: 1lab
 include: src
-  ./1lab/src
 flags:
   --cubical
   --no-load-primitives
