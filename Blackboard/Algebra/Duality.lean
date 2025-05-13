@@ -1,11 +1,6 @@
 import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
-variable
-  {K : Type u}
-  {V : Type v}
-  {W : Type l}
-
 def 𝕀 (B : V × W → K) : V → (W -> K) :=
   fun v w => B (v, w)
 def down (L : V → (W → K)) : V × W → K :=
