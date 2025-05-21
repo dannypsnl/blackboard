@@ -3,7 +3,13 @@ import Mathlib.GroupTheory.GroupAction.Hom
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
 variable
-  {R : Type u} [Ring R]
+  [Ring R]
+
+theorem neg_a_mul_neg_b_eq_a_mul_b
+  (a b : R)
+  : (-a) * (-b) = a * b := by
+  rw [neg_mul, mul_neg]
+  exact InvolutiveNeg.neg_neg (a * b)
 
 theorem distribute_on_2 (a b : R)
   : 2 * (a * b) = (2 * a) * b
