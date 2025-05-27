@@ -1,6 +1,8 @@
 import Mathlib.Algebra.Group.Even
 import Mathlib.Algebra.Ring.Parity
 import Mathlib.Algebra.Prime.Defs
+import Mathlib.Data.Nat.Prime.Defs
+import Mathlib.Data.Nat.Prime.Basic
 
 theorem multiply_two_neighbors_is_even
   (n : ℕ)
@@ -39,23 +41,22 @@ theorem even_numbers_except_two_is_not_prime
   (n : ℕ)
   (is_even : Even n)
   (greater_than_two : n > 2)
-  : ¬Prime n
+  : ¬Nat.Prime n
   := by
   intros is_prime
   have some_m_div_n : ∃ c, n = 2 * c :=
     is_even.exists_two_nsmul n
-  induction some_m_div_n with
-    | intro c div =>
-      have isUnit := is_prime.irreducible.isUnit_or_isUnit' 2 c div
-      induction isUnit
-      case inl F => exact two_is_not_unit F
-      case inr F =>
-        -- idea: Q and H implies n ≥ 4, n = 2 * c, so c must ≥ 2
-        have c_ge_2 : c ≥ 2 := break_lemma n c is_even greater_than_two div
-        exact random_N_is_not_unit c c_ge_2 F
+  obtain ⟨c, Dvd⟩ := some_m_div_n
+  have ha : 2 ≠ 1 := Nat.succ_succ_ne_one 0
+  have hb : c ≠ 1 := by
+    refine Nat.ne_of_lt' ?_
+    exact break_lemma n c is_even greater_than_two Dvd
+  have C := Nat.not_prime_mul' (a := 2) (b := c) Dvd.symm ha hb
+  exact C is_prime
+
 theorem all_primes_greater_than_two_is_odd
   (p : ℕ)
-  (is_prime : Prime p)
+  (is_prime : Nat.Prime p)
   (greater_than_two : p > 2)
   : Odd p
   := by
@@ -147,8 +148,8 @@ theorem n_with_form_cannot_be_perfect_square
     | inl bE =>
       have n_is_even := Even.add (aE.mul_left a) (bE.mul_left b)
       rw [←new_form] at n_is_even
-      have n_is_not_odd := Nat.even_iff_not_odd.mp n_is_even
-      exact n_is_not_odd n_is_odd
+      have not_even := Nat.not_even_iff_odd.mpr n_is_odd
+      exact not_even n_is_even
     | inr bO =>
       have l : ¬ (n = a * a + b * b) := even_odd_case n k a b the_form (aE.exists_two_nsmul a) bO
       exact l new_form
@@ -160,6 +161,6 @@ theorem n_with_form_cannot_be_perfect_square
       exact l new_form
     | inr bO =>
       have n_is_even := (aO.mul aO).add_odd (bO.mul bO)
-      have n_is_not_odd := Nat.even_iff_not_odd.mp n_is_even
+      have n_is_not_odd := Nat.not_odd_iff_even.mpr n_is_even
       rw [←new_form] at n_is_not_odd
       exact n_is_not_odd n_is_odd
