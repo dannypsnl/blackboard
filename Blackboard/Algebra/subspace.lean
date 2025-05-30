@@ -7,12 +7,13 @@ variable
   [AddCommGroup V]
   [Module R V]
 
+notation x "∈Ker[" A "]" => A x = 0
+
 theorem ker_endo_is_subspace
   (A : Module.End R V)
-  (Ker := { x | A x = 0 })
-  : ∀ l : R, ∀ v w : Ker, A (v + l • w) = 0 := by
-  intros l v w
-  have c : ∀ a : Ker, A a = 0 := by
-    apply?
-  have b : A v = 0 := c v
-  rw [←b]
+  (l : R)
+  (P : v ∈Ker[A])
+  (Q : w ∈Ker[A])
+  : (v + l • w) ∈Ker[A] := by
+  have lem := LinearMap.map_add A v (l • w)
+  simp [lem, P, Q]
