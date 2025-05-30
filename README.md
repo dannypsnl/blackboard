@@ -1,3 +1,3 @@
 # blackboard
 
-Do random math in Lean.
+Do random math on computer.
