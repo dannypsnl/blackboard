@@ -14,3 +14,15 @@ def UpperBound [Poset P] (x : P) (a : I → P) : Prop :=
 
 def LUB [Poset P] (x : P) (a : I → P) : Prop :=
   UpperBound x a ∧ ∀ y, UpperBound y a → x ≤ y
+
+theorem LUB_uniqueness
+  [Poset P]
+  (a : I → P)
+  (P : LUB x a)
+  (Q : LUB y a)
+  : x = y := by
+  have one := P.left
+  have two := Q.right x one
+  have three := Q.left
+  have four := P.right y three
+  exact antisymm ⟨ four , two ⟩
