@@ -24,5 +24,4 @@ theorem eigenvector_extend
     rw [ee] at coeffient_out
     rw [smul_comm]
     exact coeffient_out
-  refine Module.End.hasEigenvector_iff.mpr ?_
-  exact ⟨ I , cv_nz ⟩
+  exact Module.End.hasEigenvector_iff.mpr ⟨ I , cv_nz ⟩
