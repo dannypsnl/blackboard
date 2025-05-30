@@ -11,3 +11,6 @@ def SemiDirected [Poset P] (a : I → P)
 
 def UpperBound [Poset P] (x : P) (a : I → P) : Prop :=
   ∀ i : I, a i ≤ x
+
+def LUB [Poset P] (x : P) (a : I → P) : Prop :=
+  UpperBound x a ∧ ∀ y, UpperBound y a → x ≤ y
