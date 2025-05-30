@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Notation.Defs
 import Mathlib.Algebra.Module.LinearMap.Defs
 import Mathlib.Algebra.Module.LinearMap.End
+import Mathlib.LinearAlgebra.Determinant
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 theorem eigenvector_extend
@@ -25,3 +26,23 @@ theorem eigenvector_extend
     rw [smul_comm]
     exact coeffient_out
   exact Module.End.hasEigenvector_iff.mpr ⟨ I , cv_nz ⟩
+
+theorem eigen_zero_implies_not_invertable
+  [CommRing R]
+  [AddCommGroup V]
+  [Module R V]
+  (A : Module.End R V)
+  (eigen_zero : A.HasEigenvalue 0)
+  (iA : Module.End R V)
+  (H : ∀ x y : V, A x = y → iA y = x)
+  : False := by
+  have b := eigen_zero.exists_hasEigenvector
+  obtain ⟨v, P⟩ := b
+  have w := P.left
+  simp at w
+  have nz := P.right
+  have id_v : iA 0 = v := H v 0 w
+  have linear_map_zz : iA 0 = 0 := by
+    exact LinearMap.map_zero iA
+  rw [linear_map_zz] at id_v
+  exact nz (id (Eq.symm id_v))
