@@ -19,5 +19,4 @@ theorem rice
     have A : g u = y := if_neg fu_ne_fy
     rw [H] at A
     have B : f u = f y := congrArg f A
-    have F := fu_ne_fy B
     exact False.elim (fu_ne_fy B)
