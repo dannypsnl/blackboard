@@ -22,7 +22,8 @@ theorem all_products_are_same_determine_an_unique_element_of_R
   let f1 := f b1
   have b11 : ∀ d : SquareZero R, f1 d = 0 + d.val * b1 := by
     intro d
-    exact (AddZeroClass.zero_add (d.val * b1)).symm
+    simp [zero_add]
+    exact rfl
   have b22 : ∀ d : SquareZero R, f1 d = 0 + d.val * b2 := by
     intro d
     rw [b11]
