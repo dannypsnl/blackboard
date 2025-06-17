@@ -4,10 +4,12 @@ import Mathlib.Algebra.Module.LinearMap.End
 import Mathlib.LinearAlgebra.Determinant
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 
-theorem eigenvector_extend
+variable
   [CommRing R]
   [AddCommGroup V]
   [Module R V]
+
+theorem eigenvector_extend
   [NoZeroSMulDivisors R V]
   (A : Module.End R V)
   (l : R)
@@ -28,9 +30,6 @@ theorem eigenvector_extend
   exact Module.End.hasEigenvector_iff.mpr ⟨ I , cv_nz ⟩
 
 theorem eigen_zero_implies_not_invertable
-  [CommRing R]
-  [AddCommGroup V]
-  [Module R V]
   (A : Module.End R V)
   (eigen_zero : A.HasEigenvalue 0)
   (iA : Module.End R V)
