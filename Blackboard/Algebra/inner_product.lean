@@ -15,6 +15,8 @@ def toPreInner' : Inner 𝕜 F :=
 
 attribute [local instance] toPreInner'
 
+open InnerProductSpace.Core
+
 theorem vector_eq_iff_inner_product_eq
   (u v : F)
   : u = v ↔ ∀ x, ⟪u, x⟫ = ⟪v, x⟫ := by
@@ -25,14 +27,10 @@ theorem vector_eq_iff_inner_product_eq
   intros fact
   have fact' := fact u
   have fact'' := fact v
-  have P : ⟪u - v, u - v⟫ = ⟪u, u⟫ - ⟪u, v⟫ - ⟪v, u⟫ + ⟪v, v⟫ := by
-    exact InnerProductSpace.Core.inner_sub_sub_self u v
+  have P : ⟪u - v, u - v⟫ = ⟪u, u⟫ - ⟪u, v⟫ - ⟪v, u⟫ + ⟪v, v⟫ := inner_sub_sub_self u v
   simp [←fact', fact''] at P
-  have Q : u - v = 0 := by
-    exact InnerProductSpace.Core.inner_self_eq_zero.mp P
-  have R : u = v := by
-    rw [sub_eq_add_neg] at Q
-    have C := eq_neg_of_add_eq_zero_left Q
-    rw [neg_neg] at C
-    exact C
-  exact R
+  have u_minus_v_eq_zero : u - v = 0 := inner_self_eq_zero.mp P
+  rw [sub_eq_add_neg] at u_minus_v_eq_zero
+  have Result := eq_neg_of_add_eq_zero_left u_minus_v_eq_zero
+  rw [neg_neg] at Result
+  exact Result
