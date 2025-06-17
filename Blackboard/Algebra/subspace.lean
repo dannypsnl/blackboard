@@ -1,4 +1,3 @@
-import Mathlib.Data.Set.Defs
 import Mathlib.Algebra.Module.Submodule.Basic
 import Mathlib.Algebra.Module.LinearMap.End
 
