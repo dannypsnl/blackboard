@@ -9,7 +9,6 @@ open CategoryTheory.Limits
 local notation:80 g " ⊚ " f:80 => CategoryStruct.comp f g
 
 variable
-  {C : Type u}
   [Category.{v, u} C]
   [Preadditive C]
 

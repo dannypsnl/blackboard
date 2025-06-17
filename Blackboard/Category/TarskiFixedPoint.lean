@@ -1,13 +1,11 @@
 import Mathlib.Order.Basic
 import Mathlib.Order.CompleteLattice.Basic
 
-variable
-  {P : Type u₁} [CompleteLattice P]
+variable [CompleteLattice P]
 
 def equiv (a b : P) : Prop :=
   a ≤ b ∧ b ≤ a
 notation a " ≈ " b => equiv a b
-
 
 theorem Tarski (h : P → P)
   (H : Monotone h)

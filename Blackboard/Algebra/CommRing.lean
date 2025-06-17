@@ -4,11 +4,9 @@ import Mathlib.Algebra.Ring.Idempotent
 import Mathlib.RingTheory.Regular.RegularSequence
 import Mathlib.Algebra.Divisibility.Basic
 
-variable
-  {R : Type u}
+variable [CommRing R]
 
 theorem idempotent_is_identity_in_the_ideal_generated_by_it
-  [CommRing R]
   (a : R)
   (Idem : IsIdempotentElem a)
   : ∀ i ∈ Ideal.span { a }, a * i = i := by

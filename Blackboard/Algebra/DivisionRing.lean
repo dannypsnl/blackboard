@@ -3,11 +3,10 @@ import Mathlib.RingTheory.Regular.RegularSequence
 import Mathlib.Algebra.Divisibility.Basic
 
 variable
-  {R : Type u}
-
-theorem only_ideals_of_division_ring_are_zero_and_itself
   [DivisionRing R]
   (I : Ideal R)
+
+theorem only_ideals_of_division_ring_are_zero_and_itself
   : I = Ideal.span { 0 } ∨ I = ⊤ := by
   have P := DivisionRing.isPrincipalIdealRing R
   have I_is_principal := P.principal I

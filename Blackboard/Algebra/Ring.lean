@@ -2,8 +2,7 @@ import Mathlib.Algebra.Ring.Basic
 import Mathlib.GroupTheory.GroupAction.Hom
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
-variable
-  [Ring R]
+variable [Ring R]
 
 theorem neg_a_mul_neg_b_eq_a_mul_b
   (a b : R)
@@ -42,14 +41,13 @@ theorem int_distribute'
   : SubNegMonoid.zsmul m (a * b) = (SubNegMonoid.zsmul m a) * b
   := by
   induction m with
-  | hz =>
+  | zero =>
     simp
-  | hn =>
+  | succ =>
     simp
-    exact Eq.symm (mul_assoc (-_ - 1) a b)
-  | hp =>
-    simp
-    repeat rw [Distrib.right_distrib]
+    norm_cast
+    (expose_names; exact Eq.symm (mul_assoc (↑(i + 1)) a b))
+  | pred =>
     simp
     exact Eq.symm (mul_assoc _ a b)
 

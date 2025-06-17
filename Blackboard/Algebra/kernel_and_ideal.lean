@@ -3,9 +3,7 @@ import Mathlib.RingTheory.RingHomProperties
 import Mathlib.GroupTheory.GroupAction.Hom
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
-variable
-  {R S : Type u}
-  [Ring R] [Ring S]
+variable [Ring R] [Ring S]
 
 abbrev Ker (ϕ : R →+* S) := { r : R // ϕ r = 0 }
 

@@ -124,7 +124,7 @@ lemma even_odd_case
   rw [mul_comm] at negation
   rw [negation] at the_form
   have target : 4 * (c * c + d * d + d) = 4 * k + 2 := by
-    exact Eq.symm ((fun {a b} ↦ Nat.succ_inj'.mp) (id (Eq.symm the_form)))
+    exact Eq.symm ((fun {a b} ↦ Nat.succ_inj.mp) (id (Eq.symm the_form)))
   have should_dvd := target.dvd
   have should_dvd_four : 4 ∣ 4 * k + 2 := by
     exact dvd_of_mul_right_dvd should_dvd

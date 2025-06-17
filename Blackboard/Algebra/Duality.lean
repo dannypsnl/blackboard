@@ -11,7 +11,7 @@ theorem adjunction_map_is_the_generator_map_itself (L : V → (W → K)) : 𝕀 
 
 theorem order_n_is_odd_then_skew_symmetric_matrix_has_det_zero
   [Field K] [CharZero K]
-  {n : ℕ} (n_isOdd : Odd n)
+  (n_isOdd : Odd n)
   (A : Matrix (Fin n) (Fin n) K)
   (skew_sym : -A = A.transpose)
   : A.det = 0 := by

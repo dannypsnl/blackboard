@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Ring.Basic
 
-variable
-  [CommRing R]
+variable [CommRing R]
 
 @[pp_using_anonymous_constructor]
 structure SquareZero (R : Type*) [CommRing R] where

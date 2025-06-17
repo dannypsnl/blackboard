@@ -1,9 +1,8 @@
 variable
-  {α : Type}
   [BEq α]
   [LawfulBEq α]
 
-def s {T : Type} (x : T) : List T := [x]
+def s (x : T) : List T := [x]
 
 theorem size_is_one : (s x).length = 1
   := by

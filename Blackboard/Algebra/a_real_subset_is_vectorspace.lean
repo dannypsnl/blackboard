@@ -1,13 +1,15 @@
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
+noncomputable section
+
 def VReal := { r : Real // 0 < r } deriving
   One, CommMonoid
 notation "ℝ>0" => VReal
-noncomputable instance : HPow ℝ>0 ℝ ℝ>0 where
+instance : HPow ℝ>0 ℝ ℝ>0 where
   hPow x y :=
     ⟨ Real.rpow x.val y , Real.rpow_pos_of_pos x.property y ⟩
 
-noncomputable instance : AddCommMonoid ℝ>0 where
+instance : AddCommMonoid ℝ>0 where
   zero := 1
   add x y := ⟨ x.val * y.val , by refine mul_pos x.property y.property ⟩
   nsmul c x := x ^ c
@@ -19,7 +21,7 @@ noncomputable instance : AddCommMonoid ℝ>0 where
   nsmul_zero v := rfl
   nsmul_succ n v := rfl
 
-noncomputable instance : Module ℝ ℝ>0 where
+instance : Module ℝ ℝ>0 where
   smul c x := x ^ c
   one_smul v := by
     have K := Real.rpow_one v.val

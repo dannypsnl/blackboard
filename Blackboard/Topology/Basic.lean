@@ -6,11 +6,8 @@ import Mathlib.Topology.Order
 open Topology
 
 variable
-  (X : Type u1)
   [TopologicalSpace X]
-  (Y : Type u2)
   [TopologicalSpace Y]
-  (Z : Type u3)
   [TopologicalSpace Z]
   (U V W : Set X)
 
