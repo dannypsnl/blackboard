@@ -6,7 +6,6 @@ variable
   [RCLike 𝕜]
   [AddCommGroup F]
   [Module 𝕜 F]
-  [Inner 𝕜 F]
   [c : InnerProductSpace.Core 𝕜 F]
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
@@ -27,12 +26,10 @@ theorem vector_eq_iff_inner_product_eq
   have fact' := fact u
   have fact'' := fact v
   have P : ⟪u - v, u - v⟫ = ⟪u, u⟫ - ⟪u, v⟫ - ⟪v, u⟫ + ⟪v, v⟫ := by
-    -- exact InnerProductSpace.Core.inner_sub_sub_self u v
-    sorry
+    exact InnerProductSpace.Core.inner_sub_sub_self u v
   simp [←fact', fact''] at P
   have Q : u - v = 0 := by
-    -- exact InnerProductSpace.Core.inner_self_eq_zero (x := u - v).mp
-    sorry
+    exact InnerProductSpace.Core.inner_self_eq_zero.mp P
   have R : u = v := by
     rw [sub_eq_add_neg] at Q
     have C := eq_neg_of_add_eq_zero_left Q
