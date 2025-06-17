@@ -5,11 +5,11 @@ import Mathlib.GroupTheory.Order.Min
 -- ∃ n : ℕ, gⁿ = 1
 -- and gⁿg⁻ⁿ = 1 since we cancel each by inverse law
 -- then we can see 1g⁻ⁿ = g⁻ⁿ = 1
-theorem inv_order_eq_order {G : Type u} [Group G]
+theorem inv_order_eq_order [Group G]
   (g : G) : orderOf g⁻¹ = orderOf g
   := by simp
 
-theorem aabb {G : Type u} [Group G]
+theorem aabb [Group G]
   (a b : G)
   : (a * b) ^ 2 = a ^ 2 * b ^ 2 ↔ a * b = b * a
   :=
@@ -28,17 +28,17 @@ theorem aabb {G : Type u} [Group G]
       simp [mul_assoc]
   }
 
-theorem inv_of_prod {G : Type u} [Group G]
+theorem inv_of_prod [Group G]
   : ∀ a b : G, (a * b)⁻¹ = b⁻¹ * a⁻¹
   := by simp
 
-theorem comm_inv_of_prod {G : Type u} [CommGroup G]
+theorem comm_inv_of_prod [CommGroup G]
   : ∀ a b : G, a⁻¹ * b⁻¹ = b⁻¹ * a⁻¹
   := by
   intros a b
   rw [←inv_of_prod a b, ←inv_of_prod b a, mul_comm]
 
-theorem pow2_is_1_implies_commute {G : Type u} [Group G]
+theorem pow2_is_1_implies_commute [Group G]
   (P : ∀ a : G, a * a = 1)
   : ∀ a b : G, Commute a b
   := by
@@ -50,7 +50,7 @@ theorem pow2_is_1_implies_commute {G : Type u} [Group G]
     exact Eq.symm (one_mul 1)
   exact (aabb a b).mp fact2
 
-theorem inf_order_inequality {G : Type u} [Group G]
+theorem inf_order_inequality [Group G]
   (a : G)
   (P : ¬IsOfFinOrder a)
   -- although I use n < m here, but that's just to ignore inequality cases, it holds for all n ≠ m in ℕ.
