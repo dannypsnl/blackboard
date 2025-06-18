@@ -35,8 +35,7 @@ def functor_preserves_isomorphism
   (F : C ⥤ D)
   (X Y : C)
   (iso : X ≅ Y)
-  : F.obj X ≅ F.obj Y := by
-  exact {
+  : F.obj X ≅ F.obj Y := {
     hom := F.map iso.hom
     inv := F.map iso.inv
     hom_inv_id := by
@@ -47,4 +46,31 @@ def functor_preserves_isomorphism
       have fact := iso.inv_hom_id
       rw [←F.map_comp, ←F.map_id]
       exact congrArg F.map fact
+  }
+
+def nat_iso_from_every_obj_is_isomorphic
+  (F G : C ⥤ D)
+  (H : (X : C) → F.obj X ≅ G.obj X)
+  : F ≅ G := {
+    hom := {
+      app X := (H X).hom
+      naturality X Y f := by
+        have Hy_iso := H Y
+        have Hx_iso := H X
+        have A := Hy_iso.hom_inv_id
+        have B := Hy_iso.inv_hom_id
+        sorry
+    }
+    inv := {
+      app X := (H X).inv
+      naturality X Y f := by
+        have Hy_iso := H Y
+        sorry
+    }
+    hom_inv_id := by
+      refine (inv_comp_eq_id (𝟙 F)).mp ?_
+      simp
+      sorry
+    inv_hom_id := by
+      sorry
   }
