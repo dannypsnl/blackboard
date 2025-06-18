@@ -51,26 +51,11 @@ def functor_preserves_isomorphism
 def nat_iso_from_every_obj_is_isomorphic
   (F G : C ⥤ D)
   (H : (X : C) → F.obj X ≅ G.obj X)
-  : F ≅ G := {
-    hom := {
-      app X := (H X).hom
-      naturality X Y f := by
-        have Hy_iso := H Y
-        have Hx_iso := H X
-        have A := Hy_iso.hom_inv_id
-        have B := Hy_iso.inv_hom_id
-        sorry
-    }
-    inv := {
-      app X := (H X).inv
-      naturality X Y f := by
-        have Hy_iso := H Y
-        sorry
-    }
-    hom_inv_id := by
-      refine (inv_comp_eq_id (𝟙 F)).mp ?_
-      simp
-      sorry
-    inv_hom_id := by
-      sorry
-  }
+  : F ≅ G := by
+  have naturality : ∀ {X Y : C} (f : X ⟶ Y),
+      F.map f ≫ (H Y).hom = (H X).hom ≫ G.map f := by
+    intros X Y f
+    have Hx := H X
+    have Hy := H Y
+    sorry
+  exact NatIso.ofComponents H naturality
