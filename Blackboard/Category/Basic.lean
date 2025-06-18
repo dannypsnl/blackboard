@@ -56,12 +56,8 @@ noncomputable def nat_iso_from_every_obj_is_isomorphic
   let H := fun X ↦ asIso (τ.app X)
   have naturality : ∀ {X Y : C} (f : X ⟶ Y), F.map f ≫ (H Y).hom = (H X).hom ≫ G.map f := by
     intros X Y f
-    have A := τ.app X
-    have K := τ.naturality f
     have R (X : C) : (H X).hom = (asIso (τ.app X)).hom := by
       rw [asIso_hom]
-    have R1 := R X
-    have R2 := R Y
-    rw [R1, R2]
+    rw [R X, R Y]
     simp
   exact NatIso.ofComponents H naturality
