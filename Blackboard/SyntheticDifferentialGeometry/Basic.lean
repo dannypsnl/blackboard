@@ -42,17 +42,15 @@ theorem Schanuel_SDG_incompatible_with_Classical
   : False := by
   let d₀ := Classical.choice h
   let g (d : SquareZero R) : R := if d.val = 0 then 0 else 1
-  have KL_g := KL g
-  obtain ⟨b, P⟩ := KL_g
-  have ne_zero := d₀.property
-  have g_zero : g zero = 0 := if_pos rfl
+  obtain ⟨b, P⟩ := KL g
   have h : g d₀ = d₀.val.val * b := by
+    have eq_zero : g zero = 0 := if_pos rfl
     rw [P.left]
-    simp [g_zero]
-  have one_eq : g d₀ = 1 := if_neg ne_zero
-  rw [one_eq] at h
+    simp [eq_zero]
+  have ne_zero := d₀.property
+  have eq_one : g d₀ = 1 := if_neg ne_zero
+  rw [eq_one] at h
   have R := square h
-  simp at R
   rw [←mul_assoc, mul_comm _ b, mul_comm _ b, mul_assoc] at R
   have sq_zero := d₀.val.property
   rw [sq_zero] at R
