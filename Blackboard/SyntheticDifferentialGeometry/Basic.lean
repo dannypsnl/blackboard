@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Ring.Basic
 
-variable [CommRing R]
+variable
+  [CommRing R]
 
 @[pp_using_anonymous_constructor]
 structure SquareZero (R : Type*) [CommRing R] where
@@ -33,11 +34,12 @@ theorem all_products_are_same_determine_an_unique_element_of_R
 lemma square {a b : R} : a = b → a * a = b * b := by
   intros H
   rw [H]
--- Leads to a contradiction (we assume R isn't trivial)
+
 theorem Schanuel_SDG_incompatible_with_Classical
+  [Nontrivial R]
   (h : Nonempty { d : SquareZero R // d.val ≠ 0 })
   [c : ∀ d : SquareZero R, Decidable (d.val = 0)]
-  : 1 = (0 : R) := by
+  : False := by
   let d₀ := Classical.choice h
   let g (d : SquareZero R) : R := if d.val = 0 then 0 else 1
   have KL_g := KL g
@@ -55,4 +57,3 @@ theorem Schanuel_SDG_incompatible_with_Classical
   have sq_zero := d₀.val.property
   rw [sq_zero] at R
   simp at R
-  exact R
