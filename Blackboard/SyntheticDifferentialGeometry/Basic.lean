@@ -29,3 +29,30 @@ theorem all_products_are_same_determine_an_unique_element_of_R
   have f1zz : f1 zero = 0 := sqr_zero_mul b1
   rw [f1zz] at cc
   exact ExistsUnique.unique cc b11 b22
+
+lemma square {a b : R} : a = b → a * a = b * b := by
+  intros H
+  rw [H]
+-- Leads to a contradiction (we assume R isn't trivial)
+theorem Schanuel_SDG_incompatible_with_Classical
+  (h : Nonempty { d : SquareZero R // d.val ≠ 0 })
+  [c : ∀ d : SquareZero R, Decidable (d.val = 0)]
+  : 1 = (0 : R) := by
+  let d₀ := Classical.choice h
+  let g (d : SquareZero R) : R := if d.val = 0 then 0 else 1
+  have KL_g := KL g
+  obtain ⟨b, P⟩ := KL_g
+  have ne_zero := d₀.property
+  have g_zero : g zero = 0 := if_pos rfl
+  have h : g d₀ = d₀.val.val * b := by
+    rw [P.left]
+    simp [g_zero]
+  have one_eq : g d₀ = 1 := if_neg ne_zero
+  rw [one_eq] at h
+  have R := square h
+  simp at R
+  rw [←mul_assoc, mul_comm _ b, mul_comm _ b, mul_assoc] at R
+  have sq_zero := d₀.val.property
+  rw [sq_zero] at R
+  simp at R
+  exact R
