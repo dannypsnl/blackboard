@@ -101,3 +101,54 @@ theorem functor_equivalence_condition'
       simp
     exact { out := Exists.intro idD_to_GF R }
   exact Exists.intro G (Exists.intro η P)
+
+theorem functor_equivalence_condition''
+  (F : C ⥤ D)
+  (ff : F.FullyFaithful)
+  (es : F.EssSurj)
+  : ∃ G : D ⥤ C, ∃ ε : NatTrans (𝟭 C) (F ⋙ G), ∀ X : C, IsIso (ε.app X) := by
+  let G : D ⥤ C := {
+    obj d := F.objPreimage d
+    map {d1 d2} f := by
+      have d1' := (F.objObjPreimageIso d1).hom
+      have d2' := (F.objObjPreimageIso d2).inv
+      have R := ff.homEquiv (X := F.objPreimage d1) (Y := F.objPreimage d2)
+      exact R.invFun (d1' ≫ f ≫ d2')
+    map_id X := by simp
+    map_comp {X Y Z} f g := by
+      simp
+      have F_comp := ff.preimage_comp
+        (f := (F.objObjPreimageIso X).hom ≫ f ≫ (F.objObjPreimageIso Y).inv)
+        (g := (F.objObjPreimageIso Y).hom ≫ g ≫ (F.objObjPreimageIso Z).inv)
+      rw [F_comp.symm]
+      simp
+  }
+  let ε : NatTrans (𝟭 C) (F ⋙ G) := {
+    app c := (ff.preimageIso (F.objObjPreimageIso (F.obj c))).inv
+    naturality := by
+      intro X Y f
+      simp_all only [Functor.id_obj, Equiv.invFun_as_coe, Functor.FullyFaithful.homEquiv_symm_apply, Functor.comp_obj,
+        Functor.id_map, Functor.FullyFaithful.preimageIso_inv, Functor.comp_map, Functor.FullyFaithful.preimage_comp,
+        Functor.FullyFaithful.preimage_map, G]
+      exact
+        Eq.symm
+          (Iso.inv_hom_id_assoc (ff.preimageIso (F.objObjPreimageIso (F.obj X)))
+            (f ≫ (ff.preimageIso (F.objObjPreimageIso (F.obj Y))).inv))
+  }
+  have P : ∀ X : C, IsIso (ε.app X) := by
+    intros X
+    let FG_to_idC : (F ⋙ G).obj X ⟶ (𝟭 C).obj X :=
+      (ff.preimageIso (F.objObjPreimageIso (F.obj X))).hom
+    have R : ε.app X ≫ FG_to_idC = 𝟙 ((𝟭 C).obj X) ∧ FG_to_idC ≫ ε.app X = 𝟙 ((F ⋙ G).obj X) := by
+      unfold G ε FG_to_idC
+      simp
+      have F_comp := ff.preimage_comp
+        (f := (F.objObjPreimageIso (F.obj X)).hom)
+        (g := (F.objObjPreimageIso (F.obj X)).inv)
+      rw [←F_comp]
+      simp
+      rw [←ff.preimageIso_inv (F.objObjPreimageIso (F.obj X))]
+      rw [←ff.preimageIso_hom (F.objObjPreimageIso (F.obj X))]
+      exact (ff.preimageIso (F.objObjPreimageIso (F.obj X))).inv_hom_id
+    exact { out := Exists.intro FG_to_idC R }
+  exact Exists.intro G (Exists.intro ε P)
