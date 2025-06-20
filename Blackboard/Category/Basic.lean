@@ -75,7 +75,7 @@ theorem functor_equivalence_condition'
   (F : C ⥤ D)
   (ff : F.FullyFaithful)
   (es : F.EssSurj)
-  : ∃ G : D ⥤ C, ∃ η : NatTrans (G ⋙ F) (𝟭 D), ∀ X : D, IsIso (η.app X) := by
+  : ∃ G : D ⥤ C, (∃ η : NatTrans (G ⋙ F) (𝟭 D), ∀ X : D, IsIso (η.app X)) ∧ (∃ ε : NatTrans (𝟭 C) (F ⋙ G), ∀ X : C, IsIso (ε.app X)) := by
   let G : D ⥤ C := {
     obj d := F.objPreimage d
     map {d1 d2} f := by
@@ -93,36 +93,13 @@ theorem functor_equivalence_condition'
       simp
   }
   let η : NatTrans (G ⋙ F) (𝟭 D) := { app d := (F.objObjPreimageIso d).hom }
-  have P : ∀ X : D, IsIso (η.app X) := by
+  have ηP : ∀ X : D, IsIso (η.app X) := by
     intros X
     let idD_to_GF : (𝟭 D).obj X ⟶ (G ⋙ F).obj X := (F.objObjPreimageIso X).inv
     have R : η.app X ≫ idD_to_GF = 𝟙 ((G ⋙ F).obj X) ∧ idD_to_GF ≫ η.app X = 𝟙 ((𝟭 D).obj X) := by
       unfold η idD_to_GF
       simp
     exact { out := Exists.intro idD_to_GF R }
-  exact Exists.intro G (Exists.intro η P)
-
-theorem functor_equivalence_condition''
-  (F : C ⥤ D)
-  (ff : F.FullyFaithful)
-  (es : F.EssSurj)
-  : ∃ G : D ⥤ C, ∃ ε : NatTrans (𝟭 C) (F ⋙ G), ∀ X : C, IsIso (ε.app X) := by
-  let G : D ⥤ C := {
-    obj d := F.objPreimage d
-    map {d1 d2} f := by
-      have d1' := (F.objObjPreimageIso d1).hom
-      have d2' := (F.objObjPreimageIso d2).inv
-      have R := ff.homEquiv (X := F.objPreimage d1) (Y := F.objPreimage d2)
-      exact R.invFun (d1' ≫ f ≫ d2')
-    map_id X := by simp
-    map_comp {X Y Z} f g := by
-      simp
-      have F_comp := ff.preimage_comp
-        (f := (F.objObjPreimageIso X).hom ≫ f ≫ (F.objObjPreimageIso Y).inv)
-        (g := (F.objObjPreimageIso Y).hom ≫ g ≫ (F.objObjPreimageIso Z).inv)
-      rw [F_comp.symm]
-      simp
-  }
   let ε : NatTrans (𝟭 C) (F ⋙ G) := {
     app c := (ff.preimageIso (F.objObjPreimageIso (F.obj c))).inv
     naturality := by
@@ -135,7 +112,7 @@ theorem functor_equivalence_condition''
           (Iso.inv_hom_id_assoc (ff.preimageIso (F.objObjPreimageIso (F.obj X)))
             (f ≫ (ff.preimageIso (F.objObjPreimageIso (F.obj Y))).inv))
   }
-  have P : ∀ X : C, IsIso (ε.app X) := by
+  have εP : ∀ X : C, IsIso (ε.app X) := by
     intros X
     let FG_to_idC : (F ⋙ G).obj X ⟶ (𝟭 C).obj X :=
       (ff.preimageIso (F.objObjPreimageIso (F.obj X))).hom
@@ -151,4 +128,4 @@ theorem functor_equivalence_condition''
       rw [←ff.preimageIso_hom (F.objObjPreimageIso (F.obj X))]
       exact (ff.preimageIso (F.objObjPreimageIso (F.obj X))).inv_hom_id
     exact { out := Exists.intro FG_to_idC R }
-  exact Exists.intro G (Exists.intro ε P)
+  exact Exists.intro G ⟨(Exists.intro η ηP), (Exists.intro ε εP)⟩
