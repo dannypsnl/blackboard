@@ -104,9 +104,7 @@ theorem functor_equivalence_condition'
     app c := (ff.preimageIso (F.objObjPreimageIso (F.obj c))).inv
     naturality := by
       intro X Y f
-      simp_all only [Functor.id_obj, Equiv.invFun_as_coe, Functor.FullyFaithful.homEquiv_symm_apply, Functor.comp_obj,
-        Functor.id_map, Functor.FullyFaithful.preimageIso_inv, Functor.comp_map, Functor.FullyFaithful.preimage_comp,
-        Functor.FullyFaithful.preimage_map, G]
+      simp_all only [Functor.id_obj, Equiv.invFun_as_coe, ff.homEquiv_symm_apply, F.comp_obj, id_map, ff.preimageIso_inv, F.comp_map, ff.preimage_comp, ff.preimage_map, G]
       exact
         Eq.symm
           (Iso.inv_hom_id_assoc (ff.preimageIso (F.objObjPreimageIso (F.obj X)))
