@@ -89,20 +89,15 @@ theorem functor_equivalence_condition'
       have F_comp := ff.preimage_comp
         (f := (F.objObjPreimageIso X).hom ≫ f ≫ (F.objObjPreimageIso Y).inv)
         (g := (F.objObjPreimageIso Y).hom ≫ g ≫ (F.objObjPreimageIso Z).inv)
-      refine Eq.symm ?_
       rw [F_comp.symm]
       simp
   }
-  let η : NatTrans (G ⋙ F) (𝟭 D) := {
-    app d := (F.objObjPreimageIso d).hom
-  }
+  let η : NatTrans (G ⋙ F) (𝟭 D) := { app d := (F.objObjPreimageIso d).hom }
   have P : ∀ X : D, IsIso (η.app X) := by
     intros X
     let idD_to_GF : (𝟭 D).obj X ⟶ (G ⋙ F).obj X := (F.objObjPreimageIso X).inv
     have R : η.app X ≫ idD_to_GF = 𝟙 ((G ⋙ F).obj X) ∧ idD_to_GF ≫ η.app X = 𝟙 ((𝟭 D).obj X) := by
       unfold η idD_to_GF
       simp
-    exact {
-      out := Exists.intro idD_to_GF R
-    }
+    exact { out := Exists.intro idD_to_GF R }
   exact Exists.intro G (Exists.intro η P)
