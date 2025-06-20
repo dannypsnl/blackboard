@@ -2,6 +2,7 @@ import Mathlib.CategoryTheory.Category.Basic
 import Mathlib.CategoryTheory.Iso
 import Mathlib.CategoryTheory.Yoneda
 import Mathlib.CategoryTheory.Functor.FullyFaithful
+import Mathlib.Data.Set.Image
 
 variable
   [CategoryTheory.Category.{v, u} C]
@@ -61,3 +62,47 @@ noncomputable def nat_iso_from_every_obj_is_isomorphic
     rw [R X, R Y]
     simp
   exact NatIso.ofComponents H naturality
+
+-- LOL, I didn't notice this is exactly how Lean define this
+theorem functor_equivalence_condition
+  (F : C ⥤ D)
+  (ff : F.FullyFaithful)
+  (es : F.EssSurj)
+  : Functor.IsEquivalence F := by
+  exact { faithful := ff.faithful, full := ff.full, essSurj := es }
+
+theorem functor_equivalence_condition'
+  (F : C ⥤ D)
+  (ff : F.FullyFaithful)
+  (es : F.EssSurj)
+  : ∃ G : D ⥤ C, ∃ η : NatTrans (G ⋙ F) (𝟭 D), ∀ X : D, IsIso (η.app X) := by
+  let G : D ⥤ C := {
+    obj d := F.objPreimage d
+    map {d1 d2} f := by
+      have d1' := (F.objObjPreimageIso d1).hom
+      have d2' := (F.objObjPreimageIso d2).inv
+      have R := ff.homEquiv (X := F.objPreimage d1) (Y := F.objPreimage d2)
+      exact R.invFun (d1' ≫ f ≫ d2')
+    map_id X := by simp
+    map_comp {X Y Z} f g := by
+      simp
+      have F_comp := ff.preimage_comp
+        (f := (F.objObjPreimageIso X).hom ≫ f ≫ (F.objObjPreimageIso Y).inv)
+        (g := (F.objObjPreimageIso Y).hom ≫ g ≫ (F.objObjPreimageIso Z).inv)
+      refine Eq.symm ?_
+      rw [F_comp.symm]
+      simp
+  }
+  let η : NatTrans (G ⋙ F) (𝟭 D) := {
+    app d := (F.objObjPreimageIso d).hom
+  }
+  have P : ∀ X : D, IsIso (η.app X) := by
+    intros X
+    let idD_to_GF : (𝟭 D).obj X ⟶ (G ⋙ F).obj X := (F.objObjPreimageIso X).inv
+    have R : η.app X ≫ idD_to_GF = 𝟙 ((G ⋙ F).obj X) ∧ idD_to_GF ≫ η.app X = 𝟙 ((𝟭 D).obj X) := by
+      unfold η idD_to_GF
+      simp
+    exact {
+      out := Exists.intro idD_to_GF R
+    }
+  exact Exists.intro G (Exists.intro η P)
