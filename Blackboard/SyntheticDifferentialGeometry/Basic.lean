@@ -13,21 +13,18 @@ structure SquareZero (R : Type*) [CommRing R] where
 def zero : SquareZero R := { val := 0, property := zero_mul 0 }
 
 @[simp]
-lemma D_mul (a : R) : zero.val * a = 0 := by
-  exact mul_eq_zero_of_left rfl a
+lemma D_mul (a : R) : zero.val * a = 0 := mul_eq_zero_of_left rfl a
 @[simp]
 lemma D_square_zero (d : SquareZero R)
-  : d.val * d.val = (0 : R) := by
-  exact d.property
+  : d.val * d.val = (0 : R) := d.property
 
 axiom KL : ∀ f : SquareZero R → R, ∃! b : R, ∀ d : SquareZero R, f d = f zero + d.val * b
-
-def f (b : R) (d : SquareZero R) : R := d.val * b
 
 theorem all_products_are_same_determine_an_unique_element_of_R
   (b1 b2 : R)
   (H : ∀ d : SquareZero R, d.val * b1 = d.val * b2)
   : b1 = b2 := by
+  let f (b : R) (d : SquareZero R) : R := d.val * b
   let f1 := f b1
   have b11 (d : SquareZero R) : f1 d = 0 + d.val * b1 := by
     simp [zero_add]
@@ -39,10 +36,6 @@ theorem all_products_are_same_determine_an_unique_element_of_R
   have f1zz : f1 zero = 0 := D_mul b1
   rw [f1zz] at cc
   exact ExistsUnique.unique cc b11 b22
-
-lemma square {a b : R} : a = b → a * a = b * b := by
-  intros H
-  rw [H]
 
 theorem Schanuel_SDG_incompatible_with_Classical
   [Nontrivial R]
@@ -59,6 +52,7 @@ theorem Schanuel_SDG_incompatible_with_Classical
   have ne_zero := d₀.property
   have eq_one : g d₀ = 1 := if_neg ne_zero
   rw [eq_one] at h
+  have square {a b : R} (H : a = b) : a * a = b * b := by rw [H]
   have R := square h
   rw [←mul_assoc, mul_comm _ b, mul_comm _ b, mul_assoc] at R
   have sq_zero := d₀.val.property
