@@ -13,10 +13,10 @@ structure SquareZero (R : Type*) [CommRing R] where
 def zero : SquareZero R := { val := 0, property := zero_mul 0 }
 
 @[simp]
-lemma sqr_zero_mul (a : R) : zero.val * a = 0 := by
+lemma D_mul (a : R) : zero.val * a = 0 := by
   exact mul_eq_zero_of_left rfl a
 @[simp]
-lemma mul_self_zero (d : SquareZero R)
+lemma D_square_zero (d : SquareZero R)
   : d.val * d.val = (0 : R) := by
   exact d.property
 
@@ -36,7 +36,7 @@ theorem all_products_are_same_determine_an_unique_element_of_R
     simp [zero_add]
     exact H d
   have cc := KL f1
-  have f1zz : f1 zero = 0 := sqr_zero_mul b1
+  have f1zz : f1 zero = 0 := D_mul b1
   rw [f1zz] at cc
   exact ExistsUnique.unique cc b11 b22
 
