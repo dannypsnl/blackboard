@@ -1,15 +1,24 @@
 import Mathlib.Algebra.Ring.Basic
+import Mathlib.Algebra.Group.Invertible.Defs
 
 variable
   [CommRing R]
 
+def IsSquareZero (v : R) : Prop := v * v = 0
 @[pp_using_anonymous_constructor]
 structure SquareZero (R : Type*) [CommRing R] where
   val : R
-  property : val * val = 0
+  property : IsSquareZero val
+
 def zero : SquareZero R := { val := 0, property := zero_mul 0 }
-theorem sqr_zero_mul (a : R) : zero.val * a = 0 := by
+
+@[simp]
+lemma sqr_zero_mul (a : R) : zero.val * a = 0 := by
   exact mul_eq_zero_of_left rfl a
+@[simp]
+lemma mul_self_zero (d : SquareZero R)
+  : d.val * d.val = (0 : R) := by
+  exact d.property
 
 axiom KL : ∀ f : SquareZero R → R, ∃! b : R, ∀ d : SquareZero R, f d = f zero + d.val * b
 
@@ -55,3 +64,35 @@ theorem Schanuel_SDG_incompatible_with_Classical
   have sq_zero := d₀.val.property
   rw [sq_zero] at R
   simp at R
+
+lemma distribute_add_mul (d1 d2 : SquareZero R)
+  : (d1.val + d2.val) * (d1.val + d2.val) = d1.val * d1.val + 2 * (d1.val * d2.val) + d2.val * d2.val := by
+  rw [add_mul, mul_add, mul_add]
+  rw [d1.property, d2.property]
+  simp
+  rw [mul_comm]
+  exact Eq.symm (two_mul (d2.val * d1.val))
+theorem sum_is_square_zero_iff_mul_zero
+  (d1 d2 : SquareZero R)
+  (I : Invertible (2 : R))
+  : IsSquareZero (d1.val + d2.val) ↔ d1.val * d2.val = (0 : R) :=
+  Iff.intro
+    (by
+      intros H
+      unfold IsSquareZero at H
+      rw [distribute_add_mul] at H
+      rw [d1.property, d2.property] at H
+      simp at H
+      -- Here we implicitly use `Invertible (2 : R)`
+      rw [mul_left_eq_iff_eq_invOf_mul] at H
+      simp at H
+      exact H)
+    (by
+      intros H
+      unfold IsSquareZero
+      rw [distribute_add_mul]
+      rw [d1.property, d2.property]
+      simp
+      rw [mul_left_eq_iff_eq_invOf_mul]
+      simp
+      exact H)
