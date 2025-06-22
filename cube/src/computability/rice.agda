@@ -33,14 +33,14 @@ eq-bool false true H = H
 eq-bool true false H = sym H
 eq-bool true true H = H
 
-module _ (fA : (e : A → A) → Fixpoint e) (f : A → 𝟚) (x y : A) where
+module _ (has-fixpoint : (e : A → A) → Fixpoint e) (f : A → 𝟚) (x y : A) where
   g : A → A
   g z = if f z == f y then x else y
   u : A
-  u = fixpoint (fA g)
+  u = fixpoint (has-fixpoint g)
 
   gu≡u : g u ≡ u
-  gu≡u = fixpointPath (fA g)
+  gu≡u = fixpointPath (has-fixpoint g)
 
   rice : f x ≡ f y
   rice with f u ≟ f y
@@ -63,7 +63,7 @@ module _ (fA : (e : A → A) → Fixpoint e) (f : A → 𝟚) (x y : A) where
     noteq = not-eq-bool (f u) (f y) P
     l : u ≡ y
     l =
-      u ≡⟨ sym (fA g .snd) ⟩
+      u ≡⟨ sym gu≡u ⟩
       g u ≡⟨ refl ⟩
       (if f u == f y then x else y) ≡⟨ cong (λ b → if b then x else y) noteq ⟩
       (if false then x else y) ≡⟨ refl ⟩
