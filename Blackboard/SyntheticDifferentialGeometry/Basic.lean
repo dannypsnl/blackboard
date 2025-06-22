@@ -49,14 +49,11 @@ theorem Schanuel_SDG_incompatible_with_Classical
     have eq_zero : g zero = 0 := if_pos rfl
     rw [P.left]
     simp [eq_zero]
-  have ne_zero := d₀.property
-  have eq_one : g d₀ = 1 := if_neg ne_zero
+  have eq_one : g d₀ = 1 := if_neg d₀.property
   rw [eq_one] at h
   have square {a b : R} (H : a = b) : a * a = b * b := by rw [H]
   have R := square h
   rw [←mul_assoc, mul_comm _ b, mul_comm _ b, mul_assoc] at R
-  have sq_zero := d₀.val.property
-  rw [sq_zero] at R
   simp at R
 
 lemma distribute_add_mul (d1 d2 : SquareZero R)
