@@ -62,3 +62,12 @@ def right_adjoint_preserves_terminal
   have H : (Y : C) → Unique (Y ⟶ (G.obj T)) :=
     right_adjoint_preserves_terminal' T isT F G adj
   exact Limits.IsTerminal.ofUnique (G.obj T)
+
+theorem right_adjoint_is_fully_faithful
+  (F : C ⥤ D)
+  (G : D ⥤ C)
+  (adj : F ⊣ G)
+  (ff : G.FullyFaithful)
+  : IsIso adj.counit := by
+  refine (NatTrans.isIso_iff_isIso_app adj.counit).mpr ?_
+  sorry
