@@ -53,13 +53,13 @@ module _ (has-fixpoint : (e : A → A) → Fixpoint e) (f : A → 𝟚) (x y : A
       (if true then x else y) ≡⟨ refl ⟩
       x ∎
   ...| no P = f x ≡⟨ sym (congS f u≡x) ⟩
-              f u ≡⟨ congS f l ⟩
+              f u ≡⟨ congS f u≡y ⟩
               f y ∎
     where
     noteq : f u == f y ≡ false
     noteq = not-eq-bool (f u) (f y) P
-    l : u ≡ y
-    l =
+    u≡y : u ≡ y
+    u≡y =
       u ≡⟨ sym gu≡u ⟩
       g u ≡⟨ refl ⟩
       (if f u == f y then x else y) ≡⟨ congS (λ b → if b then x else y) noteq ⟩
@@ -70,6 +70,6 @@ module _ (has-fixpoint : (e : A → A) → Fixpoint e) (f : A → 𝟚) (x y : A
     u≡x =
       u ≡⟨ sym gu≡u ⟩
       g u ≡⟨ refl ⟩
-      (if f u == f y then x else y) ≡⟨ congS (λ b → if b then x else y) (eq-bool (f u) (f y) (congS f l)) ⟩
+      (if f u == f y then x else y) ≡⟨ congS (λ b → if b then x else y) (eq-bool (f u) (f y) (congS f u≡y)) ⟩
       (if true then x else y) ≡⟨ refl ⟩
       x ∎
