@@ -3,16 +3,13 @@ open import Cubical.Data.Bool
 open import Cubical.Data.Sigma
 open import Cubical.Functions.Fixpoint
 open import Cubical.Relation.Nullary.Base
-open import Cubical.Data.Empty using (⊥) renaming (rec to recEmpty)
+open import Cubical.Data.Empty using (⊥) renaming (rec to byAbsurdity)
 
 module computability.rice where
 
 variable
   ℓ : Level
   A : Type ℓ
-
-byAbsurdity : {Anything : Type ℓ} → ⊥ → Anything
-byAbsurdity x = recEmpty x
 
 𝟚 = Bool
 
@@ -52,11 +49,11 @@ module _ (has-fixpoint : (e : A → A) → Fixpoint e) (f : A → 𝟚) (x y : A
     u≡x =
       u ≡⟨ sym gu≡u ⟩
       g u ≡⟨ refl ⟩
-      (if f u == f y then x else y) ≡⟨ cong (λ b → if b then x else y) (eq-bool (f u) (f y) P) ⟩
+      (if f u == f y then x else y) ≡⟨ congS (λ b → if b then x else y) (eq-bool (f u) (f y) P) ⟩
       (if true then x else y) ≡⟨ refl ⟩
       x ∎
   ...| no P = f x ≡⟨ sym (congS f u≡x) ⟩
-              f u ≡⟨ l' ⟩
+              f u ≡⟨ congS f l ⟩
               f y ∎
     where
     noteq : f u == f y ≡ false
@@ -65,15 +62,14 @@ module _ (has-fixpoint : (e : A → A) → Fixpoint e) (f : A → 𝟚) (x y : A
     l =
       u ≡⟨ sym gu≡u ⟩
       g u ≡⟨ refl ⟩
-      (if f u == f y then x else y) ≡⟨ cong (λ b → if b then x else y) noteq ⟩
+      (if f u == f y then x else y) ≡⟨ congS (λ b → if b then x else y) noteq ⟩
       (if false then x else y) ≡⟨ refl ⟩
       y ∎
-    l' : f u ≡ f y
-    l' = congS f l
+
     u≡x : u ≡ x
     u≡x =
       u ≡⟨ sym gu≡u ⟩
       g u ≡⟨ refl ⟩
-      (if f u == f y then x else y) ≡⟨ cong (λ b → if b then x else y) (eq-bool (f u) (f y) l') ⟩
+      (if f u == f y then x else y) ≡⟨ congS (λ b → if b then x else y) (eq-bool (f u) (f y) (congS f l)) ⟩
       (if true then x else y) ≡⟨ refl ⟩
       x ∎
