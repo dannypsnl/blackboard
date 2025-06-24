@@ -1,5 +1,6 @@
-open import Cubical.Core.Everything
+open import Cubical.Core.Primitives
 open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Equiv
 open import Cubical.Data.Sigma
 open import Cubical.Data.Sum
 open import Cubical.Data.Empty
@@ -10,8 +11,6 @@ module escardo-0003 where
 
 variable
   ℓ : Level
-
-syntax Σ-syntax A (λ x → B) = Σ[ x ∈ A ] B
 
 we-have : (Σ[ I ∈ Type ℓ ] (I → Type ℓ)) ≃ (Σ[ I ∈ Type ℓ ] (Σ[ Y ∈ Type ℓ ] (I → Y)))
 we-have =
