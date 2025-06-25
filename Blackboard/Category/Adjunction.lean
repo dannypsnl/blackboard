@@ -63,11 +63,32 @@ def right_adjoint_preserves_terminal
     right_adjoint_preserves_terminal' T isT F G adj
   exact Limits.IsTerminal.ofUnique (G.obj T)
 
-theorem right_adjoint_is_fully_faithful
+theorem fully_faithful_right_adjoint_implies_counit_isIso
   (F : C ⥤ D)
   (G : D ⥤ C)
   (adj : F ⊣ G)
   (ff : G.FullyFaithful)
   : IsIso adj.counit := by
   refine (NatTrans.isIso_iff_isIso_app adj.counit).mpr ?_
-  sorry
+  intros X
+  let u := adj.unit.app (G.obj X)
+  let pu := ff.preimage u
+  let c := adj.counit.app X
+  simp at c
+  have LTri : F.map u ≫ adj.counit.app (F.obj (G.obj X)) = 𝟙 (F.obj (G.obj X)) :=
+    adj.left_triangle_components (G.obj X)
+  have L : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) := by
+    sorry
+
+  have back_to_c : ff.preimage (G.map c) = c := ff.preimage_map c
+  have RTri : u ≫ (G.map c) = 𝟙 (G.obj X) := adj.right_triangle_components X
+  have R : ff.preimage u ≫ c = 𝟙 X := by
+    rw [←back_to_c]
+    rw [←ff.preimage_comp]
+    rw [RTri]
+    simp
+  have H : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) ∧ ff.preimage u ≫ c = 𝟙 X := by
+    exact ⟨ L , R ⟩
+  have H : ∃ inv : X ⟶ (F.obj (G.obj X)), c ≫ inv = 𝟙 (F.obj (G.obj X)) ∧ inv ≫ c = 𝟙 X :=
+    Exists.intro (ff.preimage u) H
+  exact { out := H }
