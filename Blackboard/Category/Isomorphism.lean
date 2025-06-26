@@ -13,7 +13,7 @@ open Category
 
 theorem id_is_isomorphism
   (X : C)
-  : IsIso (𝟙 X) := ⟨𝟙 X, by simp⟩
+  : IsIso (𝟙 X) := ⟨ 𝟙 X, by rw [id_comp]; exact Prod.mk_inj.mp rfl ⟩
 
 def compose_iso_is_iso
   (X Y Z : C)
