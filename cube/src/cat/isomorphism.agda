@@ -37,3 +37,14 @@ module _ {C : Category ℓC ℓC'} where
       b ⋆⟨ C ⟩ (f ⋆⟨ C ⟩ (f-is-iso .inv)) ≡⟨ congS (λ p → b ⋆⟨ C ⟩ p) (f-is-iso .ret) ⟩
       b ⋆⟨ C ⟩ (C .id) ≡⟨ C .⋆IdR b ⟩
       b ∎
+
+  iso-is-epic : (f : C [ x , y ]) → isIso C f → isEpic C f
+  iso-is-epic f f-is-iso {z} {a} {b} H =
+      a ≡⟨ sym (⋆IdL C a) ⟩
+      (C .id) ⋆⟨ C ⟩ a ≡⟨ congS (λ p → p ⋆⟨ C ⟩ a) (sym (f-is-iso .sec)) ⟩
+      ((f-is-iso .inv) ⋆⟨ C ⟩ f) ⋆⟨ C ⟩ a ≡⟨ ⋆Assoc C (f-is-iso .inv) f a ⟩
+      (f-is-iso .inv) ⋆⟨ C ⟩ (f ⋆⟨ C ⟩ a) ≡⟨ congS (λ v → (f-is-iso .inv) ⋆⟨ C ⟩ v) H ⟩
+      (f-is-iso .inv) ⋆⟨ C ⟩ (f ⋆⟨ C ⟩ b) ≡⟨ sym (⋆Assoc C (f-is-iso .inv) f b) ⟩
+      ((f-is-iso .inv) ⋆⟨ C ⟩ f) ⋆⟨ C ⟩ b ≡⟨ congS (λ p → p ⋆⟨ C ⟩ b) (f-is-iso .sec) ⟩
+      (C .id) ⋆⟨ C ⟩ b ≡⟨ C .⋆IdL b ⟩
+      b ∎
