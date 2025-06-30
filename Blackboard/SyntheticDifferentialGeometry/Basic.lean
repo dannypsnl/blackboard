@@ -30,9 +30,9 @@ theorem Schanuel_SDG_incompatible_with_Classical
   [c : ∀ d : SquareZero R, Decidable (d.val = 0)]
   : Subsingleton R := by
   let d₀ := Classical.choice h
+  -- By construction of g, one can show ∀ d : D, d = 0
   let g (d : SquareZero R) : R := if d.val = 0 then 0 else 1
   obtain ⟨b, P⟩ := KL g
-
   have all_d_eq_z (d : SquareZero R) : d.val = 0 := by
     induction c d
     case isFalse H =>
@@ -47,9 +47,10 @@ theorem Schanuel_SDG_incompatible_with_Classical
       exact C
     case isTrue H => exact H
 
+  -- Use constant function, can see ∀ x : R, 0 = 0 + 0 * x is hold,
+  -- that leads to ∀ x y : R, x = y
   let constant_function (d : SquareZero R) : R := 0
   have eq_zero : constant_function zero = 0 := rfl
-
   exact {
     allEq x y := by
       have A (d : SquareZero R) : constant_function d = constant_function zero + d.val * x := by
