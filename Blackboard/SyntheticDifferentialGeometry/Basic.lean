@@ -24,26 +24,42 @@ theorem all_products_are_same_determine_an_unique_element_of_R
 
 lemma mul_cong (a b c : R) : b = c → a * b = a * c := by
   exact fun a_1 ↦ congrArg (fun x ↦ a * x) a_1
-
 theorem Schanuel_SDG_incompatible_with_Classical
   [Nontrivial R]
   (h : Nonempty { d : SquareZero R // d.val ≠ 0 })
   [c : ∀ d : SquareZero R, Decidable (d.val = 0)]
-  : False := by
+  : Subsingleton R := by
   let d₀ := Classical.choice h
   let g (d : SquareZero R) : R := if d.val = 0 then 0 else 1
   obtain ⟨b, P⟩ := KL g
-  have h : g d₀ = d₀.val.val * b := by
-    have eq_zero : g zero = 0 := if_pos rfl
-    rw [P.left]
-    simp [eq_zero]
-  have eq_one : g d₀ = 1 := if_neg d₀.property
-  rw [eq_one] at h
-  have square {a b : R} (H : a = b) : a * a = b * b := by rw [H]
-  have C := mul_cong d₀.val.val 1 (d₀.val.val * b) h
-  simp [←mul_assoc] at C
-  have d₀_ne_z := d₀.prop
-  exact d₀_ne_z C
+
+  have all_d_eq_z (d : SquareZero R) : d.val = 0 := by
+    induction c d
+    case isFalse H =>
+      have eq_one : g d = 1 := if_neg H
+      have K : g d = d.val * b := by
+        have eq_zero : g zero = 0 := if_pos rfl
+        rw [P.left]
+        simp [eq_zero]
+      rw [eq_one] at K
+      have C := mul_cong d.val 1 (d.val * b) K
+      simp [←mul_assoc] at C
+      exact C
+    case isTrue H => exact H
+
+  let constant_function (d : SquareZero R) : R := 0
+  have eq_zero : constant_function zero = 0 := rfl
+
+  exact {
+    allEq x y := by
+      have A (d : SquareZero R) : constant_function d = constant_function zero + d.val * x := by
+        rw [eq_zero, all_d_eq_z]
+        simp
+      have B (d : SquareZero R) : constant_function d = constant_function zero + d.val * y := by
+        rw [eq_zero, all_d_eq_z]
+        simp
+      exact ExistsUnique.unique (KL constant_function) A B
+  }
 
 lemma distribute_add_mul (d1 d2 : SquareZero R)
   : (d1.val + d2.val) * (d1.val + d2.val) = d1.val * d1.val + 2 * (d1.val * d2.val) + d2.val * d2.val := by
