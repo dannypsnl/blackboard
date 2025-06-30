@@ -2,7 +2,8 @@ import Mathlib.Algebra.Ring.Basic
 import Mathlib.Algebra.Group.Invertible.Defs
 import Blackboard.SyntheticDifferentialGeometry.Axiom
 
-variable [CommRing R]
+variable
+  [CommRing R]
 
 theorem all_products_are_same_determine_an_unique_element_of_R
   (b1 b2 : R)
@@ -21,6 +22,9 @@ theorem all_products_are_same_determine_an_unique_element_of_R
   rw [f1zz] at cc
   exact ExistsUnique.unique cc b11 b22
 
+lemma mul_cong (a b c : R) : b = c → a * b = a * c := by
+  exact fun a_1 ↦ congrArg (fun x ↦ a * x) a_1
+
 theorem Schanuel_SDG_incompatible_with_Classical
   [Nontrivial R]
   (h : Nonempty { d : SquareZero R // d.val ≠ 0 })
@@ -36,9 +40,10 @@ theorem Schanuel_SDG_incompatible_with_Classical
   have eq_one : g d₀ = 1 := if_neg d₀.property
   rw [eq_one] at h
   have square {a b : R} (H : a = b) : a * a = b * b := by rw [H]
-  have R := square h
-  rw [←mul_assoc, mul_comm _ b, mul_comm _ b, mul_assoc] at R
-  simp at R
+  have C := mul_cong d₀.val.val 1 (d₀.val.val * b) h
+  simp [←mul_assoc] at C
+  have d₀_ne_z := d₀.prop
+  exact d₀_ne_z C
 
 lemma distribute_add_mul (d1 d2 : SquareZero R)
   : (d1.val + d2.val) * (d1.val + d2.val) = d1.val * d1.val + 2 * (d1.val * d2.val) + d2.val * d2.val := by
