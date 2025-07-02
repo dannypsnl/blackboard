@@ -1,3 +1,4 @@
+-- From https://www.youtube.com/watch?v=CxGtAuJdjYI
 class CommOp (f : A → A → A) (x : A) : Prop where
   comm : ∀ a : A, f a x = f x a
   red : ∀ a : A, f x a = a
