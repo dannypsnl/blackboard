@@ -77,6 +77,7 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
   simp at c
   have LTri : F.map u ≫ adj.counit.app (F.obj (G.obj X)) = 𝟙 (F.obj (G.obj X)) :=
     adj.left_triangle_components (G.obj X)
+  -- NOTE: unit and left adjoint is defined uniquely up to isomorphism
   have L : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) := by
     sorry
 
