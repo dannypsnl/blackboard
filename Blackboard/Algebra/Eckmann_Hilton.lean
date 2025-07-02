@@ -23,5 +23,14 @@ theorem first (eh : EH A)
 
 theorem second (eh : EH A)
   (a b : A)
-  : eh.op1 a b = eh.op1 b a := by
-  sorry
+  : eh.op1 a b = eh.op2 a b := by
+  have C : eh.op1 (eh.op2 a eh.v) (eh.op2 eh.v b) = eh.op2 a b := by
+    rw [eh.eq]
+    repeat rw [←first]
+    rw [eh.comm1.eq2]
+    rw [eh.comm1.eq1]
+    rw [eh.comm1.eq2]
+  rw [eh.comm2.eq2] at C
+  rw [eh.comm2.eq1] at C
+  rw [eh.comm2.eq2] at C
+  exact C
