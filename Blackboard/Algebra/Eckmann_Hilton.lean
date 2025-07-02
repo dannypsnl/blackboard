@@ -53,3 +53,23 @@ theorem second_2 (eh : EH A)
   rw [eh.opEq2.comm] at C
   rw [eh.opEq2.red b] at C
   exact C
+
+theorem assoc (eh : EH A)
+  (a b c : A)
+  : eh.op1 (eh.op1 a b) c = eh.op1 a (eh.op1 b c) := by
+  rw [←eh.opEq2.red a]
+  rw [second eh b c]
+  rw [eh.eq]
+  rw [eh.opEq2.red a]
+  rw [←eh.opEq2.red c]
+  rw [second eh a b]
+  rw [eh.eq]
+  rw [eh.opEq2.red c]
+  rw [←first]
+  rw [eh.opEq1.comm a]
+  rw [←eh.eq]
+  rw [first]
+  rw [eh.opEq2.red]
+  rw [←first]
+  rw [eh.opEq1.red]
+  repeat rw [second]
