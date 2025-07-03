@@ -63,5 +63,13 @@ theorem KL_implies_KL'
     refine Prod.ext_iff.mpr ?_
     exact ⟨ eqz, R ⟩
   right := by
-    sorry
+    intros f
+    have ap := KL f
+    let a := f zero
+    let b := ap.choose
+    refine Exists.intro (a, b) ?_
+    funext d
+    unfold α
+    simp [a, b]
+    exact (ap.choose_spec.1 d).symm
 }
