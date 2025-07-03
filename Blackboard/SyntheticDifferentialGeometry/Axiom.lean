@@ -26,6 +26,22 @@ axiom KL' : Function.Bijective (α (R := R))
 theorem KL_implies_KL'
   (KL : ∀ f : SquareZero R → R, ∃! b : R, ∀ d : SquareZero R, f d = f zero + d.val * b)
   : Function.Bijective (α (R := R)) := {
+  -- This is saying that if α(a, b) = α(a', b')
+  -- then a = a' and b = b'
+  -- So, the point is, let f := α(a, b)
+  -- there is a unique k such that f(d) = f(0) + d * k
+  --
+  -- and since α(a, b) := d ↦ a + d * b, we know that
+  -- a + d * b = α(a, b)(d) = α(a, b)(0) + d * k
+  -- and hence α(a, b)(0) = a
+  -- and b = k
+  --
+  -- Use the same argument on α(a', b'), we can see k₂ = b', and α(a', b')(0) = a'
+  --
+  -- We already know α(a, b) = α(a', b'), therefore,
+  -- 1. a = α(a, b)(0) = α(a', b')(0) = a'
+  -- 2. a + d * k = α(a, b)(d) = α(a', b')(d) = a' + d * k₂
+  -- Now we cancel a, a', then k = k₂, hence b = b'
   left := by
     intros p1 p2 f1_eq_f2
     have eq : ∀ d, (α p1) d = (α p2) d := by
@@ -62,6 +78,13 @@ theorem KL_implies_KL'
 
     refine Prod.ext_iff.mpr ?_
     exact ⟨ eqz, R ⟩
+  -- For each function f : D → R, we are looking for a pair (a, b) such that
+  -- α(a, b) = f
+  --
+  -- and this is easy
+  -- 1. a := f(0)
+  -- 2. Pick b from KL axiom
+  -- Then by definition, α(a, b) = f
   right := by
     intros f
     have ap := KL f
