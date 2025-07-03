@@ -59,3 +59,25 @@ theorem iso_is_epi
     rw [id_comp]
     exact fun a ↦ a
 }
+
+def functor_preserves_isomorphism
+  (F : C ⥤ D)
+  (X Y : C)
+  (iso : X ≅ Y)
+  : F.obj X ≅ F.obj Y := {
+  hom := F.map iso.hom
+  inv := F.map iso.inv
+}
+
+noncomputable def fully_faithful_functor_reflects_isomorphism
+  (F : C ⥤ D)
+  [Functor.Full F]
+  [Functor.Faithful F]
+  (X Y : C)
+  (iso : F.obj X ≅ F.obj Y)
+  : X ≅ Y := {
+  hom := F.preimage iso.hom
+  inv := F.preimage iso.inv
+  hom_inv_id := F.map_injective (by simp)
+  inv_hom_id := F.map_injective (by simp)
+}
