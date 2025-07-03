@@ -73,3 +73,37 @@ theorem KL_implies_KL'
     simp [a, b]
     exact (ap.choose_spec.1 d).symm
 }
+
+theorem KL'_implies_KL
+  (KL' : Function.Bijective (α (R := R)))
+  : ∀ f : SquareZero R → R, ∃! b : R, ∀ d : SquareZero R, f d = f zero + d.val * b := by
+  intros f
+  have surj := KL'.right f
+  obtain ⟨⟨a, b⟩, hab⟩ := surj
+  use b
+  constructor
+  · intros d
+    have : f d = α (a, b) d := by rw [←hab]
+    rw [this]
+    unfold α
+    simp
+    have : a = f zero := by
+      have : f zero = α (a, b) zero := by rw [←hab]
+      rw [this]
+      unfold α
+      simp
+    exact this
+  · intros b' hb'
+    have h_a : a = f zero := by
+      have : f zero = α (a, b) zero := by rw [←hab]
+      rw [this]
+      unfold α
+      simp
+    have : α (f zero, b') = f := by
+      funext d
+      exact (hb' d).symm
+    have : (f zero, b') = (a, b) := by
+      apply KL'.left
+      rw [this]
+      rw [hab]
+    exact (Prod.mk.inj this).2
