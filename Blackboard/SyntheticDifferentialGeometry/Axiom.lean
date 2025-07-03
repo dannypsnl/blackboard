@@ -82,23 +82,13 @@ theorem KL'_implies_KL
   obtain ⟨⟨a, b⟩, hab⟩ := surj
   use b
   constructor
-  · intros d
-    have : f d = α (a, b) d := by rw [←hab]
-    rw [this]
+  case h.left =>
+    intros d
+    rw [←hab]
     unfold α
     simp
-    have : a = f zero := by
-      have : f zero = α (a, b) zero := by rw [←hab]
-      rw [this]
-      unfold α
-      simp
-    exact this
-  · intros b' hb'
-    have h_a : a = f zero := by
-      have : f zero = α (a, b) zero := by rw [←hab]
-      rw [this]
-      unfold α
-      simp
+  case h.right =>
+    intros b' hb'
     have : α (f zero, b') = f := by
       funext d
       exact (hb' d).symm
