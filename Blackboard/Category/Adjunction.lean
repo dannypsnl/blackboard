@@ -63,6 +63,30 @@ def right_adjoint_preserves_terminal
     right_adjoint_preserves_terminal' T isT F G adj
   exact Limits.IsTerminal.ofUnique (G.obj T)
 
+lemma comp_not_id_leads_not_eq {X Y : C}
+  (f : X ⟶ Y)
+  (k : X ⟶ X)
+  : k ≠ 𝟙 X → k ≫ f ≠ f := by
+  intros K
+  intro h_eq
+  have : k ≫ f = 𝟙 X ≫ f := by rw [h_eq, id_comp]
+  sorry
+lemma path {X Y : C}
+  (f : X ⟶ Y)
+  (split : SplitEpi f)
+  : f ≫ split.section_ = 𝟙 _ := by
+  have H : f ≫ split.section_ ≫ f = f := by
+    simp
+  have hemA := Classical.em (f ≫ split.section_ = 𝟙 X)
+  cases hemA
+  case inl P => exact P
+  case inr N =>
+    have some_K_eq_f_g : ∃ k, k = f ≫ split.section_ := by simp
+    obtain ⟨k, P⟩ := some_K_eq_f_g
+    rw [←P] at N
+    have : k ≫ f ≠ f := comp_not_id_leads_not_eq f k N
+    rw [←assoc, ←P] at H
+    exact False.elim (this H)
 theorem fully_faithful_right_adjoint_implies_counit_isIso
   (F : C ⥤ D)
   (G : D ⥤ C)
@@ -78,8 +102,6 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
   have LTri : F.map u ≫ adj.counit.app (F.obj (G.obj X)) = 𝟙 (F.obj (G.obj X)) :=
     adj.left_triangle_components (G.obj X)
   -- NOTE: unit and left adjoint is defined uniquely up to isomorphism
-  have L : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) := by
-    sorry
 
   have back_to_c : ff.preimage (G.map c) = c := ff.preimage_map c
   have RTri : u ≫ (G.map c) = 𝟙 (G.obj X) := adj.right_triangle_components X
@@ -88,6 +110,10 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
     rw [←ff.preimage_comp]
     rw [RTri]
     simp
+
+  have L : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) :=
+    path c { section_ := (ff.preimage u), id := R }
+
   have H : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) ∧ ff.preimage u ≫ c = 𝟙 X := by
     exact ⟨ L , R ⟩
   have H : ∃ inv : X ⟶ (F.obj (G.obj X)), c ≫ inv = 𝟙 (F.obj (G.obj X)) ∧ inv ≫ c = 𝟙 X :=
