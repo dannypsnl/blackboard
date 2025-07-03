@@ -81,3 +81,22 @@ noncomputable def fully_faithful_functor_reflects_isomorphism
   hom_inv_id := F.map_injective (by simp)
   inv_hom_id := F.map_injective (by simp)
 }
+
+def retraction_is_mono_is_necessarily_an_isomorphism
+  (X Y : C)
+  (f : X ⟶ Y)
+  (s : SplitMono f)
+  (m : Mono s.retraction)
+  : X ≅ Y := {
+  hom := f
+  inv := s.retraction
+  hom_inv_id := s.id
+  inv_hom_id := by
+    have : s.retraction ≫ f ≫ s.retraction = s.retraction ≫ 𝟙 X :=
+      whisker_eq s.retraction s.id
+    have : s.retraction ≫ f ≫ s.retraction = 𝟙 Y ≫ s.retraction := by
+      simp
+    rw [←assoc] at this
+    have := m.right_cancellation _ _ this
+    exact this
+}
