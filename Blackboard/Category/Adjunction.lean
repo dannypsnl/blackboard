@@ -98,18 +98,26 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
 
   exact { out := ⟨inv, L, R⟩ }
 
+attribute [local simp] Adjunction.homEquiv_unit Adjunction.homEquiv_counit
 theorem counit_isIso_implies_fully_faithful_right_adjoint
   (F : C ⥤ D)
   (G : D ⥤ C)
   (adj : F ⊣ G)
   [iso : IsIso adj.counit]
   : G.Full ∧ G.Faithful := {
-  left := by
-    have : ∀ X, IsSplitMono (adj.counit.app X) := by
-      intros X
-      have := IsSplitMono.of_iso (adj.counit.app X)
-      exact this
-    exact adj.full_R_of_isSplitMono_counit_app
+  left := {
+    map_surjective {X Y} f := by
+      use (retraction (adj.counit.app X) ≫ (adj.homEquiv (G.obj X) Y).symm f)
+      suffices G.map (retraction (adj.counit.app X)) = adj.unit.app (G.obj X) by
+        simp [this]
+      rw [← id_comp (G.map (retraction (adj.counit.app X)))]
+      simp only [
+        Functor.id_obj, Functor.comp_obj, id_comp,
+        ← adj.right_triangle_components X,
+        assoc, ← Functor.map_comp, IsSplitMono.id,
+        Functor.map_id, comp_id
+      ]
+  }
   right := {
     map_injective := by
       intros X Y f g H
