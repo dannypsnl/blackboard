@@ -89,29 +89,25 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
     -- 2. G(X) -> G(X) ≃ X -> X (G fully faithful)
     -- 3. F(G(X)) -> X ≃ X -> X (composite 1 and 2)
     let homEq : (F.obj (G.obj X) ⟶ X) ≃ (G.obj X ⟶ G.obj X) := Adjunction.homEquiv adj (G.obj X) X
-    let tackle : (G.obj X ⟶ G.obj X) ≃ (X ⟶ X) := {
-      toFun := ff.preimage
-      invFun := G.map
-      right_inv xtox := by simp
-      left_inv gxtogx := by simp
-    }
+    let tackle : (X ⟶ X) ≃ (G.obj X ⟶ G.obj X) := ff.homEquiv
     let concat : (F.obj (G.obj X) ⟶ X) ≃ (X ⟶ X) := {
-      toFun x := tackle.toFun (homEq.toFun x)
-      invFun x := homEq.invFun (tackle.invFun x)
+      toFun x := tackle.invFun (homEq.toFun x)
+      invFun x := homEq.invFun (tackle.toFun x)
       right_inv x := by simp
       left_inv x := by simp
     }
-    -- 4. F(G(X)) -> F(G(X)) ≃ X -> F(G(X))
-    let t : (F.obj (G.obj X) ⟶ F.obj (G.obj X)) ≃ (X ⟶ F.obj (G.obj X)) := {
-      toFun f := ff.preimage (Adjunction.homEquiv adj (G.obj X) (F.obj (G.obj X)) f)
-      invFun f := concat.invFun (𝟙 _) ≫ f
-      right_inv f := by
-        sorry
-      left_inv f := by
-        simp
-        sorry
+    let tackle2 : (F.obj (G.obj X) ⟶ F.obj (G.obj X)) ≃ (G.obj X ⟶ G.obj (F.obj (G.obj X))) := Adjunction.homEquiv adj _ _
+    let tackle3 : (F.obj (G.obj X) ⟶ F.obj (G.obj X)) ≃ (X ⟶ F.obj (G.obj X)) := {
+      toFun x := ff.preimage (tackle2.toFun x)
+      invFun x := tackle2.invFun (G.map x)
+      right_inv f := by simp
+      left_inv f := by simp
     }
-    -- 5. ?
+    let id := concat.invFun (𝟙 X)
+    let f := tackle2.toFun (ε ≫ inv)
+    have H : F.map (adj.unit.app _ ≫ G.map (ε ≫ inv)) ≫ adj.counit.app _ = _ :=
+      tackle2.left_inv (ε ≫ inv)
+
     sorry
 
   have R : inv ≫ ε = 𝟙 X := by
