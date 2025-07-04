@@ -106,9 +106,18 @@ theorem counit_isIso_implies_fully_faithful_right_adjoint
   left := {
     map_surjective := by
       intros X Y f
-      let a : X ⟶ Y := inv (adj.counit.app X) ≫ F.map f ≫ adj.counit.app Y
-      have H : G.map a = f := by
+      let εX := adj.counit.app X
+      let εY := adj.counit.app Y
+      let a : X ⟶ Y := inv εX ≫ F.map f ≫ εY
+      have key : G.map (F.map f) ≫ G.map εY = G.map εX ≫ f := by
         sorry
+      have H : G.map a = f := by
+        simp only [a]
+        rw [G.map_comp, G.map_comp]
+        rw [key]
+        rw [←assoc]
+        rw [←G.map_comp]
+        simp
       exact ⟨a, H⟩
   }
   right := {
