@@ -106,11 +106,19 @@ theorem counit_isIso_implies_fully_faithful_right_adjoint
   left := {
     map_surjective := by
       intros X Y f
-      sorry
+      let a : X ⟶ Y := inv (adj.counit.app X) ≫ F.map f ≫ adj.counit.app Y
+      have H : G.map a = f := by
+        sorry
+      exact ⟨a, H⟩
   }
   right := {
     map_injective := by
-      intros X Y f g
-      sorry
+      intros X Y f g H
+      have c1 := adj.counit_naturality f
+      have c2 := adj.counit_naturality g
+      rw [H] at c1
+      rw [c1] at c2
+      have e : Epi (adj.counit.app X) := IsIso.epi_of_iso (adj.counit.app X)
+      exact (cancel_epi (adj.counit.app X)).mp c2
   }
 }
