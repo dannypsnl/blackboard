@@ -107,8 +107,10 @@ theorem counit_isIso_implies_fully_faithful_right_adjoint
   : G.Full ∧ G.Faithful := {
   left := {
     map_surjective {X Y} f := by
-      use (retraction (adj.counit.app X) ≫ (adj.homEquiv (G.obj X) Y).symm f)
+      let g : F.obj (G.obj X) ⟶ Y := (adj.homEquiv (G.obj X) Y).symm f
+      use (retraction (adj.counit.app X) ≫ g)
       suffices G.map (retraction (adj.counit.app X)) = adj.unit.app (G.obj X) by
+        unfold g
         simp [this]
       rw [← id_comp (G.map (retraction (adj.counit.app X)))]
       simp only [
