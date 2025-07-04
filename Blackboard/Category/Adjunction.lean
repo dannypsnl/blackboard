@@ -96,18 +96,9 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
       right_inv x := by simp
       left_inv x := by simp
     }
-    let tackle2 : (F.obj (G.obj X) ⟶ F.obj (G.obj X)) ≃ (G.obj X ⟶ G.obj (F.obj (G.obj X))) := Adjunction.homEquiv adj _ _
-    let tackle3 : (F.obj (G.obj X) ⟶ F.obj (G.obj X)) ≃ (X ⟶ F.obj (G.obj X)) := {
-      toFun x := ff.preimage (tackle2.toFun x)
-      invFun x := tackle2.invFun (G.map x)
-      right_inv f := by simp
-      left_inv f := by simp
-    }
-    let id := concat.invFun (𝟙 X)
-    let f := tackle2.toFun (ε ≫ inv)
-    have H : F.map (adj.unit.app _ ≫ G.map (ε ≫ inv)) ≫ adj.counit.app _ = _ :=
-      tackle2.left_inv (ε ≫ inv)
-
+    have := adj.counit_naturality inv
+    rw [inv_property] at this
+    rw [←this]
     sorry
 
   have R : inv ≫ ε = 𝟙 X := by
