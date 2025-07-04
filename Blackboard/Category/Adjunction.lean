@@ -1,5 +1,6 @@
 import Mathlib.CategoryTheory.Category.Basic
 import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
+import Mathlib.CategoryTheory.Adjunction.FullyFaithful
 
 variable
   [CategoryTheory.Category.{v, u} C]
@@ -101,25 +102,14 @@ theorem counit_isIso_implies_fully_faithful_right_adjoint
   (F : C ⥤ D)
   (G : D ⥤ C)
   (adj : F ⊣ G)
-  (iso : IsIso adj.counit)
-  : Functor.Full G ∧ Functor.Faithful G := {
-  left := {
-    map_surjective := by
-      intros X Y f
-      let εX := adj.counit.app X
-      let εY := adj.counit.app Y
-      let a : X ⟶ Y := inv εX ≫ F.map f ≫ εY
-      have key : G.map (F.map f) ≫ G.map εY = G.map εX ≫ f := by
-        sorry
-      have H : G.map a = f := by
-        simp only [a]
-        rw [G.map_comp, G.map_comp]
-        rw [key]
-        rw [←assoc]
-        rw [←G.map_comp]
-        simp
-      exact ⟨a, H⟩
-  }
+  [iso : IsIso adj.counit]
+  : G.Full ∧ G.Faithful := {
+  left := by
+    have : ∀ X, IsSplitMono (adj.counit.app X) := by
+      intros X
+      have := IsSplitMono.of_iso (adj.counit.app X)
+      exact this
+    exact adj.full_R_of_isSplitMono_counit_app
   right := {
     map_injective := by
       intros X Y f g H
