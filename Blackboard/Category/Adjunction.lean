@@ -84,22 +84,10 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
   have inv_property : G.map inv = η := ff.map_preimage η
 
   have L : ε ≫ inv = 𝟙 (F.obj (G.obj X)) := by
-    -- Some hom-set equivalences
-    -- 1. F(G(X)) -> X ≃ G(X) -> G(X) (adjunction)
-    -- 2. G(X) -> G(X) ≃ X -> X (G fully faithful)
-    -- 3. F(G(X)) -> X ≃ X -> X (composite 1 and 2)
-    let homEq : (F.obj (G.obj X) ⟶ X) ≃ (G.obj X ⟶ G.obj X) := Adjunction.homEquiv adj (G.obj X) X
-    let tackle : (X ⟶ X) ≃ (G.obj X ⟶ G.obj X) := ff.homEquiv
-    let concat : (F.obj (G.obj X) ⟶ X) ≃ (X ⟶ X) := {
-      toFun x := tackle.invFun (homEq.toFun x)
-      invFun x := homEq.invFun (tackle.toFun x)
-      right_inv x := by simp
-      left_inv x := by simp
-    }
     have := adj.counit_naturality inv
     rw [inv_property] at this
     rw [←this]
-    sorry
+    exact left_triangle
 
   have R : inv ≫ ε = 𝟙 X := by
     apply ff.map_injective
