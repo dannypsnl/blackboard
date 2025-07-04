@@ -63,30 +63,6 @@ def right_adjoint_preserves_terminal
     right_adjoint_preserves_terminal' T isT F G adj
   exact Limits.IsTerminal.ofUnique (G.obj T)
 
-lemma comp_not_id_leads_not_eq {X Y : C}
-  (f : X ⟶ Y)
-  (k : X ⟶ X)
-  : k ≠ 𝟙 X → k ≫ f ≠ f := by
-  intros K
-  intro h_eq
-  have : k ≫ f = 𝟙 X ≫ f := by rw [h_eq, id_comp]
-  sorry
-lemma path {X Y : C}
-  (f : X ⟶ Y)
-  (split : SplitEpi f)
-  : f ≫ split.section_ = 𝟙 _ := by
-  have H : f ≫ split.section_ ≫ f = f := by
-    simp
-  have hemA := Classical.em (f ≫ split.section_ = 𝟙 X)
-  cases hemA
-  case inl P => exact P
-  case inr N =>
-    have some_K_eq_f_g : ∃ k, k = f ≫ split.section_ := by simp
-    obtain ⟨k, P⟩ := some_K_eq_f_g
-    rw [←P] at N
-    have : k ≫ f ≠ f := comp_not_id_leads_not_eq f k N
-    rw [←assoc, ←P] at H
-    exact False.elim (this H)
 theorem fully_faithful_right_adjoint_implies_counit_isIso
   (F : C ⥤ D)
   (G : D ⥤ C)
@@ -111,8 +87,16 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
     rw [RTri]
     simp
 
+  let split : SplitEpi c := { section_ := ff.preimage u, id := R }
+  have mono : Mono (ff.preimage u) := by
+    have := split.splitMono.mono
+    exact this
+  have almost : (c ≫ ff.preimage u) ≫ c = 𝟙 _ ≫ c := by
+    rw [assoc, R]
+    simp
+  have isMono : Mono c := by sorry
   have L : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) :=
-    path c { section_ := (ff.preimage u), id := R }
+    isMono.right_cancellation _ _ almost
 
   have H : c ≫ ff.preimage u = 𝟙 (F.obj (G.obj X)) ∧ ff.preimage u ≫ c = 𝟙 X := by
     exact ⟨ L , R ⟩
