@@ -96,3 +96,21 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
     exact right_triangle
 
   exact { out := ⟨inv, L, R⟩ }
+
+theorem counit_isIso_implies_fully_faithful_right_adjoint
+  (F : C ⥤ D)
+  (G : D ⥤ C)
+  (adj : F ⊣ G)
+  (iso : IsIso adj.counit)
+  : Functor.Full G ∧ Functor.Faithful G := {
+  left := {
+    map_surjective := by
+      intros X Y f
+      sorry
+  }
+  right := {
+    map_injective := by
+      intros X Y f g
+      sorry
+  }
+}
