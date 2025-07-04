@@ -84,6 +84,34 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
   have inv_property : G.map inv = η := ff.map_preimage η
 
   have L : ε ≫ inv = 𝟙 (F.obj (G.obj X)) := by
+    -- Some hom-set equivalences
+    -- 1. F(G(X)) -> X ≃ G(X) -> G(X) (adjunction)
+    -- 2. G(X) -> G(X) ≃ X -> X (G fully faithful)
+    -- 3. F(G(X)) -> X ≃ X -> X (composite 1 and 2)
+    let homEq : (F.obj (G.obj X) ⟶ X) ≃ (G.obj X ⟶ G.obj X) := Adjunction.homEquiv adj (G.obj X) X
+    let tackle : (G.obj X ⟶ G.obj X) ≃ (X ⟶ X) := {
+      toFun := ff.preimage
+      invFun := G.map
+      right_inv xtox := by simp
+      left_inv gxtogx := by simp
+    }
+    let concat : (F.obj (G.obj X) ⟶ X) ≃ (X ⟶ X) := {
+      toFun x := tackle.toFun (homEq.toFun x)
+      invFun x := homEq.invFun (tackle.invFun x)
+      right_inv x := by simp
+      left_inv x := by simp
+    }
+    -- 4. F(G(X)) -> F(G(X)) ≃ X -> F(G(X))
+    let t : (F.obj (G.obj X) ⟶ F.obj (G.obj X)) ≃ (X ⟶ F.obj (G.obj X)) := {
+      toFun f := ff.preimage (Adjunction.homEquiv adj (G.obj X) (F.obj (G.obj X)) f)
+      invFun f := concat.invFun (𝟙 _) ≫ f
+      right_inv f := by
+        sorry
+      left_inv f := by
+        simp
+        sorry
+    }
+    -- 5. ?
     sorry
 
   have R : inv ≫ ε = 𝟙 X := by
