@@ -1,6 +1,7 @@
 import Mathlib.CategoryTheory.Category.Basic
 import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
 import Mathlib.CategoryTheory.Adjunction.FullyFaithful
+import Mathlib.CategoryTheory.Functor.FullyFaithful
 
 variable
   [CategoryTheory.Category.{v, u} C]
@@ -64,7 +65,7 @@ def right_adjoint_preserves_terminal
     right_adjoint_preserves_terminal' T isT F G adj
   exact Limits.IsTerminal.ofUnique (G.obj T)
 
-theorem fully_faithful_right_adjoint_implies_counit_isIso
+lemma fully_faithful_right_adjoint_implies_counit_isIso
   (F : C ⥤ D)
   (G : D ⥤ C)
   (adj : F ⊣ G)
@@ -99,7 +100,7 @@ theorem fully_faithful_right_adjoint_implies_counit_isIso
   exact { out := ⟨inv, L, R⟩ }
 
 attribute [local simp] Adjunction.homEquiv_unit Adjunction.homEquiv_counit
-theorem counit_isIso_implies_fully_faithful_right_adjoint
+lemma counit_isIso_implies_fully_faithful_right_adjoint
   (F : C ⥤ D)
   (G : D ⥤ C)
   (adj : F ⊣ G)
@@ -139,4 +140,17 @@ theorem counit_isIso_implies_fully_faithful_right_adjoint
       have e : Epi (adj.counit.app X) := IsIso.epi_of_iso (adj.counit.app X)
       exact (cancel_epi (adj.counit.app X)).mp c2
   }
+}
+
+theorem fully_faithful_right_adjoint_iff_counit_isIso
+  (F : C ⥤ D)
+  (G : D ⥤ C)
+  (adj : F ⊣ G)
+  : G.Full ∧ G.Faithful ↔ IsIso adj.counit := {
+  mp fact := by
+    have : G.Full := fact.left
+    have : G.Faithful := fact.right
+    let ff : G.FullyFaithful := Functor.FullyFaithful.ofFullyFaithful (F := G)
+    exact fully_faithful_right_adjoint_implies_counit_isIso F G adj ff
+  mpr fact := counit_isIso_implies_fully_faithful_right_adjoint F G adj
 }
