@@ -107,18 +107,24 @@ theorem counit_isIso_implies_fully_faithful_right_adjoint
   : G.Full ∧ G.Faithful := {
   left := {
     map_surjective {X Y} f := by
+      -- Here we are looking for a : X ⟶ Y such that Ga = f
       let g : F.obj (G.obj X) ⟶ Y := (adj.homEquiv (G.obj X) Y).symm f
-      use (retraction (adj.counit.app X) ≫ g)
-      suffices G.map (retraction (adj.counit.app X)) = adj.unit.app (G.obj X) by
+      -- use a := GεX⁻¹ ≫ ϕ⁻¹f
+      use (inv (adj.counit.app X) ≫ g)
+      -- [GεX⁻¹ = ηGX] : GX ⟶ GFGX
+      suffices G.map (inv (adj.counit.app X)) = adj.unit.app (G.obj X) by
         unfold g
         simp [this]
-      rw [← id_comp (G.map (retraction (adj.counit.app X)))]
-      simp only [
-        Functor.id_obj, Functor.comp_obj, id_comp,
-        ← adj.right_triangle_components X,
-        assoc, ← Functor.map_comp, IsSplitMono.id,
-        Functor.map_id, comp_id
-      ]
+      have : G.map (inv (adj.counit.app X) ≫ (adj.counit.app X)) = adj.unit.app (G.obj X) ≫ G.map (adj.counit.app X) := by
+        simp
+      rw [G.map_comp] at this
+      have : G.map (inv (adj.counit.app X)) ≫ G.map (adj.counit.app X) = adj.unit.app (G.obj X) ≫ G.map (adj.counit.app X) := this
+      have G_iso : IsIso (G.map (adj.counit.app X)) :=
+        Functor.map_isIso G (adj.counit.app X)
+      have : G.map (inv (adj.counit.app X)) = adj.unit.app (G.obj X) := by
+        have mono := G_iso.mono_of_iso
+        (expose_names; exact (cancel_mono (G.map (adj.counit.app X))).mp this_1)
+      exact this
   }
   right := {
     map_injective := by
