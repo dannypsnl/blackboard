@@ -26,7 +26,7 @@ axiom KL' : Function.Bijective (α (R := R))
 -- Let a := f(0) and b := choose from (KL f)
 -- if α is not injective, then exists b₂ satisfies KL, but that's absurd since b is uniquq
 -- if α is not surjective, then some f do not follow KL, that's absurd
-theorem KL_implies_KL'
+lemma KL_implies_KL'
   (KL : ∀ f : SquareZero R → R, ∃! b : R, ∀ d : SquareZero R, f d = f zero + d.val * b)
   : Function.Bijective (α (R := R)) := {
   -- This is saying that if α(a, b) = α(a', b')
@@ -103,7 +103,7 @@ theorem KL_implies_KL'
 -- Let KL' holds, then we define f(0) := π₁ (α⁻¹ f) and b := π₂ (α⁻¹ f)
 -- By definition f(d) = f(0) + d * b
 -- Consider if b is not unique, but then there exists two pair (a,b) and (a',b') such that image is f, absurd (α is bijective)
-theorem KL'_implies_KL
+lemma KL'_implies_KL
   (KL' : Function.Bijective (α (R := R)))
   : ∀ f : SquareZero R → R, ∃! b : R, ∀ d : SquareZero R, f d = f zero + d.val * b := by
   intros f
@@ -126,3 +126,9 @@ theorem KL'_implies_KL
       rw [this]
       rw [hab]
     exact (Prod.mk.inj this).2
+
+theorem KL_iff_KL'
+  : (∀ f : SquareZero R → R, ∃! b : R, ∀ d : SquareZero R, f d = f zero + d.val * b) ↔ Function.Bijective (α (R := R)) := {
+  mp fact := KL_implies_KL' fact
+  mpr fact := KL'_implies_KL fact
+}
