@@ -111,19 +111,22 @@ theorem counit_isIso_implies_fully_faithful_right_adjoint
       let g : F.obj (G.obj X) ⟶ Y := (adj.homEquiv (G.obj X) Y).symm f
       -- use a := GεX⁻¹ ≫ ϕ⁻¹f
       use (inv (adj.counit.app X) ≫ g)
-      -- [GεX⁻¹ = ηGX] : GX ⟶ GFGX
+      -- replace goal with [GεX⁻¹ = ηGX] : GX ⟶ GFGX
       suffices G.map (inv (adj.counit.app X)) = adj.unit.app (G.obj X) by
         unfold g
         simp [this]
-      have : G.map (inv (adj.counit.app X) ≫ (adj.counit.app X)) = adj.unit.app (G.obj X) ≫ G.map (adj.counit.app X) := by
+      -- now we compose GεX on both side
+      -- GεX⁻¹ ≫ GεX = ηGX ≫ GεX
+      have : G.map (inv (adj.counit.app X)) ≫ G.map (adj.counit.app X) = adj.unit.app (G.obj X) ≫ G.map (adj.counit.app X) := by
         simp
-      rw [G.map_comp] at this
-      have : G.map (inv (adj.counit.app X)) ≫ G.map (adj.counit.app X) = adj.unit.app (G.obj X) ≫ G.map (adj.counit.app X) := this
+      -- functor preserves isomorphism
       have G_iso : IsIso (G.map (adj.counit.app X)) :=
         Functor.map_isIso G (adj.counit.app X)
+      -- Cancel right GεX⁻¹ ≫ GεX = ηGX ≫ GεX
+      -- GεX⁻¹ = ηGX
       have : G.map (inv (adj.counit.app X)) = adj.unit.app (G.obj X) := by
         have mono := G_iso.mono_of_iso
-        (expose_names; exact (cancel_mono (G.map (adj.counit.app X))).mp this_1)
+        exact (cancel_mono (G.map (adj.counit.app X))).mp this
       exact this
   }
   right := {
