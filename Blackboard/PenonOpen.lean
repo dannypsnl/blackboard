@@ -8,7 +8,7 @@ structure Open (U : P X) : Type v where
 def subset (U V : P X) := ∀ x : X, U x → V x
 notation U "⊆" V => subset U V
 
-theorem element_singleton_is_subset_can_be_double_negative
+theorem intrinsic_open_property
   (U : P X)
   (O : Open U)
   : ∀ x : X, U x → (fun y : X ↦ ¬¬(y = x)) ⊆ U := by
