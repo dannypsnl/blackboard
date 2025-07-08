@@ -1,4 +1,3 @@
-open import Agda.Primitive
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Path
 open import Cubical.Foundations.Equiv
