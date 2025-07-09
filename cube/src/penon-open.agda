@@ -20,7 +20,7 @@ intrinsic-open X U =
   (x y : X) → U x → (y ≡ x → ⊥) ⊎ U y
 
 variable
-  ℓ ℓ' : Level
+  ℓ : Level
   X : Type ℓ
 
 intrinsic-open-property :
