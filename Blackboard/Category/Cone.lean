@@ -51,3 +51,28 @@ noncomputable def limit_unique
       have uniq := self.unique another this
       exact uniq
   }
+
+theorem limit_unique'
+  (F : C ⥤ D)
+  (L : Limit F)
+  (f g : M ⟶ L.obj)
+  : (∀ X : C, f ≫ L.ρ X = g ≫ L.ρ X) → f = g := by
+  intros H
+  let F_cone : Cone F := {
+    obj := M
+    ρ c := f ≫ L.ρ c
+    eq := by
+      intros x y k
+      rw [assoc]
+      rw [L.eq k]
+  }
+  have F_over := L.condition F_cone
+  have fs := F_over.exists.choose_spec
+  unfold F_cone at fs
+  simp at fs
+  have ok : ∀ x : C, f ≫ L.ρ x = f ≫ L.ρ x := by
+    exact fun x ↦ rfl
+  have f_factor := F_over.unique ok fs
+  have g_factor := F_over.unique H fs
+  rw [g_factor]
+  exact f_factor
