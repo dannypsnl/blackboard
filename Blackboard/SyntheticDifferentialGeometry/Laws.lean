@@ -102,3 +102,46 @@ theorem product_rule
   have := this zero
   rw [add_comm] at this
   exact id (Eq.symm this)
+
+theorem chain_rule
+  [IsLeftCancelMul R]
+  (f g : R → R)
+  : ∀ x : R, diff (f ∘ g) x = diff f (g x) * diff g x := by
+  intros x
+  have G := (KLr g x).choose_spec.left
+  have Chain := (KLr (f ∘ g) x).choose_spec.left
+  have : ∀ (d : SquareZero R), (f ∘ g) (x + d.val) = (f ∘ g) x + d.val * diff (f ∘ g) x := Chain
+  have : ∀ (d : SquareZero R), (f ∘ g) x + d.val * diff (f ∘ g) x = f (g (x + d.val)) := by
+    intro d
+    exact (this d).symm
+  have : ∀ (d : SquareZero R), (f ∘ g) x + d.val * diff (f ∘ g) x = f (g x + d.val * diff g x) := by
+    intro d
+    have := this d
+    rw [G d] at this
+    exact this
+  have : ∀ (d : SquareZero R), (f ∘ g) x + d.val * diff (f ∘ g) x = f (g x) + d.val * diff g x * diff f (g x) := by
+    intro d
+    let ready : SquareZero R := {
+      val := d.val * diff g x
+      property := by
+        unfold IsSquareZero
+        rw [←mul_assoc]
+        rw [mul_comm _ d.val]
+        rw [←mul_assoc]
+        simp
+    }
+    have F : f (g x + d.val * diff g x) = f (g x) + d.val * diff g x * diff f (g x) := (KLr f (g x)).choose_spec.left ready
+    rw [←F]
+    exact this d
+  have : ∀ (d : SquareZero R), d.val * diff (f ∘ g) x = d.val * (diff g x * diff f (g x)) := by
+    intro d
+    have := this d
+    rw [mul_assoc] at this
+    exact add_left_cancel this
+  have : ∀ (d : SquareZero R), diff (f ∘ g) x = diff g x * diff f (g x) := by
+    intro d
+    have := this d
+    exact mul_left_cancel (a := d.val) this
+  have := this zero
+  rw [mul_comm]
+  exact this
