@@ -10,6 +10,8 @@ noncomputable def diff (f : R → R) : R := (KLr f).choose
 
 instance : Add (R → R) where
   add f g := fun x ↦ f x + g x
+instance : Mul (R → R) where
+  mul f g := fun x ↦ f x * g x
 
 theorem sum_rule
   [IsLeftCancelMul R]
@@ -47,3 +49,56 @@ theorem sum_rule
     rw [← mul_add] at this
     exact mul_left_cancel (a := d.val) this
   exact Eq.symm (D zero)
+
+theorem product_rule
+  [IsLeftCancelMul R]
+  (f g : R → R)
+  : ∀ x : R, diff (f * g) = diff f * g x + f x * diff g := by
+  intros x
+  have F := (KLr f).choose_spec.left x
+  have G := (KLr g).choose_spec.left x
+  have P := KLr (f * g)
+  have : ∀ (d : SquareZero R), f (x + d.val) * g (x + d.val) = f x * g x + d.val * diff (f * g) := P.choose_spec.left x
+  have : ∀ (d : SquareZero R), (f x + d.val * diff f) * (g x + d.val * diff g) = f x * g x + d.val * diff (f * g) := by
+    intros d
+    have := this d
+    rw [F d] at this
+    rw [G d] at this
+    exact this
+  have : ∀ (d : SquareZero R),
+    f x * g x + (f x * d.val * diff g + d.val * diff f * g x + d.val * diff f * d.val * diff g)
+    = f x * g x + (d.val * diff (f * g)) := by
+    intros d
+    have := this d
+    rw [add_mul, mul_add, mul_add] at this
+    rw [← mul_assoc] at this
+    rw [← mul_assoc] at this
+    rw [← add_assoc] at this
+    rw [add_assoc (a := f x * g x)] at this
+    rw [add_assoc (a := f x * g x)] at this
+    exact this
+  have : ∀ (d : SquareZero R), f x * d.val * diff g + d.val * diff f * g x + d.val * diff f * d.val * diff g = d.val * diff (f * g) := by
+    intros d
+    have := this d
+    have := add_left_cancel (a := f x * g x) this
+    exact this
+  have : ∀ (d : SquareZero R), f x * d.val * diff g + d.val * diff f * g x = d.val * diff (f * g) := by
+    intros d
+    have := this d
+    rw [mul_assoc d.val (diff f) d.val] at this
+    rw [mul_comm (diff f) d.val] at this
+    rw [← mul_assoc] at this
+    simp at this
+    exact this
+  have : ∀ (d : SquareZero R), f x * diff g + diff f * g x = diff (f * g) := by
+    intros d
+    have := this d
+    rw [mul_comm (f x) d.val] at this
+    rw [mul_assoc] at this
+    rw [mul_assoc] at this
+    rw [←mul_add] at this
+    have := mul_left_cancel (a := d.val) this
+    exact this
+  have := this zero
+  rw [add_comm] at this
+  exact id (Eq.symm this)
