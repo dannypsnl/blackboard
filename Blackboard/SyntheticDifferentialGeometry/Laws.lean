@@ -4,9 +4,9 @@ import Blackboard.SyntheticDifferentialGeometry.Axiom
 
 variable [CommRing R]
 
-axiom KLr : ∀ f : R → R, ∃! b : R, ∀ x : R, ∀ d : SquareZero R, f (x + d.val) = f x + d.val * b
+axiom KLr : ∀ f : R → R, ∀ x : R, ∃! b : R, ∀ d : SquareZero R, f (x + d.val) = f x + d.val * b
 
-noncomputable def diff (f : R → R) : R := (KLr f).choose
+noncomputable def diff (f : R → R) (x : R) : R := (KLr f x).choose
 
 instance : Add (R → R) where
   add f g := fun x ↦ f x + g x
@@ -16,36 +16,36 @@ instance : Mul (R → R) where
 theorem sum_rule
   [IsLeftCancelMul R]
   (f g : R → R)
-  : diff (f + g) = diff f + diff g := by
-  have F := KLr f
-  have G := KLr g
-  have FG := (KLr (f + g)).choose_spec
-  have L := FG.left
+  : ∀ x : R, diff (f + g) x = diff f x + diff g x := by
+  intros x
+  have F := KLr f x
+  have G := KLr g x
+  have FG := (KLr (f + g) x).choose_spec
   have unique := FG.right
-  have H : ∀ x : R, ∀ d : SquareZero R, f x + d.val * (diff f) + g x + d.val * (diff g) = f x + g x + d.val * (diff f) + d.val * (diff g) := by
-    intros x d
+  have H : ∀ d : SquareZero R, f x + d.val * (diff f x) + g x + d.val * (diff g x) = f x + g x + d.val * (diff f x) + d.val * (diff g x) := by
+    intros d
     simp
-    exact add_right_comm (f x) (d.val * diff f) (g x)
-  have L' : ∀ x : R, ∀ d : SquareZero R, f x + d.val * (diff f) + g x + d.val * (diff g) = f x + g x + d.val * (diff (f + g))
+    exact add_right_comm (f x) (d.val * diff f x) (g x)
+  have L' : ∀ d : SquareZero R, f x + d.val * (diff f x) + g x + d.val * (diff g x) = f x + g x + d.val * (diff (f + g) x)
     := by
-    intro x d
+    intro d
     unfold diff
-    rw [←F.choose_spec.left x d]
+    rw [←F.choose_spec.left d]
     rw [add_assoc]
-    rw [←G.choose_spec.left x d]
-    exact L x d
-  have C : ∀ x : R, ∀ d : SquareZero R, f x + g x + (d.val * (diff f) + d.val * (diff g)) = f x + g x + d.val * (diff (f + g)) := by
-    intros x d
-    have := L' x d
+    rw [←G.choose_spec.left d]
+    exact FG.left d
+  have C : ∀ d : SquareZero R, f x + g x + (d.val * (diff f x) + d.val * (diff g x)) = f x + g x + d.val * (diff (f + g) x) := by
+    intros d
+    have := L' d
     rw [add_assoc, add_assoc] at this
     rw [←add_assoc _ (g x)] at this
-    rw [add_comm (d.val * diff f) (g x)] at this
+    rw [add_comm (d.val * diff f x) (g x)] at this
     rw [←add_assoc, ←add_assoc, add_assoc] at this
     exact this
-  have D : ∀ d : SquareZero R, diff f + diff g = diff (f + g) := by
+  have D : ∀ d : SquareZero R, diff f x + diff g x = diff (f + g) x := by
     intros d
-    have := C 0 d
-    have := add_left_cancel (a := f 0 + g 0) this
+    have := C d
+    have := add_left_cancel this
     rw [← mul_add] at this
     exact mul_left_cancel (a := d.val) this
   exact Eq.symm (D zero)
@@ -53,21 +53,21 @@ theorem sum_rule
 theorem product_rule
   [IsLeftCancelMul R]
   (f g : R → R)
-  : ∀ x : R, diff (f * g) = diff f * g x + f x * diff g := by
+  : ∀ x : R, diff (f * g) x = (diff f x) * g x + f x * (diff g x) := by
   intros x
-  have F := (KLr f).choose_spec.left x
-  have G := (KLr g).choose_spec.left x
-  have P := KLr (f * g)
-  have : ∀ (d : SquareZero R), f (x + d.val) * g (x + d.val) = f x * g x + d.val * diff (f * g) := P.choose_spec.left x
-  have : ∀ (d : SquareZero R), (f x + d.val * diff f) * (g x + d.val * diff g) = f x * g x + d.val * diff (f * g) := by
+  have F := (KLr f x).choose_spec.left
+  have G := (KLr g x).choose_spec.left
+  have P := KLr (f * g) x
+  have : ∀ (d : SquareZero R), f (x + d.val) * g (x + d.val) = f x * g x + d.val * diff (f * g) x := P.choose_spec.left
+  have : ∀ (d : SquareZero R), (f x + d.val * diff f x) * (g x + d.val * diff g x) = f x * g x + d.val * diff (f * g) x := by
     intros d
     have := this d
     rw [F d] at this
     rw [G d] at this
     exact this
   have : ∀ (d : SquareZero R),
-    f x * g x + (f x * d.val * diff g + d.val * diff f * g x + d.val * diff f * d.val * diff g)
-    = f x * g x + (d.val * diff (f * g)) := by
+    f x * g x + (f x * d.val * diff g x + d.val * diff f x * g x + d.val * diff f x * d.val * diff g x)
+    = f x * g x + (d.val * diff (f * g) x) := by
     intros d
     have := this d
     rw [add_mul, mul_add, mul_add] at this
@@ -77,20 +77,20 @@ theorem product_rule
     rw [add_assoc (a := f x * g x)] at this
     rw [add_assoc (a := f x * g x)] at this
     exact this
-  have : ∀ (d : SquareZero R), f x * d.val * diff g + d.val * diff f * g x + d.val * diff f * d.val * diff g = d.val * diff (f * g) := by
+  have : ∀ (d : SquareZero R), f x * d.val * diff g x + d.val * diff f x * g x + d.val * diff f x * d.val * diff g x = d.val * diff (f * g) x := by
     intros d
     have := this d
     have := add_left_cancel (a := f x * g x) this
     exact this
-  have : ∀ (d : SquareZero R), f x * d.val * diff g + d.val * diff f * g x = d.val * diff (f * g) := by
+  have : ∀ (d : SquareZero R), f x * d.val * diff g x + d.val * diff f x * g x = d.val * diff (f * g) x := by
     intros d
     have := this d
-    rw [mul_assoc d.val (diff f) d.val] at this
-    rw [mul_comm (diff f) d.val] at this
+    rw [mul_assoc d.val (diff f x) d.val] at this
+    rw [mul_comm (diff f x) d.val] at this
     rw [← mul_assoc] at this
     simp at this
     exact this
-  have : ∀ (d : SquareZero R), f x * diff g + diff f * g x = diff (f * g) := by
+  have : ∀ (d : SquareZero R), f x * diff g x + diff f x * g x = diff (f * g) x := by
     intros d
     have := this d
     rw [mul_comm (f x) d.val] at this
