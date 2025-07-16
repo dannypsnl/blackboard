@@ -110,10 +110,9 @@ theorem chain_rule
   intros x
   have G := (KLr g x).choose_spec.left
   have Chain := (KLr (f ∘ g) x).choose_spec.left
-  have : ∀ (d : SquareZero R), (f ∘ g) (x + d.val) = (f ∘ g) x + d.val * diff (f ∘ g) x := Chain
   have : ∀ (d : SquareZero R), (f ∘ g) x + d.val * diff (f ∘ g) x = f (g (x + d.val)) := by
     intro d
-    exact (this d).symm
+    exact (Chain d).symm
   have : ∀ (d : SquareZero R), (f ∘ g) x + d.val * diff (f ∘ g) x = f (g x + d.val * diff g x) := by
     intro d
     have := this d
