@@ -45,5 +45,19 @@ infix 20 _≤_
     a : ⊢ (C ⇒ (B ⇒ A ∧ B))
     a = T C≤A PC3
 
+record _×_ (A B : Type) : Type where
+  field
+    fst : A
+    snd : B
+infix 10 _×_
+
+∧-symm : {A B : Proposition} → (A ∧ B) ≤ (B ∧ A) × (B ∧ A) ≤ (A ∧ B)
+∧-symm {A}{B} = record { fst = MP PC4 b ; snd = MP PC4 b }
+  where
+    a : {A B : Proposition} → ⊢ (A ∧ B ⇒ (A ⇒ B ∧ A))
+    a = T PC5 PC3
+    b : {A B : Proposition} → ⊢ ((A ∧ B ⇒ A) ⇒ (A ∧ B ⇒ B ∧ A))
+    b = MP a PC2
+
 ∨-supremum : {A B C : Proposition} → A ≤ C → B ≤ C → (A ∨ B) ≤ C
 ∨-supremum {A}{B}{C} A≤C B≤C = MP B≤C (MP A≤C PC8)
