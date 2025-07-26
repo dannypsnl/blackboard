@@ -71,3 +71,18 @@ infix 10 _×_
   where
     a : {A B : Proposition} → ⊢ ((A ∨ B) ⇒ (B ∨ A))
     a = MP PC6 (MP PC7 PC8)
+
+terminal : {T X : Proposition} → ⊢ T → ⊢ (X ⇒ T)
+terminal is-terminal = MP is-terminal PC1
+
+initial : {T X : Proposition} → ⊢ T → ⊢ (¬ T ⇒ X)
+initial {T}{X} is-terminal = MP d a
+  where
+    a : ⊢ (¬ ¬ T ⇒ (¬ T ⇒ X))
+    a = PC10
+    b : ⊢ ((¬ T ⇒ T) ⇒ ((¬ T ⇒ ¬ T) ⇒ ¬ ¬ T))
+    b = PC9
+    c : ⊢ ((¬ T ⇒ ¬ T) ⇒ ¬ ¬ T)
+    c = MP (MP is-terminal PC1) b
+    d : ⊢ (¬ ¬ T)
+    d = MP R c
