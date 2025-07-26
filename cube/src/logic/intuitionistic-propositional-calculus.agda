@@ -104,7 +104,7 @@ G-is-functor {A}{X}{Y} X≤Y = MP PC5 d
     d = MP c PC2
 
 F : (A X : Proposition) → Proposition
-F A X = (A ⇒ X)
+F A X = A ⇒ X
 
 F-is-functor : {A X Y : Proposition} → X ≤ Y → F A X ≤ F A Y
 F-is-functor {A}{X}{Y} X≤Y = MP (MP X≤Y PC1) PC2
