@@ -13,6 +13,9 @@ data ⊢ : Proposition → Type where
   PC3 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A ∧ B))
   PC4 : {A B : Proposition} → ⊢ (A ∧ B ⇒ A)
   PC5 : {A B : Proposition} → ⊢ (A ∧ B ⇒ B)
+  PC6 : {A B : Proposition} → ⊢ (A ⇒ A ∨ B)
+  PC7 : {A B : Proposition} → ⊢ (B ⇒ A ∨ B)
+  PC8 : {A B C : Proposition} → ⊢ ((A ⇒ B) ⇒ ((C ⇒ B) ⇒ (A ∨ C ⇒ B)))
 
   MP : {A B : Proposition} → ⊢ A → ⊢ (A ⇒ B) → ⊢ B
 
@@ -40,3 +43,6 @@ A ≤ B = ⊢ (A ⇒ B)
   where
     a : ⊢ (C ⇒ (B ⇒ A ∧ B))
     a = T C≤A PC3
+
+∨-supremum : {A B C : Proposition} → A ≤ C → B ≤ C → (A ∨ B) ≤ C
+∨-supremum {A}{B}{C} A≤C B≤C = MP B≤C (MP A≤C PC8)
