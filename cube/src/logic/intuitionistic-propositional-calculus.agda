@@ -3,9 +3,11 @@ open import Cubical.Foundations.Prelude hiding (_∧_; _∨_)
 module logic.intuitionistic-propositional-calculus where
 
 data Proposition : Type where
+  ¬_ : Proposition → Proposition
   _∧_ _∨_ _⇒_ : Proposition → Proposition → Proposition
 infixr 30 _⇒_
 infixl 40 _∧_ _∨_
+infix 50 ¬_
 
 data ⊢ : Proposition → Type where
   PC1 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A))
@@ -16,6 +18,8 @@ data ⊢ : Proposition → Type where
   PC6 : {A B : Proposition} → ⊢ (A ⇒ A ∨ B)
   PC7 : {A B : Proposition} → ⊢ (B ⇒ A ∨ B)
   PC8 : {A B C : Proposition} → ⊢ ((A ⇒ C) ⇒ ((B ⇒ C) ⇒ (A ∨ B ⇒ C)))
+  PC9 : {A B : Proposition} → ⊢ ((A ⇒ B) ⇒ ((A ⇒ ¬ B) ⇒ ¬ A))
+  PC10 : {A B : Proposition} → ⊢ (¬ A ⇒ (A ⇒ B))
 
   MP : {A B : Proposition} → ⊢ A → ⊢ (A ⇒ B) → ⊢ B
 
