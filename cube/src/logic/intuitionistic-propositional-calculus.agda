@@ -23,6 +23,7 @@ data ⊢ : Proposition → Type where
 
   MP : {A B : Proposition} → ⊢ A → ⊢ (A ⇒ B) → ⊢ B
 
+-- The followings are formalization of Borceux Vol3. Lemma 1.1.3
 R : {A : Proposition} → ⊢ (A ⇒ A)
 R {A} = MP PC1 (b {A})
   where
