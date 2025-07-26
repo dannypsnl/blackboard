@@ -116,3 +116,32 @@ F-is-right-adjoint-to-G {A}{B} = record { fst = f ; snd = s }
     f = PC3
     s : (A ⇒ B) ∧ A ≤ B
     s = MP PC5 (MP PC4 PC2)
+
+-- Lemma 1.1.4
+F' : (A X : Proposition) → Proposition
+F' A X = X ⇒ A
+
+lemma : {A X Y : Proposition} → X ≤ Y → (Y ⇒ A) ∧ X ≤ A → Y ⇒ A ≤ X ⇒ A
+lemma {A}{X}{Y} X≤Y P = T k c
+  where
+    k : ⊢ ((Y ⇒ A) ⇒ (X ⇒ (Y ⇒ A) ∧ X))
+    k = PC3
+    c : ⊢ ((X ⇒ (Y ⇒ A) ∧ X) ⇒ (X ⇒ A))
+    c = MP (MP P PC1) PC2
+
+F'-is-contra-functor : {A X Y : Proposition} → X ≤ Y → F' A Y ≤ F' A X
+F'-is-contra-functor {A}{X}{Y} X≤Y = target
+  where
+    pp : ⊢ ((Y ⇒ A) ∧ X ⇒ (Y ⇒ A))
+    pp = PC4
+    pp' : ⊢ (((Y ⇒ A) ∧ X ⇒ Y) ⇒ ((Y ⇒ A) ∧ X ⇒ A))
+    pp' = MP pp PC2
+
+    outY : ⊢ ((Y ⇒ A) ∧ X ⇒ Y)
+    outY = T PC5 X≤Y
+
+    pre : (Y ⇒ A) ∧ X ≤ A
+    pre = MP outY pp'
+
+    target : ⊢ ((Y ⇒ A) ⇒ (X ⇒ A))
+    target = lemma X≤Y pre
