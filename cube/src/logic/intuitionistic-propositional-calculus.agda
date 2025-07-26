@@ -145,3 +145,7 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
 
     target : ⊢ ((Y ⇒ A) ⇒ (X ⇒ A))
     target = lemma X≤Y pre
+
+-- ⊥ is defined as ¬ T, for any valid formula T (i.e. ⊢ T holds)
+X⇒⊥-iso-¬X : {T X : Proposition} → ⊢ T → ¬ X ≤ X ⇒ ¬ T × X ⇒ ¬ T ≤ ¬ X
+X⇒⊥-iso-¬X {T}{X} is-terminal = record { fst = PC10 ; snd = MP (MP is-terminal PC1) PC9 }
