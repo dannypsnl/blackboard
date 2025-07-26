@@ -5,10 +5,15 @@ module logic.intuitionistic-propositional-calculus where
 data Proposition : Type where
   _∧_ _∨_ _⇒_ : Proposition → Proposition → Proposition
 infixr 8 _⇒_
+infixl 10 _∧_ _∨_
 
 data ⊢ : Proposition → Type where
   PC1 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A))
   PC2 : {A B C : Proposition} → ⊢ ((A ⇒ (B ⇒ C)) ⇒ ((A ⇒ B) ⇒ (A ⇒ C)))
+  PC3 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A ∧ B))
+  PC4 : {A B : Proposition} → ⊢ (A ∧ B ⇒ A)
+  PC5 : {A B : Proposition} → ⊢ (A ∧ B ⇒ B)
+
   MP : {A B : Proposition} → ⊢ A → ⊢ (A ⇒ B) → ⊢ B
 
 R : {A : Proposition} → ⊢ (A ⇒ A)
@@ -26,3 +31,12 @@ T {A} {B} {C} A≤B B≤C = MP A≤B (MP b PC2)
     a = PC1
     b : ⊢ (A ⇒ (B ⇒ C))
     b = MP B≤C PC1
+
+_≤_ : (A B : Proposition) → Type
+A ≤ B = ⊢ (A ⇒ B)
+
+∧-infimum : {A B C : Proposition} → C ≤ A → C ≤ B → C ≤ (A ∧ B)
+∧-infimum {A}{B}{C} C≤A C≤B = MP C≤B (MP a PC2)
+  where
+    a : ⊢ (C ⇒ (B ⇒ A ∧ B))
+    a = T C≤A PC3
