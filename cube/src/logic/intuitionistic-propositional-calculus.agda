@@ -1,20 +1,20 @@
-open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Prelude hiding (_∧_; _∨_)
 
 module logic.intuitionistic-propositional-calculus where
 
-PC1 : {A B : Type} → (A → (B → A))
-PC1 = λ z z₁ → z
+data Proposition : Type where
+  _∧_ _∨_ _⇒_ : Proposition → Proposition → Proposition
+infixr 8 _⇒_
 
-PC2 : {A B C : Type} → (A → (B → C)) → ((A → B) → (A → C))
-PC2 = λ z z₁ z₂ → z z₂ (z₁ z₂)
+data ⊢ : Proposition → Type where
+  PC1 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A))
+  PC2 : {A B C : Proposition} → ⊢ ((A ⇒ (B ⇒ C)) ⇒ ((A ⇒ B) ⇒ (A ⇒ C)))
+  MP : {A B : Proposition} → ⊢ A → ⊢ (A ⇒ B) → ⊢ B
 
-MP : {A B : Type} → A → (A → B) → B
-MP a f = f a
-
-R : {A : Type} → A → A
-R {A} = b {A} PC1
+R : {A : Proposition} → ⊢ (A ⇒ A)
+R {A} = MP PC1 (b {A})
   where
-    a : {B : Type} → (A → B) → (A → A)
+    a : {B : Proposition} → ⊢ ((A ⇒ B) ⇒ (A ⇒ A))
     a = MP PC1 PC2
-    b : {B : Type} → (A → (B → A)) → (A → A)
-    b {B} = a {B → A}
+    b : {B : Proposition} → ⊢ ((A ⇒ (B ⇒ A)) ⇒ (A ⇒ A))
+    b {B} = a {B ⇒ A}
