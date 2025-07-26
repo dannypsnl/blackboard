@@ -15,7 +15,7 @@ data ⊢ : Proposition → Type where
   PC5 : {A B : Proposition} → ⊢ (A ∧ B ⇒ B)
   PC6 : {A B : Proposition} → ⊢ (A ⇒ A ∨ B)
   PC7 : {A B : Proposition} → ⊢ (B ⇒ A ∨ B)
-  PC8 : {A B C : Proposition} → ⊢ ((A ⇒ B) ⇒ ((C ⇒ B) ⇒ (A ∨ C ⇒ B)))
+  PC8 : {A B C : Proposition} → ⊢ ((A ⇒ C) ⇒ ((B ⇒ C) ⇒ (A ∨ B ⇒ C)))
 
   MP : {A B : Proposition} → ⊢ A → ⊢ (A ⇒ B) → ⊢ B
 
@@ -61,3 +61,9 @@ infix 10 _×_
 
 ∨-supremum : {A B C : Proposition} → A ≤ C → B ≤ C → (A ∨ B) ≤ C
 ∨-supremum {A}{B}{C} A≤C B≤C = MP B≤C (MP A≤C PC8)
+
+∨-symm : {A B : Proposition} → (A ∨ B) ≤ (B ∨ A) × (B ∨ A) ≤ (A ∨ B)
+∨-symm {A}{B} = record { fst = a ; snd = a }
+  where
+    a : {A B : Proposition} → ⊢ ((A ∨ B) ⇒ (B ∨ A))
+    a = MP PC6 (MP PC7 PC8)
