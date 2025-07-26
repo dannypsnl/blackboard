@@ -110,4 +110,9 @@ F-is-functor : {A X Y : Proposition} → X ≤ Y → F A X ≤ F A Y
 F-is-functor {A}{X}{Y} X≤Y = MP (MP X≤Y PC1) PC2
 
 F-is-right-adjoint-to-G : {A B : Proposition} → A ≤ F B (G B A) × G A (F A B) ≤ B
-F-is-right-adjoint-to-G {A}{B} = record { fst = PC3 ; snd = MP PC5 (MP PC4 PC2) }
+F-is-right-adjoint-to-G {A}{B} = record { fst = f ; snd = s }
+  where
+    f : A ≤ B ⇒ (A ∧ B)
+    f = PC3
+    s : (A ⇒ B) ∧ A ≤ B
+    s = MP PC5 (MP PC4 PC2)
