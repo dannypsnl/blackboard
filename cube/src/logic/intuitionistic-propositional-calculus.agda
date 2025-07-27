@@ -12,6 +12,7 @@ infix 50 ¬_
 
 data ⊢ : Proposition → Type where
   truth : ⊢ ⊤
+  truth-unique : {T : Proposition} → ⊤ ≡ T → ⊢ T
 
   PC1 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A))
   PC2 : {A B C : Proposition} → ⊢ ((A ⇒ (B ⇒ C)) ⇒ ((A ⇒ B) ⇒ (A ⇒ C)))
@@ -155,3 +156,16 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
 -- Here I define ⊥ := ¬ T to simplify proof, for any valid formula T (i.e. ⊢ T holds)
 X⇒⊥-iso-¬X : {T X : Proposition} → ⊢ T → ¬ X ≤ X ⇒ ¬ T × X ⇒ ¬ T ≤ ¬ X
 X⇒⊥-iso-¬X {T}{X} is-terminal = record { fst = PC10 ; snd = MP (terminal is-terminal) PC9 }
+
+module _
+  (ax1 : {T : Proposition} → ⊢ T → ⊤ ≡ T)
+  where
+
+  variable
+    A B : Proposition
+
+  -- Proposition 1.2.3 condition 1
+  c1-forward : A ≤ B → ⊤ ≡ A ⇒ B
+  c1-forward P = ax1 P
+  c1-backward : ⊤ ≡ A ⇒ B → A ≤ B
+  c1-backward P = truth-unique P
