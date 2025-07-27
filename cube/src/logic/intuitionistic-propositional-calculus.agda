@@ -3,7 +3,7 @@ open import Cubical.Foundations.Prelude hiding (_∧_; _∨_)
 module logic.intuitionistic-propositional-calculus where
 
 data Proposition : Type where
-  ⊤ : Proposition
+  ⊤ ⊥ : Proposition
   ¬_ : Proposition → Proposition
   _∧_ _∨_ _⇒_ : Proposition → Proposition → Proposition
 infixr 30 _⇒_
@@ -13,6 +13,7 @@ infix 50 ¬_
 data ⊢ : Proposition → Type where
   truth : ⊢ ⊤
   truth-unique : {T : Proposition} → ⊤ ≡ T → ⊢ T
+  false-elim : (X : Proposition) → ⊢ (⊥ ⇒ X)
 
   PC1 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A))
   PC2 : {A B C : Proposition} → ⊢ ((A ⇒ (B ⇒ C)) ⇒ ((A ⇒ B) ⇒ (A ⇒ C)))
@@ -150,12 +151,12 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
     target : ⊢ ((Y ⇒ A) ⇒ (X ⇒ A))
     target = lemma pre
 
-⊥≅¬⊤ : {⊥ : Proposition} → ((X : Proposition) → ⊥ ≤ X) → ⊥ ≤ ¬ ⊤ × ¬ ⊤ ≤ ⊥
-⊥≅¬⊤ I = record { fst = I (¬ ⊤) ; snd = initial truth }
+⊥≅¬⊤ : ⊥ ≤ ¬ ⊤ × ¬ ⊤ ≤ ⊥
+⊥≅¬⊤ = record { fst = false-elim (¬ ⊤) ; snd = initial truth }
 
--- Here I define ⊥ := ¬ T to simplify proof, for any valid formula T (i.e. ⊢ T holds)
-X⇒⊥-iso-¬X : {T X : Proposition} → ⊢ T → ¬ X ≤ X ⇒ ¬ T × X ⇒ ¬ T ≤ ¬ X
-X⇒⊥-iso-¬X {T}{X} is-terminal = record { fst = PC10 ; snd = MP (terminal is-terminal) PC9 }
+-- Here I define ⊥ := ¬ ⊤ to simplify proof.
+X⇒⊥-iso-¬X : {X : Proposition} → ¬ X ≤ X ⇒ ¬ ⊤ × X ⇒ ¬ ⊤ ≤ ¬ X
+X⇒⊥-iso-¬X {X} = record { fst = PC10 ; snd = MP (terminal truth) PC9 }
 
 module _
   (ax1 : {T : Proposition} → ⊢ T → ⊤ ≡ T)
