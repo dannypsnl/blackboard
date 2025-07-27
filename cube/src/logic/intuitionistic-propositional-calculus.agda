@@ -160,13 +160,33 @@ X⇒⊥-iso-¬X {X} = record { fst = PC10 ; snd = MP (terminal truth) PC9 }
 
 module _
   (ax1 : {T : Proposition} → ⊢ T → ⊤ ≡ T)
+  (ax2 : ¬ ⊤ ≡ ⊥)
   where
 
   variable
     A B : Proposition
 
   -- Proposition 1.2.3 condition 1
-  c1-forward : A ≤ B → ⊤ ≡ A ⇒ B
-  c1-forward P = ax1 P
-  c1-backward : ⊤ ≡ A ⇒ B → A ≤ B
-  c1-backward P = truth-unique P
+  p1-2-3-c1-forward : A ≤ B → ⊤ ≡ A ⇒ B
+  p1-2-3-c1-forward P = ax1 P
+  p1-2-3-c1-backward : ⊤ ≡ A ⇒ B → A ≤ B
+  p1-2-3-c1-backward P = truth-unique P
+
+  -- Proposition 1.2.7 condition 1
+  p1-2-7-c1 : ⊤ ≤ (⊥ ⇒ ⊥)
+  p1-2-7-c1 = MP (false-elim ⊥) PC1
+
+  -- Proposition 1.2.7 condition 2
+  p1-2-7-c2 : {A B : Proposition} → A ≤ B → ¬ B ≤ ¬ A
+  p1-2-7-c2 {A}{B} A≤B = T PC10 (T (lemma pre) lemma2')
+    where
+      pre : (B ⇒ ⊥) ∧ A ≤ ⊥
+      pre = MP ((T PC5 A≤B)) (MP PC4 PC2)
+      
+      lemma : (B ⇒ ⊥) ∧ A ≤ ⊥ → B ⇒ ⊥ ≤ A ⇒ ⊥
+      lemma P = T PC3 (MP (MP P PC1) PC2)
+
+      lemma2 : A ⇒ ¬ ⊤ ≤ ¬ A
+      lemma2 = MP (MP truth PC1) PC9
+      lemma2' : A ⇒ ⊥ ≤ ¬ A
+      lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) ax2 (MP (MP truth PC1) PC9)
