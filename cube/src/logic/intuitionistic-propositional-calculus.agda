@@ -3,6 +3,7 @@ open import Cubical.Foundations.Prelude hiding (_∧_; _∨_)
 module logic.intuitionistic-propositional-calculus where
 
 data Proposition : Type where
+  ⊤ : Proposition
   ¬_ : Proposition → Proposition
   _∧_ _∨_ _⇒_ : Proposition → Proposition → Proposition
 infixr 30 _⇒_
@@ -10,6 +11,8 @@ infixl 40 _∧_ _∨_
 infix 50 ¬_
 
 data ⊢ : Proposition → Type where
+  truth : ⊢ ⊤
+
   PC1 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A))
   PC2 : {A B C : Proposition} → ⊢ ((A ⇒ (B ⇒ C)) ⇒ ((A ⇒ B) ⇒ (A ⇒ C)))
   PC3 : {A B : Proposition} → ⊢ (A ⇒ (B ⇒ A ∧ B))
@@ -146,8 +149,8 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
     target : ⊢ ((Y ⇒ A) ⇒ (X ⇒ A))
     target = lemma pre
 
-⊥≅¬⊤ : {⊥ ⊤ : Proposition} → ⊢ ⊤ → ((X : Proposition) → ⊥ ≤ X) → ⊥ ≤ ¬ ⊤ × ¬ ⊤ ≤ ⊥
-⊥≅¬⊤ {⊥}{⊤} truth I = record { fst = I (¬ ⊤) ; snd = initial truth }
+⊥≅¬⊤ : {⊥ : Proposition} → ((X : Proposition) → ⊥ ≤ X) → ⊥ ≤ ¬ ⊤ × ¬ ⊤ ≤ ⊥
+⊥≅¬⊤ I = record { fst = I (¬ ⊤) ; snd = initial truth }
 
 -- Here I define ⊥ := ¬ T to simplify proof, for any valid formula T (i.e. ⊢ T holds)
 X⇒⊥-iso-¬X : {T X : Proposition} → ⊢ T → ¬ X ≤ X ⇒ ¬ T × X ⇒ ¬ T ≤ ¬ X
