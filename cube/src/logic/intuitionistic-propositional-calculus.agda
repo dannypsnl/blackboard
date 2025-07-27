@@ -121,14 +121,6 @@ F-is-right-adjoint-to-G {A}{B} = record { fst = f ; snd = s }
 F' : (A X : Proposition) → Proposition
 F' A X = X ⇒ A
 
-lemma : {A X Y : Proposition} → X ≤ Y → (Y ⇒ A) ∧ X ≤ A → Y ⇒ A ≤ X ⇒ A
-lemma {A}{X}{Y} X≤Y P = T k c
-  where
-    k : ⊢ ((Y ⇒ A) ⇒ (X ⇒ (Y ⇒ A) ∧ X))
-    k = PC3
-    c : ⊢ ((X ⇒ (Y ⇒ A) ∧ X) ⇒ (X ⇒ A))
-    c = MP (MP P PC1) PC2
-
 F'-is-contra-functor : {A X Y : Proposition} → X ≤ Y → F' A Y ≤ F' A X
 F'-is-contra-functor {A}{X}{Y} X≤Y = target
   where
@@ -143,8 +135,16 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
     pre : (Y ⇒ A) ∧ X ≤ A
     pre = MP outY pp'
 
+    lemma : (Y ⇒ A) ∧ X ≤ A → Y ⇒ A ≤ X ⇒ A
+    lemma P = T k c
+      where
+        k : ⊢ ((Y ⇒ A) ⇒ (X ⇒ (Y ⇒ A) ∧ X))
+        k = PC3
+        c : ⊢ ((X ⇒ (Y ⇒ A) ∧ X) ⇒ (X ⇒ A))
+        c = MP (MP P PC1) PC2
+
     target : ⊢ ((Y ⇒ A) ⇒ (X ⇒ A))
-    target = lemma X≤Y pre
+    target = lemma pre
 
 ⊥≅¬⊤ : {⊥ ⊤ : Proposition} → ⊢ ⊤ → ((X : Proposition) → ⊥ ≤ X) → ⊥ ≤ ¬ ⊤ × ¬ ⊤ ≤ ⊥
 ⊥≅¬⊤ {⊥}{⊤} truth I = record { fst = I (¬ ⊤) ; snd = initial truth }
