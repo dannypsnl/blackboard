@@ -1,5 +1,4 @@
 open import Cubical.Foundations.Prelude
-open import Cubical.Foundations.HLevels
 open import Cubical.Categories.Category
 
 module cat.generalized-element where
