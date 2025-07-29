@@ -56,22 +56,22 @@ T {A} {B} {C} A≤B B≤C = MP A≤B (MP b PC2)
     a : ⊢ (C ⇒ (B ⇒ A ∧ B))
     a = T C≤A PC3
 
-∧-symm : {A B : Proposition} → (A ∧ B) ≤ (B ∧ A) × (B ∧ A) ≤ (A ∧ B)
-∧-symm {A}{B} = MP PC4 b , MP PC4 b
-  where
-    a : {A B : Proposition} → ⊢ (A ∧ B ⇒ (A ⇒ B ∧ A))
-    a = T PC5 PC3
-    b : {A B : Proposition} → ⊢ ((A ∧ B ⇒ A) ⇒ (A ∧ B ⇒ B ∧ A))
-    b = MP a PC2
-
 ∨-supremum : {A B C : Proposition} → A ≤ C → B ≤ C → (A ∨ B) ≤ C
 ∨-supremum {A}{B}{C} A≤C B≤C = MP B≤C (MP A≤C PC8)
 
-∨-symm : {A B : Proposition} → (A ∨ B) ≤ (B ∨ A) × (B ∨ A) ≤ (A ∨ B)
-∨-symm {A}{B} = a , a
-  where
-    a : {A B : Proposition} → ⊢ ((A ∨ B) ⇒ (B ∨ A))
-    a = MP PC6 (MP PC7 PC8)
+module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
+  ∧-symm : {A B : Proposition} → (A ∧ B) ≡ (B ∧ A)
+  ∧-symm {A}{B} = iff (MP PC4 b) (MP PC4 b)
+    where
+      a : {A B : Proposition} → ⊢ (A ∧ B ⇒ (A ⇒ B ∧ A))
+      a = T PC5 PC3
+      b : {A B : Proposition} → ⊢ ((A ∧ B ⇒ A) ⇒ (A ∧ B ⇒ B ∧ A))
+      b = MP a PC2
+  ∨-symm : {A B : Proposition} → (A ∨ B) ≡ (B ∨ A)
+  ∨-symm {A}{B} = iff a a
+    where
+      a : {A B : Proposition} → ⊢ ((A ∨ B) ⇒ (B ∨ A))
+      a = MP PC6 (MP PC7 PC8)
 
 terminal : {T X : Proposition} → ⊢ T → ⊢ (X ⇒ T)
 terminal is-terminal = MP is-terminal PC1
@@ -153,12 +153,12 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
 X⇒⊥-iso-¬X : {X : Proposition} → ¬ X ≤ X ⇒ ¬ ⊤ × X ⇒ ¬ ⊤ ≤ ¬ X
 X⇒⊥-iso-¬X {X} = PC10 , MP (terminal truth) PC9
 
-module _
-  (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
-  where
-
+module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
   variable
     A B : Proposition
+
+  ¬⊤≡⊥ : ¬ ⊤ ≡ ⊥
+  ¬⊤≡⊥ = iff (initial truth) (false-elim (¬ ⊤))
 
   valid-is-⊤ : {T : Proposition} → ⊢ T → ⊤ ≡ T
   valid-is-⊤ {T} T-valid = iff (MP T-valid PC1) (MP truth PC1)
@@ -183,14 +183,7 @@ module _
       lemma : (B ⇒ ⊥) ∧ A ≤ ⊥ → B ⇒ ⊥ ≤ A ⇒ ⊥
       lemma P = T PC3 (MP (MP P PC1) PC2)
 
-      left : ¬ ⊤ ≤ ⊥
-      left = initial truth
-      right : ⊥ ≤ ¬ ⊤
-      right = false-elim (¬ ⊤)
-      eq : ¬ ⊤ ≡ ⊥
-      eq = iff left right
-
       lemma2 : A ⇒ ¬ ⊤ ≤ ¬ A
       lemma2 = MP (MP truth PC1) PC9
       lemma2' : A ⇒ ⊥ ≤ ¬ A
-      lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) eq (MP (MP truth PC1) PC9)
+      lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) ¬⊤≡⊥ (MP (MP truth PC1) PC9)
