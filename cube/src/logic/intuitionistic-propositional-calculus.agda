@@ -223,6 +223,11 @@ module _
   p1-2-4-c2 : (B ⇒ C) ∧ B ≤ C
   p1-2-4-c2 = adj2 R
 
+  -- Proposition 1.2.6
+  -- condition 2
+  p1-2-6-c2 : ¬ B ∧ B ≡ ⊥
+  p1-2-6-c2 = iff (adj2 PC10) (false-elim (¬ _ ∧ _))
+
   -- Proposition 1.2.7
   -- condition 1
   p1-2-7-c1 : ⊤ ≤ (⊥ ⇒ ⊥)
