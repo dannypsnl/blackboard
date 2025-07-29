@@ -159,16 +159,18 @@ X⇒⊥-iso-¬X : {X : Proposition} → ¬ X ≤ X ⇒ ¬ ⊤ × X ⇒ ¬ ⊤ �
 X⇒⊥-iso-¬X {X} = record { fst = PC10 ; snd = MP (terminal truth) PC9 }
 
 module _
-  (ax1 : {T : Proposition} → ⊢ T → ⊤ ≡ T)
-  (ax2 : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
+  (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
   where
 
   variable
     A B : Proposition
 
+  valid-is-⊤ : {T : Proposition} → ⊢ T → ⊤ ≡ T
+  valid-is-⊤ {T} T-valid = iff (MP T-valid PC1) (MP truth PC1)
+
   -- Proposition 1.2.3 condition 1
   p1-2-3-c1-forward : A ≤ B → ⊤ ≡ A ⇒ B
-  p1-2-3-c1-forward P = ax1 P
+  p1-2-3-c1-forward P = valid-is-⊤ P
   p1-2-3-c1-backward : ⊤ ≡ A ⇒ B → A ≤ B
   p1-2-3-c1-backward P = truth-unique P
 
@@ -191,7 +193,7 @@ module _
       right : ⊥ ≤ ¬ ⊤
       right = false-elim (¬ ⊤)
       eq : ¬ ⊤ ≡ ⊥
-      eq = ax2 left right
+      eq = iff left right
 
       lemma2 : A ⇒ ¬ ⊤ ≤ ¬ A
       lemma2 = MP (MP truth PC1) PC9
