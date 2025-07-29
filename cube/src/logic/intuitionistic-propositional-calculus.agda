@@ -184,6 +184,14 @@ module _
   valid-is-⊤ : {T : Proposition} → ⊢ T → ⊤ ≡ T
   valid-is-⊤ {T} T-valid = iff (MP T-valid PC1) (MP truth PC1)
 
+  ¬X≡X⇒⊥ : {X : Proposition} → ¬ X ≡ X ⇒ ⊥
+  ¬X≡X⇒⊥ {X} = iff PC10 b
+    where
+      a : X ⇒ ¬ ⊤ ≤ ¬ X
+      a = MP (MP truth PC1) PC9
+      b : X ⇒ ⊥ ≤ ¬ X
+      b = subst (λ x → X ⇒ x ≤ ¬ X) ¬⊤≡⊥ a
+
   -- Proposition 1.2.3
   -- condition 1
   p1-2-3-c1-forward : A ≤ B → ⊤ ≡ A ⇒ B
@@ -226,7 +234,13 @@ module _
   -- Proposition 1.2.6
   -- condition 2
   p1-2-6-c2 : ¬ B ∧ B ≡ ⊥
-  p1-2-6-c2 = iff (adj2 PC10) (false-elim (¬ _ ∧ _))
+  -- p1-2-6-c2 = iff (adj2 PC10) (false-elim (¬ _ ∧ _))
+  p1-2-6-c2 {B} = iff r (false-elim (¬ B ∧ B))
+    where
+      t : (B ⇒ ⊥) ∧ B ≤ ⊥
+      t = p1-2-4-c2 {B}{⊥}
+      r : ¬ B ∧ B ≤ ⊥
+      r = subst (λ x → x ∧ B ≤ ⊥) (sym ¬X≡X⇒⊥) t
 
   -- Proposition 1.2.7
   -- condition 1
