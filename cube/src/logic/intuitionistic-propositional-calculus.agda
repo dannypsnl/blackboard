@@ -160,6 +160,9 @@ module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
   ¬⊤≡⊥ : ¬ ⊤ ≡ ⊥
   ¬⊤≡⊥ = iff (initial truth) (false-elim (¬ ⊤))
 
+  ⊤≡¬⊥ : ⊤ ≡ ¬ ⊥
+  ⊤≡¬⊥ = iff (terminal (MP (false-elim (¬ ⊤)) (MP (false-elim ⊤) PC9))) (MP truth PC1)
+
   valid-is-⊤ : {T : Proposition} → ⊢ T → ⊤ ≡ T
   valid-is-⊤ {T} T-valid = iff (MP T-valid PC1) (MP truth PC1)
 
