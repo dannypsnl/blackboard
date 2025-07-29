@@ -155,7 +155,7 @@ X⇒⊥-iso-¬X {X} = PC10 , MP (terminal truth) PC9
 
 module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
   variable
-    A B : Proposition
+    A B C : Proposition
 
   ¬⊤≡⊥ : ¬ ⊤ ≡ ⊥
   ¬⊤≡⊥ = iff (initial truth) (false-elim (¬ ⊤))
@@ -190,3 +190,7 @@ module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
       lemma2 = MP (MP truth PC1) PC9
       lemma2' : A ⇒ ⊥ ≤ ¬ A
       lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) ¬⊤≡⊥ (MP (MP truth PC1) PC9)
+
+  -- Proposition 1.2.7 condition 5
+  p1-2-7-c5 : ¬ A ∨ B ≤ A ⇒ B
+  p1-2-7-c5 = MP PC1 (MP PC10 PC8)
