@@ -160,7 +160,7 @@ X⇒⊥-iso-¬X {X} = record { fst = PC10 ; snd = MP (terminal truth) PC9 }
 
 module _
   (ax1 : {T : Proposition} → ⊢ T → ⊤ ≡ T)
-  (ax2 : ¬ ⊤ ≡ ⊥)
+  (ax2 : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
   where
 
   variable
@@ -186,7 +186,14 @@ module _
       lemma : (B ⇒ ⊥) ∧ A ≤ ⊥ → B ⇒ ⊥ ≤ A ⇒ ⊥
       lemma P = T PC3 (MP (MP P PC1) PC2)
 
+      left : ¬ ⊤ ≤ ⊥
+      left = initial truth
+      right : ⊥ ≤ ¬ ⊤
+      right = false-elim (¬ ⊤)
+      eq : ¬ ⊤ ≡ ⊥
+      eq = ax2 left right
+
       lemma2 : A ⇒ ¬ ⊤ ≤ ¬ A
       lemma2 = MP (MP truth PC1) PC9
       lemma2' : A ⇒ ⊥ ≤ ¬ A
-      lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) ax2 (MP (MP truth PC1) PC9)
+      lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) eq (MP (MP truth PC1) PC9)
