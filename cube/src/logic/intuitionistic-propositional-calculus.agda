@@ -153,7 +153,11 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
 X⇒⊥-iso-¬X : {X : Proposition} → ¬ X ≤ X ⇒ ¬ ⊤ × X ⇒ ¬ ⊤ ≤ ¬ X
 X⇒⊥-iso-¬X {X} = PC10 , MP (terminal truth) PC9
 
-module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
+module _
+  (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
+  (adj1 : {A B C : Proposition} → A ∧ B ≤ C → A ≤ B ⇒ C)
+  (adj2 : {A B C : Proposition} → A ≤ B ⇒ C → A ∧ B ≤ C)
+  where
   variable
     A B C : Proposition
 
@@ -166,17 +170,24 @@ module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
   valid-is-⊤ : {T : Proposition} → ⊢ T → ⊤ ≡ T
   valid-is-⊤ {T} T-valid = iff (MP T-valid PC1) (MP truth PC1)
 
-  -- Proposition 1.2.3 condition 1
+  -- Proposition 1.2.3
+  -- condition 1
   p1-2-3-c1-forward : A ≤ B → ⊤ ≡ A ⇒ B
   p1-2-3-c1-forward P = valid-is-⊤ P
   p1-2-3-c1-backward : ⊤ ≡ A ⇒ B → A ≤ B
   p1-2-3-c1-backward P = truth-unique P
+  -- condition 2
+  p1-2-3-c2 : A ≡ ⊤ ⇒ A
+  p1-2-3-c2 = iff PC1 right
+    where
+    right : ⊤ ⇒ A ≤ A
+    right = MP truth (adj1 (MP PC4 (MP PC5 PC2)))
 
-  -- Proposition 1.2.7 condition 1
+  -- Proposition 1.2.7
+  -- condition 1
   p1-2-7-c1 : ⊤ ≤ (⊥ ⇒ ⊥)
   p1-2-7-c1 = MP (false-elim ⊥) PC1
-
-  -- Proposition 1.2.7 condition 2
+  -- condition 2
   p1-2-7-c2 : {A B : Proposition} → A ≤ B → ¬ B ≤ ¬ A
   p1-2-7-c2 {A}{B} A≤B = T PC10 (T (lemma pre) lemma2')
     where
@@ -190,7 +201,6 @@ module _ (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B) where
       lemma2 = MP (MP truth PC1) PC9
       lemma2' : A ⇒ ⊥ ≤ ¬ A
       lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) ¬⊤≡⊥ (MP (MP truth PC1) PC9)
-
-  -- Proposition 1.2.7 condition 5
+  -- condition 5
   p1-2-7-c5 : ¬ A ∨ B ≤ A ⇒ B
   p1-2-7-c5 = MP PC1 (MP PC10 PC8)
