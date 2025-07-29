@@ -153,6 +153,20 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
 X⇒⊥-iso-¬X : {X : Proposition} → ¬ X ≤ X ⇒ ¬ ⊤ × X ⇒ ¬ ⊤ ≤ ¬ X
 X⇒⊥-iso-¬X {X} = PC10 , MP (terminal truth) PC9
 
+prod : {P Q R : Proposition} → P ≤ Q → P ≤ R → P ≤ Q ∧ R
+prod {P}{Q}{R} P1 P2 = MP P2 (MP d e)
+  where
+  a : P ≤ (Q ⇒ R ⇒ Q ∧ R)
+  a = MP PC3 PC1
+  b : P ⇒ (Q ⇒ R ⇒ Q ∧ R) ≤ (P ⇒ Q) ⇒ (P ⇒ (R ⇒ Q ∧ R))
+  b = PC2
+  c : (P ⇒ Q) ≤ (P ⇒ (R ⇒ Q ∧ R))
+  c = MP a b
+  d : ⊢ (P ⇒ (R ⇒ Q ∧ R))
+  d = MP P1 c
+  e : P ⇒ (R ⇒ Q ∧ R) ≤ (P ⇒ R) ⇒ (P ⇒ Q ∧ R)
+  e = PC2
+
 module _
   (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
   (adj1 : {A B C : Proposition} → A ∧ B ≤ C → A ≤ B ⇒ C)
@@ -182,6 +196,27 @@ module _
     where
     right : ⊤ ⇒ A ≤ A
     right = MP truth (adj1 (MP PC4 (MP PC5 PC2)))
+  -- condition 3
+  p1-2-3-c3 : A ⇒ B ∧ C ≡ (A ⇒ B) ∧ (A ⇒ C)
+  p1-2-3-c3 = iff left right
+    where
+    t : A ⇒ B ∧ C ≤ A ⇒ B
+    t = MP (MP PC4 PC1) PC2
+    t2 : A ⇒ B ∧ C ≤ A ⇒ C
+    t2 = MP (MP PC5 PC1) PC2
+    left : A ⇒ B ∧ C ≤ (A ⇒ B) ∧ (A ⇒ C)
+    left = prod t t2
+
+    j : ⊢ (A ⇒ (B ⇒ (C ⇒ B ∧ C)))
+    j = MP PC3 PC1
+    c : (A ⇒ (B ⇒ (C ⇒ B ∧ C))) ≤ ((A ⇒ B) ⇒ (A ⇒ (C ⇒ B ∧ C)))
+    c = PC2
+    d : (A ⇒ B) ≤ (A ⇒ (C ⇒ B ∧ C))
+    d = MP j c
+    e : (A ⇒ (C ⇒ B ∧ C)) ≤ (A ⇒ C) ⇒ A ⇒ B ∧ C
+    e = PC2
+    right : (A ⇒ B) ∧ (A ⇒ C) ≤ A ⇒ B ∧ C
+    right = adj2 (T d e)
 
   -- Proposition 1.2.7
   -- condition 1
