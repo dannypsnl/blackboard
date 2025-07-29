@@ -1,4 +1,5 @@
 open import Cubical.Foundations.Prelude hiding (_∧_; _∨_)
+open import Cubical.Data.Sigma hiding (_∧_; _∨_)
 
 module logic.intuitionistic-propositional-calculus where
 
@@ -28,6 +29,10 @@ data ⊢ : Proposition → Type where
 
   MP : {A B : Proposition} → ⊢ A → ⊢ (A ⇒ B) → ⊢ B
 
+_≤_ : (A B : Proposition) → Type
+A ≤ B = ⊢ (A ⇒ B)
+infix 20 _≤_
+
 -- The followings are formalization of Borceux Vol3. Lemma 1.1.3
 R : {A : Proposition} → ⊢ (A ⇒ A)
 R {A} = MP PC1 (b {A})
@@ -45,24 +50,14 @@ T {A} {B} {C} A≤B B≤C = MP A≤B (MP b PC2)
     b : ⊢ (A ⇒ (B ⇒ C))
     b = MP B≤C PC1
 
-_≤_ : (A B : Proposition) → Type
-A ≤ B = ⊢ (A ⇒ B)
-infix 20 _≤_
-
 ∧-infimum : {A B C : Proposition} → C ≤ A → C ≤ B → C ≤ (A ∧ B)
 ∧-infimum {A}{B}{C} C≤A C≤B = MP C≤B (MP a PC2)
   where
     a : ⊢ (C ⇒ (B ⇒ A ∧ B))
     a = T C≤A PC3
 
-record _×_ (A B : Type) : Type where
-  field
-    fst : A
-    snd : B
-infix 10 _×_
-
 ∧-symm : {A B : Proposition} → (A ∧ B) ≤ (B ∧ A) × (B ∧ A) ≤ (A ∧ B)
-∧-symm {A}{B} = record { fst = MP PC4 b ; snd = MP PC4 b }
+∧-symm {A}{B} = MP PC4 b , MP PC4 b
   where
     a : {A B : Proposition} → ⊢ (A ∧ B ⇒ (A ⇒ B ∧ A))
     a = T PC5 PC3
@@ -73,7 +68,7 @@ infix 10 _×_
 ∨-supremum {A}{B}{C} A≤C B≤C = MP B≤C (MP A≤C PC8)
 
 ∨-symm : {A B : Proposition} → (A ∨ B) ≤ (B ∨ A) × (B ∨ A) ≤ (A ∨ B)
-∨-symm {A}{B} = record { fst = a ; snd = a }
+∨-symm {A}{B} = a , a
   where
     a : {A B : Proposition} → ⊢ ((A ∨ B) ⇒ (B ∨ A))
     a = MP PC6 (MP PC7 PC8)
@@ -115,7 +110,7 @@ F-is-functor : {A X Y : Proposition} → X ≤ Y → F A X ≤ F A Y
 F-is-functor {A}{X}{Y} X≤Y = MP (MP X≤Y PC1) PC2
 
 F-is-right-adjoint-to-G : {A B : Proposition} → A ≤ F B (G B A) × G A (F A B) ≤ B
-F-is-right-adjoint-to-G {A}{B} = record { fst = f ; snd = s }
+F-is-right-adjoint-to-G {A}{B} = f , s
   where
     f : A ≤ B ⇒ (A ∧ B)
     f = PC3
@@ -152,11 +147,11 @@ F'-is-contra-functor {A}{X}{Y} X≤Y = target
     target = lemma pre
 
 ⊥≅¬⊤ : ⊥ ≤ ¬ ⊤ × ¬ ⊤ ≤ ⊥
-⊥≅¬⊤ = record { fst = false-elim (¬ ⊤) ; snd = initial truth }
+⊥≅¬⊤ = false-elim (¬ ⊤) , initial truth
 
 -- Here I define ⊥ := ¬ ⊤ to simplify proof.
 X⇒⊥-iso-¬X : {X : Proposition} → ¬ X ≤ X ⇒ ¬ ⊤ × X ⇒ ¬ ⊤ ≤ ¬ X
-X⇒⊥-iso-¬X {X} = record { fst = PC10 ; snd = MP (terminal truth) PC9 }
+X⇒⊥-iso-¬X {X} = PC10 , MP (terminal truth) PC9
 
 module _
   (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
@@ -184,7 +179,7 @@ module _
     where
       pre : (B ⇒ ⊥) ∧ A ≤ ⊥
       pre = MP ((T PC5 A≤B)) (MP PC4 PC2)
-      
+
       lemma : (B ⇒ ⊥) ∧ A ≤ ⊥ → B ⇒ ⊥ ≤ A ⇒ ⊥
       lemma P = T PC3 (MP (MP P PC1) PC2)
 
