@@ -217,6 +217,11 @@ module _
     e = PC2
     right : (A ⇒ B) ∧ (A ⇒ C) ≤ A ⇒ B ∧ C
     right = adj2 (T d e)
+  
+  -- Proposition 1.2.4
+  -- condition 2
+  p1-2-4-c2 : (B ⇒ C) ∧ B ≤ C
+  p1-2-4-c2 = adj2 (MP (adj1 PC5) PC2)
 
   -- Proposition 1.2.7
   -- condition 1
