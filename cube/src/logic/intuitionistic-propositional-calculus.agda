@@ -234,13 +234,14 @@ module _
   -- Proposition 1.2.6
   -- condition 2
   p1-2-6-c2 : ¬ B ∧ B ≡ ⊥
-  -- p1-2-6-c2 = iff (adj2 PC10) (false-elim (¬ _ ∧ _))
-  p1-2-6-c2 {B} = iff r (false-elim (¬ B ∧ B))
+  p1-2-6-c2 {B} = iff proof1 (false-elim (¬ B ∧ B))
     where
       t : (B ⇒ ⊥) ∧ B ≤ ⊥
       t = p1-2-4-c2 {B}{⊥}
-      r : ¬ B ∧ B ≤ ⊥
-      r = subst (λ x → x ∧ B ≤ ⊥) (sym ¬X≡X⇒⊥) t
+      proof1 : ¬ B ∧ B ≤ ⊥
+      proof1 = subst (λ x → x ∧ B ≤ ⊥) (sym ¬X≡X⇒⊥) t
+      proof2 : ¬ B ∧ B ≤ ⊥
+      proof2 = adj2 PC10
 
   -- Proposition 1.2.7
   -- condition 1
