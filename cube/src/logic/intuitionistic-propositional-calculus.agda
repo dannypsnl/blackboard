@@ -325,3 +325,35 @@ module _
   -- condition 5
   p1-2-7-c5 : ¬ A ∨ B ≤ A ⇒ B
   p1-2-7-c5 = MP PC1 (MP PC10 PC8)
+
+  -- Proposition 1.2.8
+  p1-2-8-c1 : A ≤ B → ¬ ¬ A ≤ ¬ ¬ B
+  p1-2-8-c1 A≤B = p1-2-7-c2 (p1-2-7-c2 A≤B)
+  p1-2-8-c2 : A ≤ ¬ ¬ A
+  p1-2-8-c2 {A} = subst (λ x → A ≤ x) (sym (a ∙ b)) r
+    where
+    a : ¬ (¬ A) ≡ (¬ A) ⇒ ⊥
+    a = ¬X≡X⇒⊥ {¬ A}
+    b : (¬ A) ⇒ ⊥ ≡ (A ⇒ ⊥) ⇒ ⊥
+    b = congS (λ x → x ⇒ ⊥) ¬X≡X⇒⊥
+
+    p : (A ⇒ ⊥) ∧ A ≤ ⊥
+    p = adj2 (MP (adj1 PC5) PC2)
+    r : A ≤ (A ⇒ ⊥) ⇒ ⊥
+    r = adj1 (subst (λ x → x ≤ ⊥) (∧-symm iff) p)
+  p1-2-8-c3 : (¬ ¬ ⊥ ≡ ⊥) × (¬ ¬ ⊤ ≡ ⊤)
+  p1-2-8-c3 = iff l (false-elim (¬ (¬ ⊥))) , iff (MP truth PC1) r
+    where
+    l2 : ⊥ ≤ ⊥
+    l2 = R
+    l1 : ¬ ⊤ ≤ ⊥
+    l1 = subst (λ x → x ≤ ⊥) (sym ¬⊤≡⊥) l2
+    l : ¬ (¬ ⊥) ≤ ⊥
+    l = subst (λ x → ¬ x ≤ ⊥) ⊤≡¬⊥ l1
+
+    r2 : ⊤ ≤ ⊤
+    r2 = R
+    r1 : ⊤ ≤ ¬ ⊥
+    r1 = subst (λ x → ⊤ ≤ x) ⊤≡¬⊥ r2
+    r : ⊤ ≤ ¬ (¬ ⊤)
+    r = subst (λ x → ⊤ ≤ ¬ x) (sym ¬⊤≡⊥) r1
