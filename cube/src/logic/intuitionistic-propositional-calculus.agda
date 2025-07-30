@@ -171,6 +171,8 @@ module _
   (iff : {A B : Proposition} → A ≤ B → B ≤ A → A ≡ B)
   (adj1 : {A B C : Proposition} → A ∧ B ≤ C → A ≤ B ⇒ C)
   (adj2 : {A B C : Proposition} → A ≤ B ⇒ C → A ∧ B ≤ C)
+  -- This is about Proposition 1.2.2, skipped here and assume it
+  (distrib : {A B C : Proposition} → A ∧ (B ∨ C) ≡ (A ∧ B) ∨ (A ∧ C))
   where
   variable
     A B C : Proposition
@@ -295,6 +297,31 @@ module _
     c = subst (λ x → ¬ ((A ⇒ ⊥) ⇒ ⊥) ≤ x) ¬X≡X⇒⊥ b
     r : ((A ⇒ ⊥) ⇒ ⊥) ⇒ ⊥ ≤ A ⇒ ⊥
     r = subst (λ x → x ≤ A ⇒ ⊥) ¬X≡X⇒⊥ c
+  -- condition 4
+  p1-2-7-c4 : ¬ (A ∨ B) ≡ ¬ A ∧ ¬ B
+  p1-2-7-c4 {A}{B} = iff l r
+    where
+    l : ¬ (A ∨ B) ≤ ¬ A ∧ ¬ B
+    l = prod (p1-2-7-c2 PC6) (p1-2-7-c2 PC7)
+
+    r8 : (¬ B ∧ ⊥) ∨ (¬ A ∧ ⊥) ≤ ⊥
+    r8 = MP PC5 (MP PC5 PC8)
+    r7 : (¬ B ∧ ⊥) ∨ (¬ A ∧ (¬ B ∧ B)) ≤ ⊥
+    r7 = subst (λ x → (¬ B ∧ ⊥) ∨ (¬ A ∧ x) ≤ ⊥) (sym p1-2-6-c2) r8
+    r6 : (¬ B ∧ (¬ A ∧ A)) ∨ (¬ A ∧ (¬ B ∧ B)) ≤ ⊥
+    r6 = subst (λ x → (¬ B ∧ x) ∨ (¬ A ∧ (¬ B ∧ B)) ≤ ⊥) (sym p1-2-6-c2) r7
+    r5 : (¬ B ∧ (¬ A ∧ A)) ∨ (¬ A ∧ ¬ B ∧ B) ≤ ⊥
+    r5 = subst (λ x → (¬ B ∧ (¬ A ∧ A)) ∨ x ≤ ⊥) (sym ∧-assoc) r6
+    r4 : (¬ B ∧ ¬ A ∧ A) ∨ (¬ A ∧ ¬ B ∧ B) ≤ ⊥
+    r4 = subst (λ x → x ∨ (¬ A ∧ ¬ B ∧ B) ≤ ⊥) (sym ∧-assoc) r5
+    r3 : (¬ A ∧ ¬ B ∧ A) ∨ (¬ A ∧ ¬ B ∧ B) ≤ ⊥
+    r3 = subst (λ x → (x ∧ A) ∨ (¬ A ∧ ¬ B ∧ B) ≤ ⊥) (∧-symm iff) r4
+    r2 : ¬ A ∧ ¬ B ∧ (A ∨ B) ≤ ⊥
+    r2 = subst (λ x → x ≤ ⊥) (sym distrib) r3
+    r1 : ¬ A ∧ ¬ B ≤ (A ∨ B) ⇒ ⊥
+    r1 = adj1 r2
+    r : ¬ A ∧ ¬ B ≤ ¬ (A ∨ B)
+    r = subst (λ x → ¬ A ∧ ¬ B ≤ x) (sym ¬X≡X⇒⊥) r1
   -- condition 5
   p1-2-7-c5 : ¬ A ∨ B ≤ A ⇒ B
   p1-2-7-c5 = MP PC1 (MP PC10 PC8)
