@@ -261,6 +261,21 @@ module _
       lemma2 = MP (MP truth PC1) PC9
       lemma2' : A ⇒ ⊥ ≤ ¬ A
       lemma2' = subst (λ z → A ⇒ z ≤ ¬ A) ¬⊤≡⊥ (MP (MP truth PC1) PC9)
+  -- condition 3
+  p1-2-7-c3 : {A : Proposition} → A ⇒ ⊥ ≡ ((A ⇒ ⊥) ⇒ ⊥) ⇒ ⊥
+  p1-2-7-c3 {A} = iff l r
+    where
+    l : A ⇒ ⊥ ≤ ((A ⇒ ⊥) ⇒ ⊥) ⇒ ⊥
+    l = adj1 (MP PC4 (MP PC5 PC2))
+
+    a : A ≤ (A ⇒ ⊥) ⇒ ⊥
+    a = adj1 (MP PC4 (MP PC5 PC2))
+    b : ¬ ((A ⇒ ⊥) ⇒ ⊥) ≤ ¬ A
+    b = p1-2-7-c2 a
+    c : ¬ ((A ⇒ ⊥) ⇒ ⊥) ≤ A ⇒ ⊥
+    c = subst (λ x → ¬ ((A ⇒ ⊥) ⇒ ⊥) ≤ x) ¬X≡X⇒⊥ b
+    r : ((A ⇒ ⊥) ⇒ ⊥) ⇒ ⊥ ≤ A ⇒ ⊥
+    r = subst (λ x → x ≤ A ⇒ ⊥) ¬X≡X⇒⊥ c
   -- condition 5
   p1-2-7-c5 : ¬ A ∨ B ≤ A ⇒ B
   p1-2-7-c5 = MP PC1 (MP PC10 PC8)
