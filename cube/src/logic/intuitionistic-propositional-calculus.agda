@@ -215,10 +215,8 @@ module _
 
   -- Proposition 1.2.3
   -- condition 1
-  p1-2-3-c1-forward : A ≤ B → ⊤ ≡ A ⇒ B
-  p1-2-3-c1-forward P = valid-is-⊤ P
-  p1-2-3-c1-backward : ⊤ ≡ A ⇒ B → A ≤ B
-  p1-2-3-c1-backward P = truth-unique P
+  p1-2-3-c1 : (A ≤ B → ⊤ ≡ A ⇒ B) × (⊤ ≡ A ⇒ B → A ≤ B)
+  p1-2-3-c1 = (λ P → valid-is-⊤ P) , (λ P → truth-unique P)
   -- condition 2
   p1-2-3-c2 : A ≡ ⊤ ⇒ A
   p1-2-3-c2 = iff PC1 right
