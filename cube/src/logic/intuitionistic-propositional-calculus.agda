@@ -175,6 +175,27 @@ module _
   variable
     A B C : Proposition
 
+  ∧-assoc : {A B C : Proposition} → A ∧ B ∧ C ≡ A ∧ (B ∧ C)
+  ∧-assoc {A}{B}{C} = iff l r
+    where
+    l1 : A ∧ B ∧ C ≤ A
+    l1 = T PC4 PC4
+    l2 : A ∧ B ∧ C ≤ B
+    l2 = T PC4 PC5
+    l3 : A ∧ B ∧ C ≤ C
+    l3 = PC5
+    l : A ∧ B ∧ C ≤ A ∧ (B ∧ C)
+    l = prod l1 (prod l2 l3)
+
+    r1 : A ∧ (B ∧ C) ≤ A
+    r1 = PC4
+    r2 : A ∧ (B ∧ C) ≤ B
+    r2 = T PC5 PC4
+    r3 : A ∧ (B ∧ C) ≤ C
+    r3 = T PC5 PC5
+    r : A ∧ (B ∧ C) ≤ A ∧ B ∧ C
+    r = prod (prod r1 r2) r3
+
   ¬⊤≡⊥ : ¬ ⊤ ≡ ⊥
   ¬⊤≡⊥ = iff (initial truth) (false-elim (¬ ⊤))
 
