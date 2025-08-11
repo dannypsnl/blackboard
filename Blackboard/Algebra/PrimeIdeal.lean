@@ -9,7 +9,7 @@ class Ideal.IsPrime (I : Ideal R) : Prop where
 
 open Ideal.Quotient
 
-theorem quotient_is_integral_domain_implies_the_ideal_is_prime
+lemma backward
   (I : Ideal R)
   [I.IsTwoSided]
   [nzd : NoZeroDivisors (R ⧸ I)]
@@ -23,4 +23,31 @@ theorem quotient_is_integral_domain_implies_the_ideal_is_prime
       rw [something] at this
       repeat rw [eq_zero_iff_mem] at this
       exact this P
+  }
+
+lemma forward
+  (I : Ideal R)
+  [I.IsTwoSided]
+  [prime : I.IsPrime]
+  : NoZeroDivisors (R ⧸ I) := {
+    eq_zero_or_eq_zero_of_mul_eq_zero := by
+      intros a b P
+      rw [←mk_out a, ←mk_out b]
+      repeat rw [eq_zero_iff_mem]
+
+      rw [←mk_out a] at P
+      rw [←mk_out b] at P
+      have R : mk I (Quotient.out a) * mk I (Quotient.out b) = mk I (Quotient.out a * Quotient.out b) := rfl
+      rw [R] at P
+      rw [eq_zero_iff_mem] at P
+
+      exact prime.property (Quotient.out a) (Quotient.out b) P
+  }
+
+theorem ideal_is_prime_iff_quotient_is_integral_domain
+  (I : Ideal R)
+  [I.IsTwoSided]
+  : I.IsPrime ↔ NoZeroDivisors (R ⧸ I) := {
+    mp _prime := forward I
+    mpr _nzd := backward I
   }
