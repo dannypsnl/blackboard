@@ -23,6 +23,11 @@ d 𝕘 = 𝕘 𝕕 1
 ex : F
 ex = d (𝕗 ∘ 𝕘)
 
+-- The order here is how many times the function get differential
+--
+-- e.g. order of f is 0, order of f' is 1, and so on
+--
+-- for combined function, take the highest order of parts.
 order : F → ℕ
 order (f + g) = max (order f) (order g)
 order (f × g) = max (order f) (order g)
@@ -35,20 +40,6 @@ max-suc : (n : ℕ) → suc n ≡ max n (suc n)
 max-suc zero = refl
 max-suc (suc n) = cong suc (max-suc n)
 
-suc-max : (n : ℕ) → suc n ≡ max (suc n) n
-suc-max zero = refl
-suc-max (suc n) = cong suc (suc-max n)
-
-max-reduce : (n m : ℕ) → max (suc n) (suc m) ≡ max (max (suc n) (max m n)) (suc m)
-max-reduce zero zero = refl
-max-reduce zero (suc m) = cong suc (max-suc m)
-max-reduce (suc n) zero = cong suc (subst (λ x → suc n ≡ max x 0) (suc-max n) refl)
-max-reduce (suc n) (suc m) = cong suc (max-reduce n m)
-
-max-self : (n : ℕ) → n ≡ max n n
-max-self zero = refl
-max-self (suc n) = cong suc (max-self n)
-
 order[dh]≡order[h]+1 : (h : F) → order (d h) ≡ suc (order h)
 order[dh]≡order[h]+1 (f + g) =
   subst2 (λ x y → max x y ≡ suc (order (f + g))) (sym (order[dh]≡order[h]+1 f)) (sym (order[dh]≡order[h]+1 g))
@@ -58,6 +49,17 @@ order[dh]≡order[h]+1 (f × g) =
     (sym (order[dh]≡order[h]+1 f)) (sym (order[dh]≡order[h]+1 g))
     (subst (λ x → x ≡ suc (order (f × g))) (max-reduce (order f) (order g))
       (cong suc refl))
+  where
+  suc-max : (n : ℕ) → suc n ≡ max (suc n) n
+  suc-max zero = refl
+  suc-max (suc n) = cong suc (suc-max n)
+
+  max-reduce : (n m : ℕ) → max (suc n) (suc m) ≡ max (max (suc n) (max m n)) (suc m)
+  max-reduce zero zero = refl
+  max-reduce zero (suc m) = cong suc (max-suc m)
+  max-reduce (suc n) zero = cong suc (subst (λ x → suc n ≡ max x 0) (suc-max n) refl)
+  max-reduce (suc n) (suc m) = cong suc (max-reduce n m)
+
 order[dh]≡order[h]+1 (f ∘ g) =
   subst2 (λ x y → max x (max (order g) y) ≡  suc (max (order f) (order g)))
     (sym (order[dh]≡order[h]+1 f))
