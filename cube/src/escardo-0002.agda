@@ -1,4 +1,3 @@
-open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude
 open import Cubical.Data.Sigma
 open import Cubical.Data.Sum
@@ -15,5 +14,5 @@ variable
 𝟚 = Bool
 
 middle : (isProp P) → P ⊎ (P → ⊥) → 𝟚
-middle is-Prop (inl x) = true 
+middle is-Prop (inl x) = true
 middle is-Prop (inr x) = false
