@@ -1,0 +1,4 @@
+name: mltt
+depend:
+include: src
+flags: --safe
