@@ -8,12 +8,7 @@ cong {X} {Y} f refl = refl
 
 +-assoc : ∀ l m n → (l + m) + n ≡ l + (m + n)
 +-assoc zero     m n = refl
-+-assoc (suc l) m n = goal
- where
-  IH : (l + m) + n ≡ l + (m + n)
-  IH = +-assoc l m n
-  goal : suc ((l + m) + n) ≡ suc (l + (m + n))
-  goal = cong suc IH
++-assoc (suc l) m n = cong suc (+-assoc l m n)
 
 data Vec (A : Type) : Nat → Type where
   [] : Vec A 0
@@ -30,7 +25,7 @@ _≡[_]_ : {X : Type} {A : X → Type} {x₀ x₁ : X} → A x₀ → x₀ ≡ x
 a₀ ≡[ refl ] a₁ = (a₀ ≡ a₁)
 
 module vector-appending-proof where
-  -- proposition-does-not-make-sense : (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
+  -- proposition (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs) does not make sense, since the type are "different" in meta-level
 
   cong-cons : ∀{X} {m n} (x : X) {xs : Vec X m} {ys : Vec X n} (p : m ≡ n)
           → xs ≡[ p ] ys → x :: xs ≡[ cong suc p ] x :: ys
@@ -41,7 +36,5 @@ module vector-appending-proof where
   ++-assoc zero     m n []       ys zs = refl
   ++-assoc (suc l) m n (x :: xs) ys zs = goal
    where
-    IH : ((xs ++ ys) ++ zs) ≡[ +-assoc l m n ] (xs ++ (ys ++ zs))
-    IH = ++-assoc l m n xs ys zs
     goal : x :: (xs ++ ys) ++ zs ≡[ cong suc (+-assoc l m n) ] x :: (xs ++ (ys ++ zs))
-    goal = cong-cons x (+-assoc l m n) IH
+    goal = cong-cons x (+-assoc l m n) (++-assoc l m n xs ys zs)
