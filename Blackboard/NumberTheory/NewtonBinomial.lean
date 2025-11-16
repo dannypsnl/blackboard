@@ -11,3 +11,13 @@ theorem magic : ∃ c, ∀ (x : ℝ),
   use 7/256
   intro x
   ring_nf
+
+theorem magic2 : ∃ c d e, ∀ (x : ℝ),
+  (1 + 3 * x / 2 + c * x ^ 2 + d * x ^ 3 + e * x ^ 4) ^ 2 - (1 + x) ^ 3
+  = x ^ 5 * (3 / 128 + 11 * x / 512 - 3 * x ^ 2 / 1024 + 9 * x ^ 3 / 16384)
+  := by
+  use 3/8
+  use -1/16
+  use 3/128
+  intro x
+  ring_nf
