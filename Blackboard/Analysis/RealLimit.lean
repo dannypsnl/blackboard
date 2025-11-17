@@ -4,7 +4,8 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Analysis.RCLike.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 
-def SeqLim (a: ℕ → ℝ) (L : ℝ) : Prop := ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - L| < ε
+def SeqLim (a : ℕ → ℝ) (L : ℝ) : Prop := ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - L| < ε
+def SeqConv (a : ℕ → ℝ): Prop := ∃L, SeqLim a L
 
 theorem ArchProp (_: 0 < (ε : ℝ)) : ∃ (N : ℕ), 1 / ε < ↑N := by
   have fact : 1 / ε ≤ ⌈1 / ε⌉₊ := by bound
