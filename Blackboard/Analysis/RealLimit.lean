@@ -37,3 +37,47 @@ theorem an_coverges_to_zero
   field_simp at eps_inv_lt_N
   have f4 : N * ε ≤ n * ε := by bound
   linarith [eps_inv_lt_N, f4]
+
+theorem an_diverges
+  (a : ℕ → ℝ)
+  (ha: ∀ (n : ℕ), a n = (-1) ^ n)
+  : ¬SeqConv a := by
+  change SeqConv a →False
+  intro H
+  choose L hL using H
+  have := hL (1/2) one_half_pos
+  choose N hN using this
+  have left := hN N (by exact Nat.le_refl N)
+  have right := hN (N+1) (Nat.le_add_right N 1)
+  rw [ha N] at left
+  rw [ha (N+1)] at right
+
+  have fact : |((-1)^N - L) + -((-1)^(N+1) - L)| ≤ |((-1)^N - L)| + |-((-1)^(N+1) - L)| := by apply abs_add_le
+  have fact2 : |(-1)^N - L| + |(-1)^(N+1) - L| < 1/2 + 1/2 := by
+    exact add_lt_add left right
+  have final : |((-1)^N - L) + -((-1)^(N+1) - L)| < 1 := by
+    have : |((-1)^N - L)| + |(-1)^(N+1) - L| = |((-1)^N - L)| + |-((-1)^(N+1) - L)| := by
+      refine (add_right_inj |(-1) ^ N - L|).mpr ?_
+      exact Eq.symm (abs_neg ((-1) ^ (N + 1) - L))
+    rewrite [Eq.symm this] at fact
+    have := lt_of_le_of_lt fact fact2
+    ring_nf at this
+    ring_nf
+    exact this
+  have : (-1 : ℝ)^(N+1) = -1 * ((-1)^N) := by
+    exact pow_succ' (-1) N
+  rewrite [this] at final
+
+  induction N.even_or_odd
+  case inl isEven =>
+    have : (-1)^N = (1 : ℝ) := Even.neg_one_pow isEven
+    rewrite [this] at final
+    ring_nf at final
+    rewrite [abs_two] at final
+    exact absurd final (by exact Nat.not_ofNat_lt_one)
+  case inr isOdd =>
+    have : (-1)^N = (-1 : ℝ) := Odd.neg_one_pow isOdd
+    rewrite [this] at final
+    ring_nf at final
+    rewrite [abs_neg, abs_two] at final
+    exact absurd final (by exact Nat.not_ofNat_lt_one)
