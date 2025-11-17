@@ -67,17 +67,16 @@ theorem an_diverges
   have : (-1 : ℝ)^(N+1) = -1 * ((-1)^N) := by
     exact pow_succ' (-1) N
   rewrite [this] at final
+  ring_nf at final
 
   induction N.even_or_odd
   case inl isEven =>
     have : (-1)^N = (1 : ℝ) := Even.neg_one_pow isEven
     rewrite [this] at final
     ring_nf at final
-    rewrite [abs_two] at final
     exact absurd final (by exact Nat.not_ofNat_lt_one)
   case inr isOdd =>
     have : (-1)^N = (-1 : ℝ) := Odd.neg_one_pow isOdd
     rewrite [this] at final
     ring_nf at final
-    rewrite [abs_neg, abs_two] at final
     exact absurd final (by exact Nat.not_ofNat_lt_one)
