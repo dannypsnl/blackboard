@@ -47,20 +47,18 @@ theorem an_diverges
   choose L hL using H
   have := hL (1/2) one_half_pos
   choose N hN using this
-  have left := hN N (by exact Nat.le_refl N)
-  have right := hN (N+1) (Nat.le_add_right N 1)
-  rw [ha N] at left
-  rw [ha (N+1)] at right
 
   have fact : |((-1)^N - L) + -((-1)^(N+1) - L)| ≤ |((-1)^N - L)| + |-((-1)^(N+1) - L)| := by apply abs_add_le
-  have fact2 : |(-1)^N - L| + |(-1)^(N+1) - L| < 1/2 + 1/2 := by
-    exact add_lt_add left right
   have final : |((-1)^N - L) + -((-1)^(N+1) - L)| < 1 := by
     have : |((-1)^N - L)| + |(-1)^(N+1) - L| = |((-1)^N - L)| + |-((-1)^(N+1) - L)| := by
       refine (add_right_inj |(-1) ^ N - L|).mpr ?_
       exact Eq.symm (abs_neg ((-1) ^ (N + 1) - L))
     rewrite [Eq.symm this] at fact
-    have := lt_of_le_of_lt fact fact2
+    have left := hN N (by exact Nat.le_refl N)
+    have right := hN (N+1) (Nat.le_add_right N 1)
+    rw [ha N] at left
+    rw [ha (N+1)] at right
+    have := lt_of_le_of_lt fact (add_lt_add left right)
     ring_nf at this
     ring_nf
     exact this
