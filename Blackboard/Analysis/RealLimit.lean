@@ -78,3 +78,26 @@ theorem an_diverges
     rewrite [this] at final
     ring_nf at final
     exact absurd final (by exact Nat.not_ofNat_lt_one)
+
+theorem scale (a b : ℕ → ℝ) (L : ℝ)
+  (h : SeqLim a L) -- a 收斂到 L
+  (b_scaled : ∀ n , b n = 2 * a n) -- b 等於 2a
+  -- 證明 b 收斂到 2L
+  : SeqLim b (2 * L) := by
+  change ∀ ε > 0 , ∃ N , ∀ n ≥ N , |b n - 2*L| < ε
+  intro ε hε
+
+  change ∀ ε1 > 0 , ∃ N1 , ∀ n ≥ N1 , |a n - L| < ε1 at h
+  have eps_half_pos : 0 < ε / 2 := by bound
+  specialize h (ε / 2) eps_half_pos
+  choose N hN using h
+
+  use N
+  intro n hn
+  specialize b_scaled n
+  have factor : 2 * a n - 2 * L = 2 * (a n - L) := by ring_nf
+  rw [b_scaled, factor]
+  rw [abs_mul]
+  specialize hN n hn
+  norm_num
+  bound
