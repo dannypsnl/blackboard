@@ -79,7 +79,7 @@ theorem an_diverges
     ring_nf at final
     exact absurd final (by exact Nat.not_ofNat_lt_one)
 
-theorem scale (a b : ℕ → ℝ) (L : ℝ)
+theorem scale (a b : ℕ → ℝ)
   (h : SeqLim a L) -- a 收斂到 L
   (b_scaled : ∀ n , b n = 2 * a n) -- b 等於 2a
   -- 證明 b 收斂到 2L
