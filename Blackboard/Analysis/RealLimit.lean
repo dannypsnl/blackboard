@@ -101,3 +101,35 @@ theorem scale (a b : ℕ → ℝ)
   specialize hN n hn
   norm_num
   linarith
+
+
+theorem add_seq (a b c : ℕ → ℝ)
+  (P : SeqLim a L)
+  (Q : SeqLim b K)
+  (c_n : ∀ n , c n = a n + b n)
+  : SeqLim c (L + K) := by
+  change ∀ ε > 0 , ∃ N , ∀ n ≥ N , |c n - (L + K)| < ε
+  intro ε hε
+
+  have eps_half_pos : 0 < ε / 2 := by bound
+  change ∀ ε1 > 0 , ∃ N1 , ∀ n ≥ N1 , |a n - L| < ε1 at P
+  change ∀ ε2 > 0 , ∃ N2 , ∀ n ≥ N2 , |b n - K| < ε2 at Q
+  specialize P (ε / 2) eps_half_pos
+  specialize Q (ε / 2) eps_half_pos
+
+  choose N1 hN1 using P
+  choose N2 hN2 using Q
+  use (N1 + N2)
+  intro n hn
+  specialize c_n n
+  rw [c_n]
+  have : a n + b n - (L + K) = (a n - L) + (b n - K) := by ring_nf
+  rw [this]
+  have ineq : |a n - L + (b n - K)| ≤ |a n - L| + |(b n - K)| := by
+    apply abs_add_le
+
+  have ineq_a : N1 ≤ n := by bound
+  specialize hN1 n ineq_a
+  have ineq_b : N2 ≤ n := by bound
+  specialize hN2 n ineq_b
+  bound
