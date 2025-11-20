@@ -100,4 +100,4 @@ theorem scale (a b : ℕ → ℝ) (L : ℝ)
   rw [abs_mul]
   specialize hN n hn
   norm_num
-  bound
+  linarith
