@@ -102,7 +102,6 @@ theorem scale (a b : ℕ → ℝ)
   norm_num
   linarith
 
-
 theorem add_seq (a b c : ℕ → ℝ)
   (P : SeqLim a L)
   (Q : SeqLim b K)
