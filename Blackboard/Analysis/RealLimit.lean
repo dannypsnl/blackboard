@@ -132,3 +132,25 @@ theorem add_seq (a b c : ℕ → ℝ)
   have ineq_b : N2 ≤ n := by bound
   specialize hN2 n ineq_b
   bound
+
+theorem Limit_is_unique (a : ℕ → ℝ)
+  (aToL : SeqLim a L)
+  (aToM : SeqLim a M) : L = M := by
+  by_contra h
+  have f0 : L - M ≠ 0 := by bound
+  have f1 : 0 < |L - M| := by exact abs_sub_pos.mpr h
+  have f2 : 0 < |L - M| / 2 := by bound
+  specialize aToL (|L - M| / 2) f2
+  specialize aToM (|L - M| / 2) f2
+  choose N1 hN1 using aToL
+  choose N2 hN2 using aToM
+  have f3 : N1 ≤ N1 + N2 := by bound
+  have f4 : N2 ≤ N1 + N2 := by bound
+  specialize hN1 ( N1 + N2 ) f3
+  specialize hN2 ( N1 + N2 ) f4
+  have f5 : |L - M| = |(L - a (N1 + N2)) + (a ( N1 + N2 ) - M)| := by ring_nf
+  have f6 : |(L - a (N1 + N2)) + (a (N1 + N2) - M)| ≤ |(L - a (N1 + N2))| + |(a ( N1 + N2 ) - M)| := by apply abs_add_le
+  have f7 : |(L - a (N1 + N2))| = |-(a (N1 + N2) - L)| := by ring_nf
+  have f8 : |-(a (N1 + N2) - L)| = |(a (N1 + N2) - L)| := by
+    apply abs_neg
+  linarith
