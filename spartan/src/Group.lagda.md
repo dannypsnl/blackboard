@@ -40,11 +40,23 @@ Now we encounter the first proposition.
 
 ## Proposition 1
 
+The purpose of this proposition is to tell the identity is unique, so if $h$ is another identity (in fact, this condition can be refined as below), then $h = e$.
+
+```
+  propopsition-1 : {{_ : Group G}} {h : G} → left-neutral h _∙_ → h ＝ e
+  propopsition-1 {h} h-is-identity =
+    h ＝⟨ sym (neu-r h) ⟩
+    h ∙ e ＝⟨ h-is-identity e ⟩
+    e ∎
+```
+
+## Proposition 2
+
 If $h_1$ and $h_2$ are both inverses of $g$ in the group $G$, then $h_1 = h_2$.
 
 ```
-  propopsition-1 : {{_ : Group G}} {g h1 h2 : G} → (g ∙ h1 ＝ e) → (g ∙ h2 ＝ e) → h1 ＝ h2
-  propopsition-1 {g}{h1}{h2} fact1 fact2 =
+  propopsition-2 : {{_ : Group G}} {g h1 h2 : G} → (g ∙ h1 ＝ e) → (g ∙ h2 ＝ e) → h1 ＝ h2
+  propopsition-2 {g}{h1}{h2} fact1 fact2 =
     h1 ＝⟨ sym (neu-l h1) ⟩
     e ∙ h1 ＝⟨ ap (_∙ h1) (sym cancel) ⟩
     g ⁻¹ ∙ g ∙ h1 ＝⟨ ∙-assoc (g ⁻¹) g h1 ⟩
