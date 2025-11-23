@@ -32,7 +32,7 @@ record Group (G : 𝓤 ̇) : 𝓤 ̇ where
 Wrap the following into private module
 
 ```
-module _ (G : 𝓤 ̇) where
+module _ (G H : 𝓤 ̇) where
   open Group {{...}}
 ```
 
@@ -73,8 +73,8 @@ If $h_1$ and $h_2$ are both inverses of $g$ in the group $G$, then $h_1 = h_2$.
 Every element of group is cancellable.
 
 ```
-  propopsition-3 : {{_ : Group G}} {g h a : G} → (g ∙ a ＝ h ∙ a → g ＝ h) × (a ∙ g ＝ a ∙ h → g ＝ h)
-  propopsition-3 {g}{h}{a} = I , II
+  propopsition-3 : {G : 𝓤 ̇} {{_ : Group G}} {g h a : G} → (g ∙ a ＝ h ∙ a → g ＝ h) × (a ∙ g ＝ a ∙ h → g ＝ h)
+  propopsition-3 {G} {g}{h}{a} = I , II
     where
     I : g ∙ a ＝ h ∙ a → g ＝ h
     I fact =
@@ -97,4 +97,43 @@ Every element of group is cancellable.
       a ⁻¹ ∙ a ∙ h ＝⟨ ap (_∙ h) (cancel .pr₁) ⟩
       e ∙ h ＝⟨ neu-l h ⟩
       h ∎
+```
+
+## Group Homomorphism
+
+We first define what's a group homomorphism:
+
+```
+  IsGroupHomomorphism : {{_ : Group G}} {{_ : Group H}} (φ : G → H) → 𝓤 ̇
+  IsGroupHomomorphism φ = (x y : G) → φ (x ∙ y) ＝ (φ x) ∙ (φ y)
+```
+
+## Proposition 4
+
+Group homomorphism preserves identity element.
+
+```
+  propopsition-4 : {{_ : Group G}} {{_ : Group H}} (φ : G → H)
+    → IsGroupHomomorphism φ
+    → φ e ＝ e
+  propopsition-4 φ is-hom = VI
+    where
+    I : e ⁻¹ ＝ e
+    I = e ⁻¹ ＝⟨ sym (neu-r (e ⁻¹)) ⟩
+        e ⁻¹ ∙ e ＝⟨ cancel .pr₁ ⟩
+        e ∎
+
+    II : φ e ＝ (φ e) ∙ (φ e)
+    II = φ e ＝⟨ ap (λ x → φ x) (sym (cancel .pr₁)) ⟩
+         φ (e ⁻¹ ∙ e) ＝⟨ ap (λ x → φ (x ∙ e)) I ⟩
+         φ (e ∙ e) ＝⟨ is-hom e e ⟩
+         (φ e) ∙ (φ e) ∎
+
+    III : (φ e) ∙ (φ e) ＝ e ∙ (φ e)
+    III = (φ e) ∙ (φ e) ＝⟨ sym II ⟩
+          φ e ＝⟨ sym (neu-l (φ e)) ⟩
+          e ∙ φ e ∎
+
+    VI : (φ e) ＝ e
+    VI = (propopsition-3 .pr₁) III
 ```
