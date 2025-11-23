@@ -1,0 +1,3 @@
+[submodule "spartan/TypeTopology"]
+	path = spartan/TypeTopology
+	url = https://github.com/martinescardo/TypeTopology.git

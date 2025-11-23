@@ -1,0 +1,4 @@
+name: spartan
+depend:
+include: src TypeTopology/source
+flags:
