@@ -14,7 +14,7 @@ open import UF.Sets-Properties
 Definition
 
 ```agda
-record Group (G : 𝓤 ̇) : 𝓤 ̇ where
+record Group (G : 𝓤 ̇ ) : 𝓤 ̇  where
   field
     size : is-set G
     _∙_ : G → G → G
