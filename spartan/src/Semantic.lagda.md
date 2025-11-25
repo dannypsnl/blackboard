@@ -22,6 +22,8 @@ The collection of types
 ```
 data Type : 𝓤₀ ̇  where
   Nat : Type
+  _⊗_ : Type → Type → Type
+infixl 50 _⊗_
 ```
 
 A context is a list of types
@@ -77,6 +79,16 @@ Plus rule says that if Γ say `a` and `b` has type `Nat`, then `a + b` this expr
                   → Γ ⊢ Nat
                ---------------
                   → Γ ⊢ Nat
+```
+
+```
+  pair⟨_,_⟩    : ∀ {Γ} {A B : Type} → Γ ⊢ A
+                  → Γ ⊢ B
+                ---------------
+                  → Γ ⊢ A ⊗ B
+```
+
+```
 infix 40 _⊢_
 ```
 
@@ -91,6 +103,7 @@ The type `Nat` is ℕ
 ```
   ⟦_⟧ty : Type → 𝓤₀ ̇
   ⟦ Nat ⟧ty = ℕ
+  ⟦ A ⊗ B ⟧ty = ⟦ A ⟧ty × ⟦ B ⟧ty
 ```
 
 1. An empty context can be view as unit
@@ -120,6 +133,7 @@ The type `Nat` is ℕ
   ⟦ var x     ⟧term = ⟦ x ⟧var
   ⟦ literal n ⟧term γ = n
   ⟦ t `+ u    ⟧term γ = ⟦ t ⟧term γ ℕ+ ⟦ u ⟧term γ
+  ⟦ pair⟨ a , b ⟩ ⟧term γ = ⟦ a ⟧term γ , ⟦ b ⟧term γ
 ```
 
 The semantic can be generalized to that
@@ -167,13 +181,17 @@ contexts have projection maps
 Language specific things is that, this langauge has
 
 1. a type `Nat`
-2. can take ℕ as literal
-3. has an addition for type `Nat`
+2. a type `Pair` that takes two types and forms a new type
+3. can take ℕ as literal (introduction of `Nat` from external literal)
+4. has an addition for type `Nat` (introduction of `Nat` from two `Nat`)
+5. a pair arrow (introduction of `Pair X Y` from `X` and `Y`)
 
 ```
     NatObj       : Obj
+    PairObj      : Obj → Obj → Obj
     literalArrow : ∀ {X} → ℕ → X ==> NatObj
     addArrow     : (NatObj ⟨×⟩ NatObj) ==> NatObj
+    pairArrow     : ∀ {X Y} → (X ⟨×⟩ Y) ==> PairObj X Y
 ```
 
 Interpretation is that, each denotation can be explained by the semantic
@@ -184,6 +202,7 @@ module Interpretation (𝒜 : Sem) where
 
   ⟦_⟧ty : Type → Obj
   ⟦ Nat ⟧ty = NatObj
+  ⟦ A ⊗ B ⟧ty = PairObj ⟦ A ⟧ty ⟦ B ⟧ty
 
   ⟦_⟧ctxt : Context → Obj
   ⟦ ε     ⟧ctxt = Emp
@@ -197,6 +216,7 @@ module Interpretation (𝒜 : Sem) where
   ⟦ var x     ⟧term = ⟦ x ⟧var
   ⟦ literal n ⟧term = literalArrow n
   ⟦ t `+ u    ⟧term = addArrow ∘ ⟨ ⟦ t ⟧term , ⟦ u ⟧term ⟩
+  ⟦ pair⟨ a , b ⟩ ⟧term = pairArrow ∘ ⟨ ⟦ a ⟧term , ⟦ b ⟧term ⟩
 ```
 
 In this sense let's review standard semantic
@@ -218,8 +238,10 @@ Standard .project₂ = pr₂
 Standard .⟨_,_⟩ = λ f g x → f x , g x
 
 Standard .NatObj = ℕ
+Standard .PairObj X Y = X × Y
 Standard .literalArrow n _ = n
 Standard .addArrow (m , n) = m ℕ+ n
+Standard .pairArrow p = p
 
 ⟦_⟧standard : ε ▷ Nat ⊢ Nat → ℕ → ℕ
 ⟦ t ⟧standard n = ⟦ t ⟧term (⋆ , n)
@@ -278,8 +300,10 @@ NormSem .project₁ = normProj₁
 NormSem .project₂ = normProj₂
 NormSem .⟨_,_⟩ = normPair
 NormSem .NatObj = NormNat
+NormSem .PairObj X Y = X ×N Y
 NormSem .literalArrow = normLit
 NormSem .addArrow = normAdd
+NormSem .pairArrow Γ = id
 
 normalise : ε ▷ Nat ⊢ Nat → ℕ × List (ε ▷ Nat ∋ Nat)
 normalise t = ⟦ t ⟧term (ε ▷ Nat) (⋆ , (0 , [ here ]))
