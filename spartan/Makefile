@@ -3,8 +3,7 @@ FILES := sp-0000 sp-0001 sp-0002
 
 default: $(FILES:%=html/%.html)
 
-.SECONDEXPANSION:
-html/%.md: src/$$(subst .,/,%).lagda.md
+html/%.md: src/%.lagda.md
 	agda --html --html-highlight=code $<
 
 html/%.html: html/%.md
