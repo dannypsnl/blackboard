@@ -1,5 +1,5 @@
 TITLE=Base on TypeTopology
-FILES := Group Semantic
+FILES := sp-0000 sp-0001 sp-0002
 
 default: $(FILES:%=html/%.html)
 
