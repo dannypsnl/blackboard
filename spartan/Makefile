@@ -1,5 +1,8 @@
 TITLE=Base on TypeTopology
-FILES := sp-0000 sp-0001 sp-0002
+# Find all .lagda.md files in src/ and convert paths
+LAGDA_FILES := $(shell find src -name "*.lagda.md" | sort)
+FILES := $(LAGDA_FILES:src/%.lagda.md=%)
+FILES := $(subst /,.,$(FILES))
 
 default: $(FILES:%=html/%.html)
 
