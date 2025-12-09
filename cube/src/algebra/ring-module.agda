@@ -37,16 +37,44 @@ record ModuleAxioms (S : CommRing ℓ) (V : Type ℓ) (𝟘 : V) (_+_ : V → V 
 record ModuleStr (R : CommRing ℓ) (V : Type ℓ) : Type (ℓ-suc ℓ) where
   field
     0v         : V
-    _+_        : V → V → V
+    _⨁_        : V → V → V
     _⨂_        : ⟨ R ⟩ → V → V
-    -_         : V → V
-    isModule : ModuleAxioms R V 0v _+_ -_ _⨂_
+    neg        : V → V
+    isModule : ModuleAxioms R V 0v _⨁_ neg _⨂_
 
-  infix  40 -_
   infixl 30 _⨂_
-  infixl 20 _+_
+  infixl 20 _⨁_
 
   open ModuleAxioms isModule public
 
 Module : (ℓ : Level) (R : CommRing ℓ) → Type (ℓ-suc ℓ)
 Module ℓ R = TypeWithStr ℓ (ModuleStr R)
+
+module _ (R : CommRing ℓ) (V : Module ℓ R) where
+  open CommRingStr (snd R)
+  open ModuleStr (snd V)
+
+  abstract
+    cancelL : (u v w : ⟨ V ⟩) → u ⨁ v ≡ u ⨁ w → v ≡ w
+    cancelL u v w P =
+      v                  ≡⟨ sym +-neu ⟩
+      0v ⨁ v             ≡⟨ cong (_⨁ v) (sym +-cancel) ⟩
+      u ⨁ neg u ⨁ v     ≡⟨ cong (_⨁ v) +-comm ⟩
+      (neg u) ⨁ u ⨁ v   ≡⟨ sym +-assoc ⟩
+      (neg u) ⨁ (u ⨁ v) ≡⟨ cong (neg u ⨁_) P ⟩
+      (neg u) ⨁ (u ⨁ w) ≡⟨ +-assoc ⟩
+      (neg u) ⨁ u ⨁ w   ≡⟨ cong (_⨁ w) (+-comm ∙ +-cancel) ⟩
+      0v ⨁ w             ≡⟨ +-neu ⟩
+      w ∎
+
+    scalar-zero : (v : ⟨ V ⟩) → 0r ⨂ v ≡ 0v
+    scalar-zero v = cancelL (0r ⨂ v) (0r ⨂ v) 0v (A ∙ B)
+      where
+      A : (0r ⨂ v) ⨁ (0r ⨂ v) ≡ 0r ⨂ v
+      A = (0r ⨂ v) ⨁ (0r ⨂ v) ≡⟨ sym distrib2 ⟩
+          (0r + 0r) ⨂ v        ≡⟨ (cong (_⨂ v) (+IdR 0r)) ⟩
+          0r ⨂ v ∎
+      B : 0r ⨂ v ≡ (0r ⨂ v) ⨁ 0v
+      B = 0r ⨂ v        ≡⟨ sym +-neu ⟩
+          0v ⨁ (0r ⨂ v) ≡⟨ +-comm ⟩
+          (0r ⨂ v) ⨁ 0v ∎
