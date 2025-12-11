@@ -21,3 +21,11 @@ theorem if_u_is_not_zero_then_fu_cannot_be_zero
     rw [CommGroupWithZero.mul_inv_cancel u u_is_not_zero]
   rw [H] at this
   simp at this
+
+theorem if_fu_is_zero_then_u_must_be_zero
+  (f : F → G) (is_hom : IsFieldHom f)
+  : ∀ u : F, f u = 0 → u = 0 := by
+  intros u H
+  by_contra P
+  have := if_u_is_not_zero_then_fu_cannot_be_zero f is_hom u P
+  exact this H
