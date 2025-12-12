@@ -23,7 +23,65 @@ theorem always_biproduct
   and it's the universal object with this property -/
 class IsEq [Category C] {A B L : C} (e : L ⟶ A) (f g : A ⟶ B) : Prop where
   prop : e ≫ f = e ≫ g
-  factor : (k : X ⟶ A) → k ≫ f = k ≫ g → ∃ s : X ⟶ L, k = s ≫ e
+  factor : (k : X ⟶ A) → k ≫ f = k ≫ g → ∃! s : X ⟶ L, k = s ≫ e
+
+theorem is_eq_is_mono
+  [Category C]
+  {A B : C}
+  (e : L ⟶ A)
+  (f g : A ⟶ B)
+  (eq : IsEq e f g)
+  : Mono e := {
+  right_cancellation a b ea_eq_eb := by
+    have : (a ≫ e) ≫ f = (a ≫ e) ≫ g := by
+      simp
+      rw [eq.prop]
+    have A := eq.factor (a ≫ e) this
+    have s_uniq := A.choose_spec.2
+    have B_eq : b = A.choose := by
+      rw [s_uniq b]
+      simp
+      exact ea_eq_eb
+    have A_eq : a = A.choose := s_uniq a rfl
+    rw [A_eq]
+    rw [B_eq]
+}
+
+noncomputable def equalizer_is_unique
+  [Category C]
+  (A B : C)
+  (e1 : L1 ⟶ A)
+  (e2 : L2 ⟶ A)
+  (f g : A ⟶ B)
+  (H1 : IsEq e1 f g)
+  (H2 : IsEq e2 f g)
+  : L1 ≅ L2 :=
+  let h1 : ∃! a, e2 = e1 ⊚ a := H1.factor e2 H2.prop
+  let h2 : ∃! b, e1 = e2 ⊚ b := H2.factor e1 H1.prop
+  let a := h1.choose
+  let b := h2.choose
+{
+  hom := b
+  inv := a
+  hom_inv_id := by
+    have : e1 = e2 ⊚ b := h2.choose_spec.1
+    have : e1 ⊚ 𝟙 _ = e1 ⊚ a ⊚ b := by
+      simp
+      rw [←h1.choose_spec.1]
+      exact this
+    have cancel : Mono e1 := is_eq_is_mono e1 f g H1
+    rw [cancel_mono e1] at this
+    exact id (Eq.symm this)
+  inv_hom_id := by
+    have : e2 = e1 ⊚ a := h1.choose_spec.1
+    have : e2 ⊚ 𝟙 _ = e2 ⊚ b ⊚ a := by
+      simp
+      rw [←h2.choose_spec.1]
+      exact this
+    have cancel : Mono e2 := is_eq_is_mono e2 f g H2
+    rw [cancel_mono e2] at this
+    exact id (Eq.symm this)
+}
 
 theorem equalizer_is_commutative
   [Category C]
@@ -63,7 +121,7 @@ theorem kernel_equiv
         simp at kf_minus_kg
         have : k ≫ f = k ≫ g := by
           exact eq_of_sub_eq_zero kf_minus_kg
-        have : ∃ s , k = s ≫ e := has_eq_f_g.factor k this
+        have : ∃! s , k = s ≫ e := has_eq_f_g.factor k this
         exact this
     }
   ONLY_IF : IsKer e (f - g) → IsEq e f g := by
@@ -77,6 +135,6 @@ theorem kernel_equiv
         have : (f - g) ⊚ k = 0 ⊚ k := by
           simp
           exact sub_eq_zero_of_eq kf_eq_kg
-        have : ∃ s , k = s ≫ e := has_ker.factor k this
+        have : ∃! s , k = s ≫ e := has_ker.factor k this
         exact this
     }
