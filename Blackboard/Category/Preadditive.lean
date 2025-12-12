@@ -20,7 +20,7 @@ theorem always_biproduct
   exact HasColimit.mk { cocone := cc.toCocone, isColimit := bc.isColimit }
 
 /-- `IsEq e f g` is say the morphism `e` is the equalizer of `f` and `g`
-  and it's uniquely factor any other similiar thing -/
+  and it's the universal object with this property -/
 class IsEq [Category C] {A B L : C} (e : L ⟶ A) (f g : A ⟶ B) : Prop where
   prop : e ≫ f = e ≫ g
   factor : (k : X ⟶ A) → k ≫ f = k ≫ g → ∃ s : X ⟶ L, k = s ≫ e
