@@ -25,7 +25,7 @@ abbrev p2 {X Y : K} [HasBinaryBiproduct X Y] : X ⊞ Y ⟶ Y := biprod.snd
 abbrev s1 {X Y : K} [HasBinaryBiproduct X Y] : X ⟶ X ⊞ Y := biprod.inl
 abbrev s2 {X Y : K} [HasBinaryBiproduct X Y] : Y ⟶ X ⊞ Y := biprod.inr
 
-theorem diagonal_is_characterized_by_projections
+theorem diagonal_is_characterized_by_projections_sub
   (C : K)
   (ΔC : C ⟶ C ⊞ C)
   (H1 : 𝟙 C = ΔC ≫ p1)
@@ -115,3 +115,17 @@ theorem diagonal_is_characterized_by_projections
         )
       }
   }
+
+-- And a + b = a - (0 - b) hence this is enought to recover
+theorem morphism_add_is_characterized_by_biproduct
+  (C : K)
+  (a b : A ⟶ C)
+  : ∃ c : A ⟶ C ⊞ C, a - b = c ≫ (p1 - p2) := by
+  let c := Limits.biprod.lift a b
+  exists c
+  calc
+    a - b = c ≫ p1 - c ≫ p2 := by
+      rw [biprod.lift_fst a b]
+      rw [biprod.lift_snd a b]
+    _ = c ≫ (p1 - p2) := by
+      rw [Preadditive.comp_sub c p1 p2]
