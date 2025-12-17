@@ -116,7 +116,7 @@ theorem diagonal_is_characterized_by_projections_sub
       }
   }
 
--- And a + b = a - (0 - b) hence this is enought to recover
+-- And a + b = a - (0 - b) hence this is enough to recover
 theorem morphism_add_is_characterized_by_biproduct
   (C : K)
   (a b : A ⟶ C)
