@@ -37,10 +37,12 @@ theorem if_fu_is_zero_then_u_must_be_zero
   case pos P => exact P
   case neg P =>
     have : f u * f (u ⁻¹) = 1 := by
-      rw [←is_hom.preserve_one]
-      rw [←is_hom.preserve_mul]
-      refine congrArg f ?_
-      rw [CommGroupWithZero.mul_inv_cancel u P]
+      calc
+        f u * f (u ⁻¹) = f (u * u⁻¹) := by rw [←is_hom.preserve_mul]
+        f (u * u⁻¹) = f 1 := by
+          refine congr_arg f ?_
+          exact CommGroupWithZero.mul_inv_cancel u P
+        f 1 = 1 := by rw [←is_hom.preserve_one]
     rw [H] at this
     simp at this
 
