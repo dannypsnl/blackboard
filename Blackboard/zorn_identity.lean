@@ -4,6 +4,16 @@ import Mathlib.Order.Zorn
 
 -- Reading https://golem.ph.utexas.edu/category/2012/10/the_zorn_identity.html
 variable [PartialOrder α]
+
+-- A more general version is defined in Mathlib.Order.Zorn
+-- called `exists_maximal_of_chains_bounded`, below use that to
+-- prove Zorn's fixed point theorem first
+theorem zorn_maximal
+  (h : ∀ c : Set α, IsChain LE.le c → ∃ (ub : α), ∀ a ∈ c, a ≤ ub)
+  : ∃ (m : α), ∀ (a : α), m ≤ a → a ≤ m := by
+  -- TODO: prove (2) => (1)
+  sorry
+
 def IsInflationary
   (f : α → α) : Prop :=
   ∀ x, x ≤ (f x)
