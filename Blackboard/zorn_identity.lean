@@ -5,20 +5,12 @@ import Mathlib.Order.Zorn
 -- Reading https://golem.ph.utexas.edu/category/2012/10/the_zorn_identity.html
 variable [PartialOrder α]
 
--- A more general version is defined in Mathlib.Order.Zorn
--- called `exists_maximal_of_chains_bounded`, below use that to
--- prove Zorn's fixed point theorem first
-theorem zorn_maximal
-  (h : ∀ c : Set α, IsChain LE.le c → ∃ (ub : α), ∀ a ∈ c, a ≤ ub)
-  : ∃ (m : α), ∀ (a : α), m ≤ a → a ≤ m := by
-  -- TODO: prove (2) => (1)
-  sorry
-
-def IsInflationary
-  (f : α → α) : Prop :=
+def IsInflationary (f : α → α) : Prop :=
   ∀ x, x ≤ (f x)
 
--- This proof is say (1) => (2)
+def IsMaximal (m : α) : Prop := ∀ x : α, m ≤ x → x ≤ m
+
+-- This proves (1) => (2)
 theorem zorn_fixed_point
   (h : ∀ c : Set α, IsChain LE.le c → ∃ (ub : α), ∀ a ∈ c, a ≤ ub)
   : ∀ f : α → α, IsInflationary f → ∃ k, f k = k
@@ -31,6 +23,24 @@ theorem zorn_fixed_point
   have left : m ≤ f m := f_is_inflationary m
   have right : f m ≤ m := max.choose_spec (f m) left
   exact le_antisymm right left
+
+-- A more general version is defined in Mathlib.Order.Zorn
+-- called `exists_maximal_of_chains_bounded`, below use that to
+-- prove Zorn's fixed point theorem first
+-- This proves (2) => (1)
+theorem zorn_maximal
+  (h : ∀ c : Set α, IsChain LE.le c → ∃ (ub : α), ∀ a ∈ c, a ≤ ub)
+  (p : ∃ s : α → α,
+    IsInflationary s ∧ (∀ x : α, s x = x → IsMaximal x))
+  : ∃ (m : α), IsMaximal m := by
+  let s := Classical.choose p
+  have many := Classical.choose_spec p
+  have s_is_inflationary := many.left
+  have second := zorn_fixed_point h s s_is_inflationary
+  let k := second.choose
+  exists k
+  have : s k = k := second.choose_spec
+  exact many.right k this
 
 -- TODO: how to write this down?
 -- theorem zorn_chain
