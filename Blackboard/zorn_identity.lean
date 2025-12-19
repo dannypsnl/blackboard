@@ -22,3 +22,9 @@ theorem zorn_fixed_point
   have right : f m ≤ m := max.choose_spec (f m) left
   exact le_antisymm right left
 
+-- TODO: how to write this down?
+-- theorem zorn_chain
+--   (u : ∀ c : Set α, IsChain le c → α)
+--   (h : ∀ c : Set α, IsChain le c → ∀ a ∈ c, a ≤ u c)
+--   : ∃ c : Set α, IsChain le c → u c ∈ c := by
+--   sorry
