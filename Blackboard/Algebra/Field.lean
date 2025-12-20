@@ -1,5 +1,4 @@
 import Mathlib.Algebra.Field.Defs
-import Mathlib.Algebra.GroupWithZero.Defs
 
 theorem Each_field_is_an_integral_domain
   [Field K]
@@ -13,9 +12,8 @@ theorem Each_field_is_an_integral_domain
     have H2 : a * b * (1 / a) = b := by
       rw [mul_comm, ←mul_assoc, mul_comm _ a]
       simp
-      have := DivisionRing.mul_inv_cancel a a_ne_zero
-      rw [this]
-      simp
+      rw [DivisionRing.mul_inv_cancel a a_ne_zero]
+      exact one_mul b
     rw [←H2, H]
     simp
   }

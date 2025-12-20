@@ -64,7 +64,7 @@ theorem inf_order_inequality [Group G]
   intro Ne
   have F : a ^ m * (a ^ n)⁻¹ = 1 := by
     refine Eq.symm (eq_mul_inv_of_mul_eq ?h)
-    simp
+    rw [one_mul]
     exact id (Eq.symm Ne)
   exact P' F
 
@@ -73,9 +73,9 @@ theorem x_minus_y_eq_zero_implies_x_eq_y
   (x y : G)
   : x - y = 0 → x = y := by
   intros x_minus_y_eq_zero
-  have xx := neg_add_cancel x
+  have xx : -x + x = 0 := neg_add_cancel x
   rw [add_comm] at xx
   rw [sub_eq_add_neg] at x_minus_y_eq_zero
-  have C := eq_neg_of_add_eq_zero_left x_minus_y_eq_zero
+  have C : x = - - y := eq_neg_of_add_eq_zero_left x_minus_y_eq_zero
   rw [neg_neg] at C
   exact C

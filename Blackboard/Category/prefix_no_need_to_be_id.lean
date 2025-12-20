@@ -1,4 +1,4 @@
-import Mathlib.CategoryTheory.Types
+import Mathlib.CategoryTheory.Types.Basic
 
 -- Counterexample: https://dannypsnl.srht.site/math-000X
 example : ∃ (X Y : Type) (p : X → X) (f : X → Y), p ≠ id ∧ (fun x => f (p x)) = f := by

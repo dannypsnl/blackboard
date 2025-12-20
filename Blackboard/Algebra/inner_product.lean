@@ -31,6 +31,8 @@ theorem vector_eq_iff_inner_product_eq
   simp [←fact', fact''] at P
   have u_minus_v_eq_zero : u - v = 0 := inner_self_eq_zero.mp P
   rw [sub_eq_add_neg] at u_minus_v_eq_zero
-  have Result := eq_neg_of_add_eq_zero_left u_minus_v_eq_zero
-  rw [neg_neg] at Result
-  exact Result
+  calc
+    u = - - v := by
+      rw [eq_neg_of_add_eq_zero_left u_minus_v_eq_zero]
+    _ = v := by
+      rw [neg_neg]
