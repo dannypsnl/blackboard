@@ -9,10 +9,8 @@ example : ∃ (X Y : Type) (p : X → X) (f : X → Y), p ≠ id ∧ (fun x => f
   -- Let f be the unique function to Unit
   use (fun _ => ())
   constructor
-  case h.left =>
+  case left =>
     intro h
     have : (fun b => !b) true = id true := by rw [h]
     simp at this
-  case h.right =>
-    funext x
-    rfl
+  case right => rfl
