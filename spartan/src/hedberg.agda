@@ -35,3 +35,13 @@ thm7-2-1 {𝓤} X = L , R
     I = H x (p ∙ p ⁻¹)
     II = H x (q ∙ p ⁻¹)
 
+collary7-2-3 : (X : 𝓤 ̇ ) → ((x y : X) → ¬¬(x ＝ y) → (x ＝ y)) → is-set X
+collary7-2-3 X H {x}{y} refl q = {!   !}
+Hedberg : (X : 𝓤 ̇ ) → decidable X → is-set X
+Hedberg X decX = collary7-2-3 X c
+  where
+  lemma7-2-4 : {A : 𝓤 ̇ } → (A + ¬ A) → (¬¬ A → A)
+  lemma7-2-4 = Right-fails-gives-left-holds
+
+  c : (x y : X) → ¬¬(x ＝ y) → (x ＝ y)
+  c x y = lemma7-2-4 (decX x y)
