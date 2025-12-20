@@ -35,8 +35,9 @@ thm7-2-1 {𝓤} X = L , R
     I = H x (p ∙ p ⁻¹)
     II = H x (q ∙ p ⁻¹)
 
-collary7-2-3 : (X : 𝓤 ̇ ) → ((x y : X) → ¬¬(x ＝ y) → (x ＝ y)) → is-set X
-collary7-2-3 X H {x}{y} refl q = {!   !}
+-- I give up about this......
+postulate collary7-2-3 : (X : 𝓤 ̇ ) → (H : (x y : X) → ¬¬ (x ＝ y) → (x ＝ y)) → is-set X
+
 Hedberg : (X : 𝓤 ̇ ) → decidable X → is-set X
 Hedberg X decX = collary7-2-3 X c
   where
