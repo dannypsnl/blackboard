@@ -1,9 +1,7 @@
 module no-fin-0 where
 
 -- https://homotopytypetheory.org/2011/04/10/just-kidding-understanding-identity-elimination-in-homotopy-type-theory/
-open import Agda.Primitive
-  renaming (Set to Type; Setω to Typeω)
-open import Agda.Builtin.Equality
+open import Agda.Primitive renaming (Set to Type; Setω to Typeω)
 open import Agda.Builtin.Unit
 open import Agda.Builtin.Nat
 
