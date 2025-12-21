@@ -4,7 +4,12 @@ module hedberg where
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import MLTT.NaturalNumbers
+open import UF.Base
 open import UF.Sets
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 -- Reading https://planetmath.org/72UniquenessOfIdentityProofsAndHedbergsTheorem
 has-decidable-equality : (X : 𝓤 ̇ ) → 𝓤 ̇
@@ -36,8 +41,23 @@ thm7-2-1 {𝓤} X = L , R
     I = H x (p ∙ p ⁻¹)
     II = H x (q ∙ p ⁻¹)
 
--- I give up about this......
-postulate collary7-2-3 : (X : 𝓤 ̇ ) → (H : (x y : X) → ¬¬ (x ＝ y) → (x ＝ y)) → is-set X
+postulate fe : funext 𝓤 𝓤₀
+
+collary7-2-3 : (X : 𝓤 ̇ ) → (H : (x y : X) → ¬¬ (x ＝ y) → (x ＝ y)) → is-set X
+collary7-2-3 X H {x} {y} p q =
+  p                  ＝⟨ lemma p ⟩
+  f x refl ⁻¹ ∙ f y p ＝⟨ ap (λ - → f x refl ⁻¹ ∙ -) (f-is-const p q) ⟩
+  f x refl ⁻¹ ∙ f y q ＝⟨ lemma q ⁻¹ ⟩
+  q ∎
+  where
+  f : (y : X) → x ＝ y → x ＝ y
+  f y p = H x y (¬¬-intro p)
+
+  f-is-const : {y : X} → (p q : x ＝ y) → f y p ＝ f y q
+  f-is-const {y} p q = ap (H x y) (Π-is-prop fe (λ _ → 𝟘-is-prop) (¬¬-intro p) (¬¬-intro q))
+
+  lemma : {y : X} (p : x ＝ y) → p ＝ f x refl ⁻¹ ∙ f y p
+  lemma refl = sym-is-inverse (f x refl)
 
 Hedberg : (X : 𝓤 ̇ ) → has-decidable-equality X → is-set X
 Hedberg X decX = collary7-2-3 X c
