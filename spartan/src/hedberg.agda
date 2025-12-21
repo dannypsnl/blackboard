@@ -22,20 +22,13 @@ thm7-2-1 {𝓤} X = L , R
   L isSet x p = isSet p refl
 
   R : ((x : X) → (p : x ＝ x) → p ＝ refl) → is-set X
-  R H {x}{y} p q = p ＝⟨ ∙-agrees-with-∙' p refl ⁻¹ ⟩
-                   p ∙' (𝓻𝓮𝒻𝓵 y) ＝⟨ ap (p ∙'_) (H y (p ⁻¹ ∙ p) ⁻¹) ⟩
-                   p ∙' ((p ⁻¹) ∙ p) ＝⟨ ∙-agrees-with-∙' p (p ⁻¹ ∙ p) ⟩
-                   p ∙ ((p ⁻¹) ∙ p) ＝⟨ ∙assoc p (p ⁻¹) p ⁻¹ ⟩
-                   p ∙ (p ⁻¹) ∙ p ＝⟨ ap (_∙ p) (I ∙ II ⁻¹) ⟩
-                   q ∙ (p ⁻¹) ∙ p ＝⟨ ∙assoc q (p ⁻¹) p ⟩
-                   q ∙ ((p ⁻¹) ∙ p) ＝⟨ ∙-agrees-with-∙' q ((p ⁻¹) ∙ p) ⁻¹ ⟩
-                   q ∙' ((p ⁻¹) ∙ p) ＝⟨ ap (q ∙'_) (H y (p ⁻¹ ∙ p)) ⟩
-                   q ∙' (𝓻𝓮𝒻𝓵 y) ＝⟨ ∙-agrees-with-∙' q refl ⟩
-                   q ∎
+  R H {x}{y} p q = cancel-right p q (p ⁻¹) III
     where
     I : (p ∙ p ⁻¹) ＝ refl
     I = H x (p ∙ p ⁻¹)
     II = H x (q ∙ p ⁻¹)
+    III : p ∙ p ⁻¹ ＝ q ∙ p ⁻¹
+    III = (I ∙ II ⁻¹)
 
 postulate fe : funext 𝓤 𝓤₀
 
