@@ -35,7 +35,7 @@ postulate fe : funext 𝓤 𝓤₀
 collary7-2-3 : (X : 𝓤 ̇ ) → (H : (x y : X) → ¬¬ (x ＝ y) → (x ＝ y)) → is-set X
 collary7-2-3 X H {x} {y} p q =
   p                  ＝⟨ lemma p ⟩
-  f x refl ⁻¹ ∙ f y p ＝⟨ ap (λ - → f x refl ⁻¹ ∙ -) (f-is-const p q) ⟩
+  f x refl ⁻¹ ∙ f y p ＝⟨ ap (f x refl ⁻¹ ∙_) (f-is-const p q) ⟩
   f x refl ⁻¹ ∙ f y q ＝⟨ lemma q ⁻¹ ⟩
   q ∎
   where
