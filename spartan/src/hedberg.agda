@@ -3,6 +3,7 @@ module hedberg where
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
+open import MLTT.NaturalNumbers
 open import UF.Sets
 
 -- Reading https://planetmath.org/72UniquenessOfIdentityProofsAndHedbergsTheorem
@@ -46,3 +47,47 @@ Hedberg X decX = collary7-2-3 X c
 
   c : (x y : X) → ¬¬(x ＝ y) → (x ＝ y)
   c x y = lemma7-2-4 (decX x y)
+
+-- Theorem 7.2.6
+-- The type ℕ of natural numbers has decidable equality, and hence is a set.
+thm7-2-6 : is-set ℕ
+thm7-2-6 = Hedberg ℕ is-dec
+  where
+  -- Read https://planetmath.org/213naturalnumbers for encode-decode
+  code : ℕ → ℕ → 𝓤₀ ̇
+  code 0 0 = 𝟙
+  code 0 (succ y) = 𝟘
+  code (succ x) 0 = 𝟘
+  code (succ x) (succ y) = code x y
+
+  r : (n : ℕ) → code n n
+  r 0 = ⋆
+  r (succ x) = r x
+
+  encode : (m n : ℕ) → m ＝ n → code m n
+  encode m n p = transport (code m) p (r m)
+
+  decode : (m n : ℕ) → code m n → m ＝ n
+  decode 0 0 c = refl
+  decode (succ m) (succ n) c = ap succ (decode m n c)
+
+  is-dec : has-decidable-equality ℕ
+  is-dec 0 0 = inl refl
+  is-dec 0 (succ y) = inr (encode 0 (succ y))
+  is-dec (succ x) 0 = inr (encode (succ x) 0)
+  is-dec (succ x) (succ y) = equality-cases (is-dec x y) pos neg
+    where
+    pos : (p : x ＝ y) → is-dec x y ＝ inl p → (succ x ＝ succ y) + ¬ (succ x ＝ succ y)
+    pos p inl-p = inl (decode (succ x) (succ y) (encode x y p))
+
+    neg : (np : ¬ (x ＝ y)) → is-dec x y ＝ inr np → (succ x ＝ succ y) + ¬ (succ x ＝ succ y)
+    neg np inr-np = inr proof
+      where
+      proof : succ x ＝ succ y → 𝟘
+      proof sx=sy = np (decode x y key)
+        where
+        -- `decode x y ?0` is expecting that `?0 : code x y` there,
+        -- but by definition `code x y = code (succ x) (succ y)`,
+        -- and that's what we have here!
+        key : code (succ x) (succ y)
+        key = encode (succ x) (succ y) sx=sy
