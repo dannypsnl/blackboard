@@ -6,8 +6,8 @@ open import MLTT.Plus-Properties
 open import UF.Sets
 
 -- Reading https://planetmath.org/72UniquenessOfIdentityProofsAndHedbergsTheorem
-decidable : (X : 𝓤 ̇ ) → 𝓤 ̇
-decidable X = (x y : X) → (x ＝ y) + ¬ (x ＝ y)
+has-decidable-equality : (X : 𝓤 ̇ ) → 𝓤 ̇
+has-decidable-equality X = (x y : X) → (x ＝ y) + ¬ (x ＝ y)
 
 -- I have no idea how to not rely on this, and not be attacked by transport
 ∙-assoc : {X : 𝓤 ̇ } → {x y z w : X} → (p : x ＝ y) → (q : y ＝ z) → (r : z ＝ w) → p ∙ q ∙ r ＝ p ∙ (q ∙ r)
@@ -38,7 +38,7 @@ thm7-2-1 {𝓤} X = L , R
 -- I give up about this......
 postulate collary7-2-3 : (X : 𝓤 ̇ ) → (H : (x y : X) → ¬¬ (x ＝ y) → (x ＝ y)) → is-set X
 
-Hedberg : (X : 𝓤 ̇ ) → decidable X → is-set X
+Hedberg : (X : 𝓤 ̇ ) → has-decidable-equality X → is-set X
 Hedberg X decX = collary7-2-3 X c
   where
   lemma7-2-4 : {A : 𝓤 ̇ } → (A + ¬ A) → (¬¬ A → A)
