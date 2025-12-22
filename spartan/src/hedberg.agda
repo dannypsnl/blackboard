@@ -1,5 +1,6 @@
-{-# OPTIONS --without-K #-}
-module hedberg where
+{-# OPTIONS --safe --without-K #-}
+open import UF.FunExt
+module hedberg (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
@@ -7,7 +8,6 @@ open import MLTT.NaturalNumbers
 open import UF.Base
 open import UF.Sets
 open import UF.Equiv
-open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -29,8 +29,6 @@ thm7-2-1 {𝓤} X = L , R
     II = H x (q ∙ p ⁻¹)
     III : p ∙ p ⁻¹ ＝ q ∙ p ⁻¹
     III = (I ∙ II ⁻¹)
-
-postulate fe : funext 𝓤 𝓤₀
 
 collary7-2-3 : (X : 𝓤 ̇ ) → (H : (x y : X) → ¬¬ (x ＝ y) → (x ＝ y)) → is-set X
 collary7-2-3 X H {x} {y} p q =
