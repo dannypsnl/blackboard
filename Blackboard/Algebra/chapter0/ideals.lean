@@ -17,8 +17,15 @@ theorem exercise_4_5
   (I J : Ideal R)
   (H : I + J = ⊤)
   : I * J = I ⊓ J := by
-  have : I + J = I ⊔ J := Ideal.add_eq_sup
-  have : IsCoprime I J := by
-    rw [this] at H
-    exact Ideal.isCoprime_iff_sup_eq.mpr H
-  rw [Ideal.inf_eq_mul_of_isCoprime this]
+  have L : I * J ≤ I ⊓ J := by exact Ideal.mul_le_inf
+  have R : I ⊓ J ≤ I * J := by
+    intro r ⟨r_in_I, r_in_J⟩
+    let ⟨s, s_in_I, t, t_in_J, s_add_t_eq_one⟩ :=
+      Submodule.mem_sup.1 ((Ideal.eq_top_iff_one _).1 H)
+    rw [←mul_one r]
+    rw [←s_add_t_eq_one]
+    rw [mul_add r s t]
+    exact Ideal.add_mem (I * J)
+      (Ideal.mul_mem_mul_rev s_in_I r_in_J)
+      (Ideal.mul_mem_mul r_in_I t_in_J)
+  exact le_antisymm L R
