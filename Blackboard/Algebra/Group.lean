@@ -9,25 +9,6 @@ theorem inv_order_eq_order [Group G]
   (g : G) : orderOf g⁻¹ = orderOf g
   := by simp
 
-theorem aabb [Group G]
-  (a b : G)
-  : (a * b) ^ 2 = a ^ 2 * b ^ 2 ↔ a * b = b * a
-  :=
-  { mp := by
-      simp [pow_two]
-      intros ab
-      rw [mul_assoc, mul_assoc, ←mul_assoc b a b, ←mul_assoc a b b] at ab
-      rw [mul_left_cancel_iff] at ab
-      rw [mul_right_cancel_iff] at ab
-      exact id (Eq.symm ab)
-  , mpr := by
-      simp [pow_two]
-      intros comm
-      rw [←mul_assoc, ←mul_assoc, mul_assoc a b a]
-      rw [←comm]
-      simp [mul_assoc]
-  }
-
 theorem inv_of_prod [Group G]
   : ∀ a b : G, (a * b)⁻¹ = b⁻¹ * a⁻¹
   := by simp
