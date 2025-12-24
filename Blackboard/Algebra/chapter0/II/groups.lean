@@ -1,7 +1,7 @@
 import Mathlib.Algebra.Group.Defs
 import Mathlib.Algebra.Group.Hom.Basic
 
-theorem exercise_4_7 [Group G]
+theorem exercise_4_7_to_inv [Group G]
   : ∀ a b : G, (a * b)⁻¹ = a ⁻¹ * b ⁻¹ ↔ a * b = b * a := by
   intros a b
   have IF : (a * b)⁻¹ = a ⁻¹ * b ⁻¹ → a * b = b * a := by
@@ -22,6 +22,31 @@ theorem exercise_4_7 [Group G]
     calc
       (a * b)⁻¹ = (b * a) ⁻¹ := congrArg Inv.inv comm
       _ = a ⁻¹ * b ⁻¹ := mul_inv_rev b a
+  exact Iff.intro IF ONLY_IF
+
+local notation x "^2" => x * x
+theorem exercise_4_7_to_square [Group G]
+  : ∀ a b : G, (a * b)^2 = a^2 * b^2 ↔ a * b = b * a := by
+  intros a b
+  have IF : (a * b)^2 = a^2 * b^2 → a * b = b * a := by
+    intro hom
+    rw [mul_assoc, mul_assoc] at hom
+    have := (mul_right_inj a (b := b * (a * b))).mp hom
+    rw [←mul_assoc, ←mul_assoc] at this
+    have := (mul_left_inj b).mp this
+    exact Eq.symm this
+  have ONLY_IF : a * b = b * a → (a * b)^2 = a^2 * b^2 := by
+    intro comm
+    calc a * b * (a * b) = a * b * a * b := by exact Eq.symm (mul_assoc (a * b) a b)
+         _ = a * (b * a) * b := by
+          refine (mul_left_inj b).mpr ?_
+          exact mul_assoc a b a
+         _ = a * a * b * b := by
+          refine (mul_left_inj b).mpr ?_
+          rw [mul_assoc]
+          refine (mul_right_inj a).mpr ?_
+          rw [comm]
+         _ = a * a * (b * b) := mul_assoc (a * a) b b
   exact Iff.intro IF ONLY_IF
 
 -- Exercise 6.15
