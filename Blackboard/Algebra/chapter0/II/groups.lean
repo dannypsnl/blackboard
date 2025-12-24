@@ -1,5 +1,4 @@
 import Mathlib.Algebra.Group.Defs
-import Mathlib.Algebra.Group.Hom.Basic
 
 theorem exercise_4_7_to_inv [Group G]
   : ∀ a b : G, (a * b)⁻¹ = a ⁻¹ * b ⁻¹ ↔ a * b = b * a := by
