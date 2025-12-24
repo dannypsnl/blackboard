@@ -7,4 +7,4 @@ theorem injective_function_is_mono (φ : G → G') (inj : Function.Injective φ)
   : ∀ g1 g2 : K → G, ∀ x, φ (g1 x) = φ (g2 x) → g1 x = g2 x := by
   intros g1 g2 x H
   exact inj H
--- What really a point is, a monomorphism `f` in Grps is not necessary has a left-inverse (Exercise 6.16)
+-- The point is, inverse didn't hold, a monomorphism `f` in Grps is not necessary has a left-inverse (Exercise 6.16)
