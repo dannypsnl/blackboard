@@ -1,5 +1,25 @@
 import Mathlib.Algebra.Group.Defs
 
+theorem exercise_1_4 [Group G]
+  (h : ∀ a : G, a * a = 1)
+  : ∀ a b : G, a * b = b * a := by
+  intros a b
+  have I : (a * b) * (a * b) = 1 := h (a * b)
+  have II : (b * a) * (b * a) = 1 := h (b * a)
+  have III := Eq.trans I (Eq.symm II)
+  have IV : a * b * (a * b) * (b * a) = b * a * (b * a) * (b * a) :=
+    (mul_left_inj (b * a)).mpr III
+  -- first simplify rhs to b * a
+  rw [II] at IV
+  -- move to proper combination
+  rw [mul_assoc, mul_assoc, mul_assoc, ←mul_assoc b b a] at IV
+  -- b * b = 1 hence simplify
+  simp [h b] at IV
+  -- a * a = 1 hence simplify
+  simp [h a] at IV
+  -- now we have a * b = b * a
+  exact IV
+
 theorem exercise_4_7_to_inv [Group G]
   : ∀ a b : G, (a * b)⁻¹ = a ⁻¹ * b ⁻¹ ↔ a * b = b * a := by
   intros a b
