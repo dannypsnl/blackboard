@@ -9,7 +9,7 @@ record GroupStructure (G : 𝓤 ̇) : 𝓤 ̇ where
     e : G
     inv : G → G
 
-record CommGroupAxiom {G : 𝓤 ̇} (str : GroupStructure G) : 𝓤 ̇ where
+record GroupAxiom {G : 𝓤 ̇} (str : GroupStructure G) : 𝓤 ̇ where
   open GroupStructure str
   field
     size : is-set G
@@ -18,7 +18,12 @@ record CommGroupAxiom {G : 𝓤 ̇} (str : GroupStructure G) : 𝓤 ̇ where
     neuR : right-neutral e mul
     invL : {x : G} → (mul (inv x) x ＝ e)
     invR : {x : G} → (mul x (inv x) ＝ e)
-    comm : commutative mul
+
+record CommGroupAxiom {G : 𝓤 ̇} (str : GroupStructure G) : 𝓤 ̇ where
+  open GroupStructure str
+  field
+    ax : GroupAxiom str
+    commute : commutative mul
 
 CommGroup : (𝓤 : Universe) → 𝓤 ⁺  ̇
 CommGroup 𝓤 = Σ G ꞉ 𝓤 ̇ , Σ str ꞉ GroupStructure G , CommGroupAxiom str
@@ -40,6 +45,7 @@ module _ (A : CommGroup 𝓤) where
   open Notation
   open Notation.AddGroup A
   open CommGroupAxiom (A .pr₂ .pr₂)
+  open GroupAxiom (CommGroupAxiom.ax (A .pr₂ .pr₂))
 
   propopsition-1 : {h : ⟨ A ⟩} → h +ₐ - h ＝ 0a +ₐ 0a
   propopsition-1 {h} =
