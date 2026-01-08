@@ -2,7 +2,8 @@ open import MLTT.Spartan
 open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
 open import UF.FunExt
 open import UF.Subsingletons
-module topos (fe : Fun-Ext) (pe : propext 𝓤) where
+
+module lawvere-tierney-topology (fe : Fun-Ext) (pe : propext 𝓤) where
 
 Ω = Ω-of-universe 𝓤
 
