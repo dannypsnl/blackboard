@@ -1,4 +1,4 @@
 name: mltt
-depend:
+depend: standard-library
 include: src
-flags: --safe
+flags:
