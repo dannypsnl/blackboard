@@ -6,6 +6,7 @@ open import Agda.Builtin.Equality
 open import Agda.Builtin.Equality.Rewrite
 open import Relation.Binary.PropositionalEquality using (cong; cong₂)
 
+-- STLC
 data Type : Set where
   base : Type
   _⇒_ : Type → Type → Type
@@ -23,13 +24,19 @@ variable
   Γ Δ Θ Ξ : Con
 
 data _⊢_ : Con → Type → Set where
+  -- here
   • : Γ ▷ A ⊢ A
+  -- weakening
   _↑ : (M : Γ ⊢ B)
-      ------------
+      --------------
       → Γ ▷ A ⊢ B
-  ƛ_ : (N : Γ ▷ A ⊢ B) → Γ ⊢ A ⇒ B
+  -- abs
+  ƛ_ : (N : Γ ▷ A ⊢ B)
+      ------------------
+      → Γ ⊢ A ⇒ B
+  -- app
   _·_ : (L : Γ ⊢ A ⇒ B) (M : Γ ⊢ A)
-      -----------------------------
+      ---------------------------------
       → Γ ⊢ B
 infix 5 ƛ_
 infix 4 _⊢_
@@ -38,12 +45,14 @@ infixl 7 _·_
 variable
   L M N P Q : Γ ⊢ A
 
+-- substitution
 data _⊨_ : Con → Con → Set where
   id : Δ ⊨ Δ
+  -- weakening
   _↑ : (σ : Γ ⊨ Δ) → Γ ▷ A ⊨ Δ
   _▷_ : (σ : Γ ⊨ Δ)
-        (M : Γ ⊢ A)
-        ------------
+         (M : Γ ⊢ A)
+        ---------------
         → Γ ⊨ Δ ▷ A
 infix 4  _⊨_
 infix 8 _↑
