@@ -41,7 +41,7 @@ theorem equiv_to_zero_means_numerator_is_zero
 def IsTorsion (a : R × R) : Prop :=
   ∃ r ≠ 0, (r * a.1 , a.2) ≈ (0, 1)
 
--- If a is a torsion, then it's 0/1
+-- If a is a torsion, then a = 0/1
 theorem torsion_free
   [NoZeroDivisors R]
   (_H : ∀ a : R × R, a.2 ≠ 0)
