@@ -44,20 +44,19 @@ def IsTorsion (a : R × R) : Prop :=
 -- If a is a torsion, then a = 0/1
 theorem torsion_free
   [NoZeroDivisors R]
-  (_H : ∀ a : R × R, a.2 ≠ 0)
+  (H : ∀ a : R × R, a.2 ≠ 0)
   : ∀ a : R × R, IsTorsion a → (a ≈ (0, 1)) := by
   intro a is_torsion
   have is_torsion : ∃ r ≠ 0, (r * a.1 , a.2) ≈ (0, 1) := is_torsion
   let r := is_torsion.choose
   have r_ne_0 := is_torsion.choose_spec.left
   have rH := is_torsion.choose_spec.right
-  have : r * a.1 * 1 = a.2 * 0 := rH
-  simp at this
-  rcases this with (r_is_0 | a_is_0)
+  have rH' : r * a.1 = a.2 * 0 := by calc
+    r * a.1 = r * a.1 * 1 := by exact Eq.symm (mul_one (r * a.1))
+    _ = a.2 * 0 := by exact rH
+  simp at rH'
+  rcases rH' with (r_is_0 | a_is_0)
   case inl =>
     exact False.elim (r_ne_0 r_is_0)
   case inr =>
-    have : a.1 * 1 = a.2 * 0 := by
-      rw [a_is_0]
-      simp
-    exact this
+    exact (equiv_to_zero_means_numerator_is_zero a H).mpr a_is_0
