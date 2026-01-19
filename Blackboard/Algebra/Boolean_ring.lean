@@ -41,10 +41,7 @@ theorem commutative : ∀ a b : A, a * b = b * a := by
     _ = a + b + (a * b + b * a) := by
       abel
   have : a * b + b * a = 0 := by
-    rw [eq_comm] at this
-    have Z := add_zero (a + b)
-    have := Eq.trans this (Eq.symm Z)
-    have := add_left_cancel (a := a + b) (b := a * b + b * a) (c := 0) this
+    rw [left_eq_add] at this
     exact this
   rw [add_eq_zero_iff_eq_neg] at this
   rw [neg_eq (b * a)] at this
